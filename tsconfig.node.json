@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    // commented this out, cause it was throwing some error for manifest.json in vite.config.ts
+    // "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}
