@@ -30,7 +30,7 @@ const ScPetInfo = styled.div`
   padding: 1rem;
   padding-top: .5rem ;
   
-  color: black;
+  color: var(--color-black);
   
 
   overflow-y:auto;

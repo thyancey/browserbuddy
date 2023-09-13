@@ -27,7 +27,7 @@ const ScStatus = styled.li<ScStatusProps>`
   z-index:1;
   
   list-style:none;
-  color:black;
+  color:var(--color-black);
   margin-top: -.5rem;
   margin-right: -1rem;
   font-weight:bold;
@@ -49,10 +49,10 @@ const ScStatus = styled.li<ScStatusProps>`
 
 const getBubbleColors = (alertType?: AlertType) => {
   switch(alertType){
-    case 'alert': return [ '--var-color-red', '--var-color-yellow' ];
-    case 'warning': return [ '--var-color-yellow', '--var-color-red' ];
-    case 'reward': return [ '--var-color-green', '--var-color-white' ];
-    default: return [ '--var-color-white', '--var-color-red' ];
+    case 'alert': return [ '--color-red', '--color-yellow' ];
+    case 'warning': return [ '--color-yellow', '--color-red' ];
+    case 'reward': return [ '--color-green', '--color-white' ];
+    default: return [ '--color-white', '--color-red' ];
   }
 }
 

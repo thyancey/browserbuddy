@@ -21,11 +21,11 @@ export default createGlobalStyle`
     -webkit-tap-highlight-color: transparent;
   }
   
-  #root{
+  html{
     --val-min-width: 35rem;
     --val-min-height: 60rem;
 
-    --color-black: #000000;
+    --color-black: #0f0e0b;
     --color-grey: #373737;
     --color-grey-light: #A39F8E;
     --color-white: #fef8dd;
@@ -37,6 +37,15 @@ export default createGlobalStyle`
     --color-red-light: #f18283;
     --color-purple: #6b1ff3;
 
+    font-size: 62.5%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Cabin', sans-serif;
+    background-color: var(--color-black);
+    color: var(--color-white);
+  }
+
+  #root{
     margin:0 auto;
     /* for chrome extension */
     min-width:var(--val-min-width);
@@ -66,15 +75,6 @@ export default createGlobalStyle`
   p, span{
     font-size:1.5rem;
     line-height: 1.5rem;
-  }
-
-  html{
-    font-size: 62.5%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: 'Cabin', sans-serif;
-    background-color: black;
-    color: white;
   }
   
   code {
@@ -140,11 +140,11 @@ export const mixinBubble = () => {
   `;
 };
 
-export const mixinColorBubble = (background: string, borderAndText: string = '--var-color-white') => {
+export const mixinColorBubble = (background: string, borderAndText: string = '--color-white') => {
   return css`
     ${mixinBubble()}
-    border-color: ${borderAndText};
-    color: ${borderAndText};
-    background-color: ${background};
+    border-color: var(${borderAndText});
+    color: var(${borderAndText});
+    background-color: var(${background});
   `;
 };

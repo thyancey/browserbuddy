@@ -1,5 +1,3 @@
-import { getColor, getShade } from '../../themes/';
-
 import styled, { css } from 'styled-components';
 
 import { selectPetList, setActiveIdx } from '../../services/petstore';
@@ -19,8 +17,8 @@ const ScTab = styled.li<ScTabProps>`
 
   display: inline-block;
   vertical-align: bottom;
-  background-color: white;
-  color: black;
+  background-color: var(--color-white);
+  color: var(--color-black);
 
   font-size: 2rem;
   line-height: 2rem;
