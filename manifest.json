@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Browsing buddy",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "assets/content.tsx-loader-8ae029f8.js"
+      ],
+      "matches": [
+        "https://www.google.com/*"
+      ],
+      "css": [
+        "assets/content-d526a0c5.css"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "https://www.google.com/*"
+      ],
+      "resources": [
+        "assets/react-35ef61ed.svg",
+        "assets/client-8837fce7.js",
+        "assets/content.tsx-a0c39f9f.js"
+      ],
+      "use_dynamic_url": true
+    }
+  ]
+}
