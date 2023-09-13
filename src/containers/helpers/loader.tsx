@@ -144,8 +144,6 @@ export const Loader = () => {
         dispatch(setDebugMode(true));
       }
 
-      // const url = getUrl('pet-manifest.json');
-      // fetchAllData(getUrl('/pet-manifest.json'), dispatch, savedData);
       const url = 'data/pet-manifest.json';
       fetchAllData(url, dispatch, savedData);
     }

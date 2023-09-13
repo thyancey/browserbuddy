@@ -22,10 +22,13 @@ export default createGlobalStyle`
   }
   
   #root{
+    --val-min-width: 35rem;
+    --val-min-height: 60rem;
+
     margin:0 auto;
     /* for chrome extension */
-    min-width:35rem;
-    min-height:60rem;
+    min-width:var(--val-min-width);
+    min-height:var(--val-min-height);
   }
   h1, h2, h3, h4, h5, h6{
     font-family: 'Bevan', cursive;
