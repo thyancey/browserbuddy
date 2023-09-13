@@ -7,7 +7,7 @@ import { DEFAULT_LOCALSTORAGE_STATE } from '../../services/store';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '@reduxjs/toolkit';
 import { log } from '../../util/tools';
-import { getUrl } from '../../assets';
+// import { getUrl } from '../../assets';
 
 const fetchAllData = async (url: string, dispatch: any, savedData: LocalStorageState) => {
   log('-------fetchAllData----------');
@@ -130,7 +130,8 @@ export const Loader = () => {
     if(!loaded){
       setLoaded(true);
       
-      const url = getUrl('pet-manifest.json');
+      // const url = getUrl('pet-manifest.json');
+      const url = 'data/pet-manifest.json';
       fetchAllData(url, dispatch, savedData);
       // fetchAllData(getUrl('/pet-manifest.json'), dispatch, savedData);
     }

@@ -1,7 +1,7 @@
-import PetJSON from './data/pet-manifest.json';
+// import PetJSON from './data/pet-manifest.json';
 
 const AssetMap = {
-  PetJSON,
+  // PetJSON,
 };
 
 // export function getUrl(name: string) {
@@ -16,9 +16,7 @@ const AssetMap = {
 
 export const getUrl = (name: string) => {
   const path = new URL('data', import.meta.url);
-  console.log('0. name', name);
-  console.log('1. path is', path);
-  console.log('2. path is', `${path}/${name}`);
+  console.log(`getUrl(${name}) => resolved to "${path}", returning "${path}/${name}"`)
   return `${path}/${name}`;
 };
 
