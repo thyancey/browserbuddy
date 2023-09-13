@@ -1,14 +1,12 @@
-// import { useHistory } from 'react-router-dom';
-import { getColor } from '../../themes/';
-
 import styled from 'styled-components';
-import { clearSave } from '../../services/petstore';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { clearSave } from '../../services/petstore';
+
 const ScContainer = styled.div`
   padding: 1rem;
-  color: ${getColor('blue')};
+  color: var(--color-blue);
   min-width: 30rem;
 `;
 
@@ -22,8 +20,8 @@ const ScButton = styled.button`
   margin: 0;
   font-size: 2rem;
   padding: 0.5rem 1rem;
-  background-color: ${getColor('green')};
-  border: 0.5rem solid ${getColor('white')};
+  background-color: var(--color-green);
+  border: 0.5rem solid var(--color-white);
   border-radius: 1rem;
 
   margin-top: 2rem;

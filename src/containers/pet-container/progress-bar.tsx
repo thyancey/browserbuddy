@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { getColor } from '../../themes';
 
 type ScProgressBarProps = {
   startWidth: string
@@ -10,13 +9,12 @@ const ScWrapper = styled.div`
   position:absolute;
   left:0;
   bottom:0;
-  /* height:2rem; */
   height:100%;
   width:100%;
 `;
 
 const ScProgressBg = styled.div`
-  background-color:${getColor('white')};
+  background-color:var(--color-white);
   position:absolute;
   left:0;
   top:0;
@@ -25,7 +23,7 @@ const ScProgressBg = styled.div`
 `;
 
 const ScProgressBar = styled.div<ScProgressBarProps>`
-  background-color:${getColor('red')};
+  background-color:var(--color-red);
   position:absolute;
   height:100%;
   left:0;
@@ -33,7 +31,7 @@ const ScProgressBar = styled.div<ScProgressBarProps>`
 
   &.full{
     width:100% !important;
-    background-color: ${getColor('purple')};
+    background-color: var(--color-purple);;
   }
   z-index:1;
 `
@@ -48,7 +46,7 @@ export const ProgressBar = ({startProgress, duration}: ProgressBarProps) => {
   useEffect(() => {
     if(!loaded) {
       window.setTimeout(() => setLoaded(true), 1);
-    };
+    }
   }, [ loaded, setLoaded ]);
 
   return (

@@ -1,9 +1,8 @@
-import { getColor } from '../../themes/';
-
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+
 import { StatGroup } from './stat-group';
 import { selectActiveInfo } from '../../services/petstore';
-import { useSelector } from 'react-redux';
 import { Interactions } from './interactions';
 
 const ScContainer = styled.div`
@@ -13,12 +12,12 @@ const ScContainer = styled.div`
   top:-.5rem;
   bottom:0;
 
-  background-color:${getColor('green')};
-  border:.5rem solid ${getColor('white')};
+  background-color:var(--color-green);
+  border:.5rem solid var(--color-white);
   border-radius:2rem;
   overflow:hidden;
 
-  box-shadow: .25rem .25rem .55rem .45rem ${getColor('grey')};
+  box-shadow: .25rem .25rem .55rem .45rem var(--color-grey);
 `
 
 const ScPetInfo = styled.div`
@@ -37,7 +36,7 @@ const ScPetInfo = styled.div`
   overflow-y:auto;
 
   hr{
-    border-color:${getColor('blue')};
+    border-color:var(--color-blue);
     border-style:dashed;
     margin-top:.5rem;
     margin-bottom:.5rem;

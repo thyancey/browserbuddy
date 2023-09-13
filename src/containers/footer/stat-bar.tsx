@@ -1,7 +1,4 @@
-import { getColor } from '../../themes/';
-
 import styled from 'styled-components';
-import { getShade } from '../../themes';
 import { round } from '../../util/tools';
 
 const ScContainer = styled.div`
@@ -16,14 +13,14 @@ const ScLabel = styled.h4`
 
 const ScBar = styled.div`
   position:relative;
-  border:.5rem solid ${getColor('white')};
+  border:.5rem solid var(--color-white);
   border-radius: 1rem;
   overflow:hidden;
   padding:.25rem .5rem;
   text-align:center;
-  background-color: ${getColor('white')};
+  background-color: var(--color-white);
 
-  box-shadow: 0px -2px 4px ${getShade('white', -40)};
+  box-shadow: 0px -2px 4px var(--color-grey-light);
 `;
 
 const ScBarValue = styled.div`
@@ -39,7 +36,7 @@ const ScBarFill = styled.div`
   left:0;
   height:100%; 
   transition: width .3s ease-in-out, background-color .5s ease-in-out;
-  background-color: ${getColor('blue')};
+  background-color: var(--color-blue);
 `;
 
 const ScValueProgress = styled.p`

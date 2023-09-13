@@ -1,21 +1,20 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { selectActiveInfo } from '../../services/petstore';
-import { getColor } from '../../themes';
 
 const ScContainer = styled.div`
   width:100%;
   height:100%;
   
-  color:${getColor('white')};
-  background-color: ${getColor('blue')};
-  border:.5rem solid ${getColor('white')};
+  color:var(--color-white);
+  background-color: var(--color-blue);
+  border:.5rem solid var(--color-white);
   border-radius: 1rem;
   position:relative;
-  padding:0rem 1rem;
+  padding:0.5rem 1rem;
 
   display:flex;
-  box-shadow: .25rem .25rem .25rem .05rem ${getColor('grey')};
+  box-shadow: .25rem .25rem .25rem .05rem var(--color-grey);
 
   >div{
     display:inline-block;
@@ -39,7 +38,7 @@ const ScLabel = styled.div`
 
 const ScPetLevel = styled.div`
   text-align:right;
-  color: ${getColor('white')};
+  color: var(--color-white);
   
   >h4{
     margin:0;

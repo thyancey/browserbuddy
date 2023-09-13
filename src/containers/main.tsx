@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import { getColor } from '../themes/';
-
 import Helpers from './helpers';
 import { Footer } from './footer';
 import { PetContainer } from './pet-container';
@@ -25,7 +23,7 @@ const ScContainer = styled.div`
     'body'
     'footer';
     
-  color: ${getColor('blue')};
+  color: var(--color-blue);
 
   > div {
     position: relative;
