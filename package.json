@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build-gh": "tsc && vite build --config vite.ghconfig.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "predeploy": "yarn build-gh",
+    "deploy": "gh-pages -d dist",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run"
@@ -30,6 +33,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "gh-pages": "^6.0.0",
     "styled-components": "^6.0.7",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
