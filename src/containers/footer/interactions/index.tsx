@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { selectActiveInteractionDefinitions, addNewInteractionEvent, selectCooldownStatus, removeInteractionEvent, selectActiveInteractionDetail } from '../../../services/petstore';
+import { addNewInteractionEvent, removeInteractionEvent, selectActiveInteractionDetail } from '../../../services/petstore';
 import { PetInteractionDefinition } from '../../../types';
 import { InteractionButton } from './interaction-button';
 
@@ -30,6 +29,7 @@ export const Interactions = () => {
   const dispatch = useDispatch();
   const addTemporaryInteraction = (interaction: PetInteractionDefinition) => {
     const now = new Date().getTime();
+    // @ts-ignore
     dispatch((thunkDispatch: Dispatch) => {
       thunkDispatch(addNewInteractionEvent({ 
         interaction: interaction, 
@@ -45,7 +45,7 @@ export const Interactions = () => {
 
   return (
     <ScInteractions>
-      {interactionDetails.map((iDetail, i) => (
+      {interactionDetails.map((iDetail) => (
         <InteractionButton
           key={iDetail.id}
           cooldownStatus={iDetail.cooldownStatus}

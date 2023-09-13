@@ -1,12 +1,12 @@
-import React from 'react';
 import { RootState } from '../store';
 import reducer, { PetStoreState, selectRenderedDeltaStats, selectActiveIdx, setActiveId } from './index';
 // import { render } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 
 
 describe('#petstore.reducers', () => {
   describe('#setActiveId', () => {
-    test('should add valid idx', () => {
+    it('should add valid idx', () => {
       const prevState = {
         activeIdx: -1,
         pets: [{
@@ -38,7 +38,7 @@ describe('#petstore.reducers', () => {
 
 describe('#petstore.selectors', () => {
   describe('#selectActiveIdx', () => {
-    test('should select activeIdx', () => {
+    it('should select activeIdx', () => {
       const mockState = {
         petStore:{
           activeIdx: 3
@@ -51,7 +51,7 @@ describe('#petstore.selectors', () => {
 
   
   describe('#selectRenderedDeltaStats', () => {
-    test('should increase stat over time', () => {
+    it('should increase stat over time', () => {
       const lastTime = 1000;
       const time = 3000;
       expect(selectRenderedDeltaStats.resultFunc(
@@ -77,7 +77,7 @@ describe('#petstore.selectors', () => {
       }]);
     });
     
-    test('should decrease stat over time', () => {
+    it('should decrease stat over time', () => {
       const lastTime = 1000;
       const time = 3000;
       expect(selectRenderedDeltaStats.resultFunc(
@@ -103,7 +103,7 @@ describe('#petstore.selectors', () => {
       }]);
     });
     
-    test('stat should not go past 0 or max', () => {
+    it('stat should not go past 0 or max', () => {
       const lastTime = 1000;
       const time = 10000;
       expect(selectRenderedDeltaStats.resultFunc(

@@ -1,34 +1,62 @@
 // slightly evolving from create-react-app example
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PetDefinition, SavedPetState, PetLogicGroup, RawPetJSON, PetStatusDefinition, PetInfo, PetBehaviorDefinition, PetStatDefinitionJSON, PetInteractionDefinition, StatChangeDefinition, PetInteractionDetail, LocalStorageState, InteractionCooldownStatus, DeltaStat, PetBehaviorJSON, CachedPetStat, PingPayload, WhenThenNumberGroup, WhenThenStringGroup, WhenThenStringBooleanGroup, RawWhenThen, PetInteractionDefinitionJSON } from '../../types';
+import {
+  PetDefinition,
+  SavedPetState,
+  PetLogicGroup,
+  RawPetJSON,
+  PetStatusDefinition,
+  PetInfo,
+  PetBehaviorDefinition,
+  PetStatDefinitionJSON,
+  PetInteractionDefinition,
+  StatChangeDefinition,
+  PetInteractionDetail,
+  LocalStorageState,
+  InteractionCooldownStatus,
+  DeltaStat,
+  PetBehaviorJSON,
+  CachedPetStat,
+  PingPayload,
+  WhenThenStringBooleanGroup,
+  RawWhenThen,
+  PetInteractionDefinitionJSON,
+} from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
-import { evaluateAvailabilityWhenThenGroup, evaluateWhenThenNumberGroup, getFirstOfWhenThenStringGroups, parseInteractionWhenThenGroup, parseStatsWhenThenGroup, parseStatusesWhenThenGroup } from '../../util/whenthen';
+import {
+  evaluateAvailabilityWhenThenGroup,
+  evaluateWhenThenNumberGroup,
+  getFirstOfWhenThenStringGroups,
+  parseInteractionWhenThenGroup,
+  parseStatsWhenThenGroup,
+  parseStatusesWhenThenGroup,
+} from '../../util/whenthen';
 
 import { RootState } from '../store';
 
 const DEFAULT_LOCALSTORAGE_STATE: LocalStorageState = {
-  config:{
+  config: {
     activePet: '',
-    lastSaved: -1
+    lastSaved: -1,
   },
-  interactions:[],
-  pets:[]
+  interactions: [],
+  pets: [],
 };
 
 export type PetStoreState = {
-  activeIdx: number,
-  pets: PetDefinition[],
-  interactions: InteractionCooldownStatus[],
-  cachedPets: SavedPetState[],
-  lastRendered: number,
-  lastSaved: number,
-}
+  activeIdx: number;
+  pets: PetDefinition[];
+  interactions: InteractionCooldownStatus[];
+  cachedPets: SavedPetState[];
+  lastRendered: number;
+  lastSaved: number;
+};
 
 export type CreatePetPayload = {
-  isActive: boolean,
-  petDefinition: RawPetJSON,
-  initialState: SavedPetState
-}
+  isActive: boolean;
+  petDefinition: RawPetJSON;
+  initialState: SavedPetState;
+};
 
 const initialStoreState: PetStoreState = {
   activeIdx: -1,
@@ -51,108 +79,109 @@ export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState: SavedPetSt
 };
 
 export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: string) => {
-  return petBehaviorsJson.map(pB => ({
+  return petBehaviorsJson.map((pB) => ({
     ...pB,
     imageUrl: pB.image ? `${baseUrl}/${pB.image}` : pB.imageUrl || '',
     position: pB.position ? pB.position : 'center',
     offsetX: pB.offsetX ? pB.offsetX : 0,
-    offsetY: pB.offsetY ? pB.offsetY : 0
-  }))
-}
+    offsetY: pB.offsetY ? pB.offsetY : 0,
+  }));
+};
 
 // could do some validation here
 export const parseStatChanges = (statChangesJSON: StatChangeDefinition[] = []) => {
-  return statChangesJSON.map(sE => ({
+  return statChangesJSON.map((sE) => ({
     statId: sE.statId,
-    value: sE.value || 0
+    value: sE.value || 0,
   }));
-}
+};
 
 export const parseInteractionAvailability = (availability: RawWhenThen[]) => {
-  return availability ? parseInteractionWhenThenGroup(availability) : []
-}
+  return availability ? parseInteractionWhenThenGroup(availability) : [];
+};
 
 export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSON[]) => {
-  if(!interactions) return [];
+  if (!interactions) return [];
 
-  return interactions.map(int => (
-    {
-      id: int.id,
-      label: int.label,
-      cooldown: int.cooldown,
-      changeStats: parseStatChanges(int.changeStats),
-      availability: parseInteractionAvailability(int.availability)
-    }
-  ));
+  return interactions.map((int) => ({
+    id: int.id,
+    label: int.label,
+    cooldown: int.cooldown,
+    changeStats: parseStatChanges(int.changeStats),
+    availability: parseInteractionAvailability(int.availability),
+  }));
 };
 
 export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState: SavedPetState) => {
-  return statsDef.map(pS => {
-    const foundStat = initialState?.stats.find(iS => iS.id === pS.id);
+  return statsDef.map((pS) => {
+    const foundStat = initialState?.stats.find((iS) => iS.id === pS.id);
     const statEffects = parseStatsWhenThenGroup(pS.statEffects);
 
-    if(foundStat){
+    if (foundStat) {
       return {
         ...pS,
         value: foundStat.value,
-        statEffects: statEffects
-      }
-    }else{
+        statEffects: statEffects,
+      };
+    } else {
       return {
         ...pS,
-        statEffects: statEffects
-      }
+        statEffects: statEffects,
+      };
     }
   });
 };
 
 export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) => {
-  try{
-    return !previous[activeIdx].beingTracked
-  }catch(e){
+  try {
+    return !previous[activeIdx].beingTracked;
+  } catch (e) {
     return false;
   }
-}
+};
 
-export const getUpdatedStats = (cachedPetStats: CachedPetStat[], statDefinitions: DeltaStat[], newStats: StatChangeDefinition[]) => {
+export const getUpdatedStats = (
+  cachedPetStats: CachedPetStat[],
+  statDefinitions: DeltaStat[],
+  newStats: StatChangeDefinition[]
+) => {
   const getNewValue = (cachedStat: CachedPetStat, statDefs: DeltaStat[], changeDefs: StatChangeDefinition[]) => {
-    const found = changeDefs.find(cD => cD.statId === cachedStat.id);
-    if(!found) return cachedStat.value;
+    const found = changeDefs.find((cD) => cD.statId === cachedStat.id);
+    if (!found) return cachedStat.value;
 
     const rawNew = cachedStat.value + found.value;
-    const max = statDefs.find(sD => cachedStat.id === sD.id)?.max;
-    if(max){
+    const max = statDefs.find((sD) => cachedStat.id === sD.id)?.max;
+    if (max) {
       return clamp(rawNew, 0, max);
     }
     return rawNew > 0 ? rawNew : 0;
-  }
+  };
 
-  return cachedPetStats.map(oldStat => ({
+  return cachedPetStats.map((oldStat) => ({
     id: oldStat.id,
-    value: getNewValue(oldStat, statDefinitions, newStats)
+    value: getNewValue(oldStat, statDefinitions, newStats),
     // value: newStats.find(newStat => newStat.id === oldStat.id)?.value || oldStat.value
   }));
-}
+};
 
 export const getNewStats = (oldStats: DeltaStat[], statChanges: StatChangeDefinition[]) => {
-  return oldStats.map(stat => {
-    const toChange = statChanges.find(sChange => sChange.statId === stat.id);
-    if(toChange){
+  return oldStats.map((stat) => {
+    const toChange = statChanges.find((sChange) => sChange.statId === stat.id);
+    if (toChange) {
       return {
         id: stat.id,
-        value: clamp(stat.value + toChange.value, 0, stat.max)
+        value: clamp(stat.value + toChange.value, 0, stat.max),
       };
     }
     return stat;
   });
-}
+};
 
-export const hackySave = (state: PetStoreState, explicitTime?:number) => {
-  const nowTime = (explicitTime !== undefined) ? explicitTime : new Date().getTime();
+export const hackySave = (state: PetStoreState, explicitTime?: number) => {
+  const nowTime = explicitTime !== undefined ? explicitTime : new Date().getTime();
   state.lastSaved = nowTime;
   state.lastRendered = nowTime;
-}
-
+};
 
 export const petStoreSlice = createSlice({
   name: 'petStore',
@@ -162,23 +191,23 @@ export const petStoreSlice = createSlice({
       const nowTime = action.payload.time;
 
       state.lastRendered = nowTime;
-      if(action.payload.doSave){
+      if (action.payload.doSave) {
         // console.log('update lastSaved');
         state.lastSaved = nowTime;
       }
     },
-    clearSave: (state: PetStoreState) => {
+    clearSave: () => {
       // TODO, this should be handled differently, or taken out of redux otherwise
       window.localStorage.clear();
       window.location.reload();
     },
     setActiveId: (state: PetStoreState, action: PayloadAction<any>) => {
-      const petIdx = state.pets.findIndex((p:PetDefinition) => p.id === action.payload);
-      if(petIdx === -1){
+      const petIdx = state.pets.findIndex((p: PetDefinition) => p.id === action.payload);
+      if (petIdx === -1) {
         console.log(`Cannot find pet with id "${action.payload}"`);
         state.activeIdx = 0;
         hackySave(state);
-      }else{
+      } else {
         state.activeIdx = petIdx;
 
         // TODO: this seems sketchy
@@ -195,69 +224,72 @@ export const petStoreSlice = createSlice({
       const lsState = action.payload as LocalStorageState;
       state.cachedPets = lsState.pets;
     },
-    restoreInteractionFromSave:  (state: PetStoreState, action: PayloadAction<any>) => {
+    restoreInteractionFromSave: (state: PetStoreState, action: PayloadAction<any>) => {
       const interaction = action.payload as InteractionCooldownStatus;
-      if(!state.interactions.find(iE => iE.id === interaction.id)){
-        console.log(`restoreInteractionFromSave ${interaction.id} with ${(interaction.endAt - new Date().getTime()) / 1000} secs left`);
+      if (!state.interactions.find((iE) => iE.id === interaction.id)) {
+        console.log(
+          `restoreInteractionFromSave ${interaction.id} with ${
+            (interaction.endAt - new Date().getTime()) / 1000
+          } secs left`
+        );
         state.interactions.push(interaction);
       }
     },
     addNewInteractionEvent: (state: PetStoreState, action: PayloadAction<any>) => {
       const { interaction, time } = action.payload as {
-        interaction: PetInteractionDefinition,
-        time: number
+        interaction: PetInteractionDefinition;
+        time: number;
       };
 
       let doSave = false;
       // interaction has to sit a bit, so save it for later
-      if(interaction.cooldown){
+      if (interaction.cooldown) {
         doSave = true;
         // // these are added by a user interaction
-        if(!state.interactions.find(iE => iE.id === interaction.id)){
+        if (!state.interactions.find((iE) => iE.id === interaction.id)) {
           state.interactions.push({
             id: interaction.id,
             startAt: time,
-            endAt: time + (interaction.cooldown || 0)
+            endAt: time + (interaction.cooldown || 0),
           });
         }
       }
-      
-      if(interaction.changeStats.length > 0){
+
+      if (interaction.changeStats.length > 0) {
         doSave = true;
         const activePet = state.pets[state.activeIdx];
-        const cachedIdx = state.cachedPets.findIndex(cP => cP.id === activePet.id);
-        if(cachedIdx > -1){
+        const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
+        if (cachedIdx > -1) {
           const cachedStats = state.cachedPets[cachedIdx]?.stats || [];
           const statDefs = activePet.logic.stats;
-        
+
           state.cachedPets[cachedIdx] = {
             ...state.cachedPets[cachedIdx],
-            stats: getUpdatedStats(cachedStats, statDefs, interaction.changeStats)
-          }
+            stats: getUpdatedStats(cachedStats, statDefs, interaction.changeStats),
+          };
         }
       }
 
-      if(doSave){
+      if (doSave) {
         hackySave(state, time);
       }
     },
     removeInteractionEvent: (state: PetStoreState, action: PayloadAction<any>) => {
       const intId = action.payload as string;
-      
-      state.interactions = state.interactions.filter(interaction => interaction.id !== intId);
+
+      state.interactions = state.interactions.filter((interaction) => interaction.id !== intId);
     },
     createPet: (state: PetStoreState, action: PayloadAction<any>) => {
       log('\n\ncreatePet', action.payload);
       const { petDefinition, initialState, isActive } = action.payload as CreatePetPayload;
-      const foundPet = state.pets.find(p => p.id === petDefinition.id);
+      const foundPet = state.pets.find((p) => p.id === petDefinition.id);
       const nowTime = new Date().getTime();
       const logicGroup = parseLogicGroup(petDefinition, initialState);
 
-
       log(`>> createPet: ${petDefinition.id}, isActive? ${isActive}, beingTracked? ${initialState?.beingTracked}`);
-      if(!initialState){
-        log('no initial state found.')
-      }else{
+      if (!initialState) {
+        log('no initial state found.');
+      } else {
         log('initial state:', initialState);
       }
 
@@ -266,36 +298,50 @@ export const petStoreSlice = createSlice({
         logic: logicGroup,
         bornOn: initialState?.bornOn || nowTime,
         bgImage: petDefinition.backgroundImage ? `${petDefinition.baseUrl}/${petDefinition.backgroundImage}` : null,
-        bgColor: petDefinition.backgroundColor || null
+        bgColor: petDefinition.backgroundColor || null,
       } as PetDefinition;
 
-      if(foundPet){
-        state.pets = state.pets.map(p => {
-          if(p.id === petDefinition.id){
+      if (foundPet) {
+        state.pets = state.pets.map((p) => {
+          if (p.id === petDefinition.id) {
             return updatedDef;
-          }else{
+          } else {
             return p;
           }
         });
-      }else{
+      } else {
         state.pets.push(updatedDef);
       }
 
-      
       // restore it to the cache if it was saved!
-      if(initialState){
-        if(!state.cachedPets.find(cP => cP.id === initialState?.id)){
-          state.cachedPets = [...state.cachedPets, ...[{
-            ...initialState,
-            lastSaved: initialState?.lastSaved || nowTime
-          }]]
+      if (initialState) {
+        if (!state.cachedPets.find((cP) => cP.id === initialState?.id)) {
+          state.cachedPets = [
+            ...state.cachedPets,
+            ...[
+              {
+                ...initialState,
+                lastSaved: initialState?.lastSaved || nowTime,
+              },
+            ],
+          ];
         }
       }
-    }
-  }
+    },
+  },
 });
 
-export const { pingStore, createPet, setActiveIdx, setActiveId, clearSave, setCachedPayload, addNewInteractionEvent, restoreInteractionFromSave, removeInteractionEvent } = petStoreSlice.actions;
+export const {
+  pingStore,
+  createPet,
+  setActiveIdx,
+  setActiveId,
+  clearSave,
+  setCachedPayload,
+  addNewInteractionEvent,
+  restoreInteractionFromSave,
+  removeInteractionEvent,
+} = petStoreSlice.actions;
 
 export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;
 export const selectPets = (state: RootState): PetDefinition[] => state.petStore.pets;
@@ -304,246 +350,238 @@ export const getCachedPets = (state: RootState): SavedPetState[] => state.petSto
 export const getNewLastRendered = (state: RootState): number => state.petStore.lastRendered;
 export const getNewLastSaved = (state: RootState): number => state.petStore.lastSaved;
 
-export const selectLastSaved = createSelector(
-  [getNewLastSaved], (lastSaved) => lastSaved
-);
-export const selectLastRendered = createSelector(
-  [getNewLastRendered], (lastRendered) => lastRendered
-);
+export const selectLastSaved = createSelector([getNewLastSaved], (lastSaved) => lastSaved);
+export const selectLastRendered = createSelector([getNewLastRendered], (lastRendered) => lastRendered);
 
-export const selectActivePet = createSelector(
-  [selectPets, selectActiveIdx],
-  (pets, activeIdx) => {
-    return pets[activeIdx] || null;
-  }
-);
+export const selectActivePet = createSelector([selectPets, selectActiveIdx], (pets, activeIdx) => {
+  return pets[activeIdx] || null;
+});
 export const selectActiveStatDefinitions = createSelector(
-  [selectActivePet], (activePet) => activePet?.logic?.stats || []
+  [selectActivePet],
+  (activePet) => activePet?.logic?.stats || []
 );
 export const selectActiveStatusDefinitions = createSelector(
-  [selectActivePet], (activePet) => activePet?.logic?.statuses || []
+  [selectActivePet],
+  (activePet) => activePet?.logic?.statuses || []
 );
 export const selectActiveInteractionDefinitions = createSelector(
-  [selectActivePet], (activePet) => activePet?.logic?.interactions || []
+  [selectActivePet],
+  (activePet) => activePet?.logic?.interactions || []
 );
 export const selectActiveBehaviorRuleDefinitions = createSelector(
-  [selectActivePet], (activePet) => activePet?.logic?.behaviorRules || []
+  [selectActivePet],
+  (activePet) => activePet?.logic?.behaviorRules || []
 );
 export const selectActiveBehaviorDefinitions = createSelector(
-  [selectActivePet], (activePet) => activePet?.logic?.behaviors || []
+  [selectActivePet],
+  (activePet) => activePet?.logic?.behaviors || []
 );
-export const selectActiveBg = createSelector(
-  [selectActivePet], (activePet) => ({
-    imageUrl: activePet?.bgImage,
-    backgroundColor: activePet?.bgColor
-  })
-);
+export const selectActiveBg = createSelector([selectActivePet], (activePet) => ({
+  imageUrl: activePet?.bgImage,
+  backgroundColor: activePet?.bgColor,
+}));
 
-export const selectCachedPets = createSelector(
-  [getCachedPets], (cachedPets) => cachedPets
-);
-export const selectCachedPetStats = createSelector(
-  [getCachedPets], (cachedPets) => cachedPets.map(cp => cp.stats)
-);
+export const selectCachedPets = createSelector([getCachedPets], (cachedPets) => cachedPets);
+export const selectCachedPetStats = createSelector([getCachedPets], (cachedPets) => cachedPets.map((cp) => cp.stats));
 export const selectActiveCachedPetStats = createSelector(
   [getCachedPets, selectActivePet],
   (cachedPets, activePet): CachedPetStat[] => {
-    if(!activePet) return [];
-    return cachedPets.find(cP => cP.id === activePet.id)?.stats || [];
+    if (!activePet) return [];
+    return cachedPets.find((cP) => cP.id === activePet.id)?.stats || [];
   }
 );
 
-export const selectActiveInfo = createSelector(
-  [selectActivePet],
-  (activePet): (PetInfo | null) => {
-    if(!activePet) return null;
+export const selectActiveInfo = createSelector([selectActivePet], (activePet): PetInfo | null => {
+  if (!activePet) return null;
 
-    return {
-      id: activePet.id,
-      name: activePet.name,
-      level: activePet.level,
-      bio: activePet.bio,
-      bornOn: activePet.bornOn
-    };
-  }
-);
-
+  return {
+    id: activePet.id,
+    name: activePet.name,
+    level: activePet.level,
+    bio: activePet.bio,
+    bornOn: activePet.bornOn,
+  };
+});
 
 export const selectCooldownStatus = createSelector(
-  [getActiveInteractions], (activeInteractions:InteractionCooldownStatus[]) => activeInteractions
+  [getActiveInteractions],
+  (activeInteractions: InteractionCooldownStatus[]) => activeInteractions
 );
 
 export const selectActiveLastCached = createSelector(
   [getCachedPets, selectActivePet],
   (cachedPets, activePet): number => {
-    if(!activePet) return 0;
-    return cachedPets.find(cP => cP.id === activePet.id)?.lastSaved || 0;
+    if (!activePet) return 0;
+    return cachedPets.find((cP) => cP.id === activePet.id)?.lastSaved || 0;
   }
 );
 
 export const selectRenderedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastRendered], 
+  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastRendered],
   (statDefinitions, cachedStats, petTime, time) => {
     return getRenderedDeltaStats(statDefinitions, cachedStats, petTime, time);
   }
 );
 
 export const selectActiveDeltaStatuses = createSelector(
-  [selectRenderedDeltaStats, selectActiveStatDefinitions], 
+  [selectRenderedDeltaStats, selectActiveStatDefinitions],
   (deltaStats, statDefinitions) => {
     // for each statDef, look through statDef.statEffects, which is a whenThenNumberGroup[]
     // all stats should be evaluated, and output all unique statuses matched
-    const findDeltaStat = (id: string) => deltaStats.find(ds => ds.id === id);
+    const findDeltaStat = (id: string) => deltaStats.find((ds) => ds.id === id);
 
     const allStatuses = [];
-    for(let i = 0; i < statDefinitions.length; i++){
+    for (let i = 0; i < statDefinitions.length; i++) {
       const dS = findDeltaStat(statDefinitions[i].id);
-      if(!dS) continue;
+      if (!dS) continue;
 
-      for(let j = 0; j < statDefinitions[i].statEffects.length; j++){
+      for (let j = 0; j < statDefinitions[i].statEffects.length; j++) {
         const status = evaluateWhenThenNumberGroup(statDefinitions[i].statEffects[j], dS.value, dS.max);
-        if(status && allStatuses.indexOf(status) === -1){
+        if (status && allStatuses.indexOf(status) === -1) {
           allStatuses.push(status);
         }
       }
     }
-    return allStatuses.map((statusId, idx) => {
-      return statusId
-    }).reverse();
+    return allStatuses
+      .map((statusId) => {
+        return statusId;
+      })
+      .reverse();
   }
 );
 
 export const selectDetailedActiveDeltaStatuses = createSelector(
   [selectActiveDeltaStatuses, selectActiveStatusDefinitions],
   (deltaStatIds, statusDefinitions): PetStatusDefinition[] => {
-    return deltaStatIds.map(dId => {
-      return statusDefinitions.find(sD => sD.id === dId) as PetStatusDefinition;
-    }).filter(e => !!e);
+    return deltaStatIds
+      .map((dId) => {
+        return statusDefinitions.find((sD) => sD.id === dId) as PetStatusDefinition;
+      })
+      .filter((e) => !!e);
   }
 );
 
 export const selectActiveBehavior = createSelector(
   [selectActiveDeltaStatuses, selectActiveBehaviorRuleDefinitions, selectActiveBehaviorDefinitions],
-  (deltaStatusIds, behaviorRules, behaviorDefinitions): (PetBehaviorDefinition | null) => {
+  (deltaStatusIds, behaviorRules, behaviorDefinitions): PetBehaviorDefinition | null => {
     const foundBehaviorId = getFirstOfWhenThenStringGroups(behaviorRules, deltaStatusIds);
-    return behaviorDefinitions.find(bD => bD.id === foundBehaviorId) || null;
+    return behaviorDefinitions.find((bD) => bD.id === foundBehaviorId) || null;
   }
 );
 
 export const selectActiveInteractionDetail = createSelector(
-  [selectActiveInteractionDefinitions, selectCooldownStatus, selectActiveDeltaStatuses], 
-  (activeInteractionDefinitions, cooldownStatuses, activeStatuses): PetInteractionDetail[] => { 
-    return activeInteractionDefinitions.map(iD => {
-      const cooldownStatus = cooldownStatuses.find(aI => aI.id === iD.id);
-      const isEnabled = evaluateAvailabilityWhenThenGroup(iD.availability as WhenThenStringBooleanGroup[], activeStatuses);
+  [selectActiveInteractionDefinitions, selectCooldownStatus, selectActiveDeltaStatuses],
+  (activeInteractionDefinitions, cooldownStatuses, activeStatuses): PetInteractionDetail[] => {
+    return activeInteractionDefinitions.map((iD) => {
+      const cooldownStatus = cooldownStatuses.find((aI) => aI.id === iD.id);
+      const isEnabled = evaluateAvailabilityWhenThenGroup(
+        iD.availability as WhenThenStringBooleanGroup[],
+        activeStatuses
+      );
       return {
-        id:iD.id,
+        id: iD.id,
         label: iD.label,
         startAt: cooldownStatus?.startAt || 0,
         endAt: cooldownStatus?.endAt || 0,
         enabled: isEnabled,
         definition: iD,
-        cooldownStatus: cooldownStatus
+        cooldownStatus: cooldownStatus,
       } as PetInteractionDetail;
-    }); 
+    });
   }
 );
 
-export const selectPetList = createSelector(
-  [selectPets, selectActiveIdx],
-  (pets, activeIdx) => pets.map((p, idx) => ({
+export const selectPetList = createSelector([selectPets, selectActiveIdx], (pets, activeIdx) =>
+  pets.map((p, idx) => ({
     name: p.name,
     id: p.id,
-    isActive: idx === activeIdx
+    isActive: idx === activeIdx,
   }))
 );
 
 export const selectCachedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved], 
+  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved],
   (petStats, cachedPetStats, lastCachedTime, lastSavedTime) => {
-    if(lastCachedTime === lastSavedTime) return null;
+    if (lastCachedTime === lastSavedTime) return null;
     return getCachedDeltaStats(petStats, cachedPetStats, lastCachedTime, lastSavedTime);
   }
 );
 
 export const getFromLocalStorage = () => {
-  try{
+  try {
     return JSON.parse((global as any).localStorage.getItem('browserpet'));
-  }catch(e){
+  } catch (e) {
     console.log('no localStorage entry found for "browserpet"');
     return null;
   }
-}
+};
 export const getPetsFromLocalStorage = () => {
-  try{
+  try {
     return getFromLocalStorage().pets;
-  } catch(e){
+  } catch (e) {
     return [];
   }
-}
+};
 
-
-export const selectPetsFromLocalStorage = createSelector(
-  [getPetsFromLocalStorage], (pets: SavedPetState[]) => pets
-);
+export const selectPetsFromLocalStorage = createSelector([getPetsFromLocalStorage], (pets: SavedPetState[]) => pets);
 
 // TODO, the beingTracked here needs to be investigated more.
 export const selectNewSavePayload = createSelector(
   [selectLastSaved, selectCachedDeltaStats, selectActivePet, selectCooldownStatus, selectCachedPets],
-  (lastSaved, cachedDeltaStats, activePet, activeInteractions, storedPets): (LocalStorageState | null) => {
-    
+  (lastSaved, cachedDeltaStats, activePet, activeInteractions, storedPets): LocalStorageState | null => {
     //TODO, this seems fishy
-    if(!cachedDeltaStats){
+    if (!cachedDeltaStats) {
       return null;
     }
 
-    if(!activePet){
+    if (!activePet) {
       return DEFAULT_LOCALSTORAGE_STATE;
     }
-    
+
     const foundIdx = storedPets.findIndex((sP: SavedPetState) => sP.id === activePet.id);
     let newList = [];
-    if(foundIdx > -1){
+    if (foundIdx > -1) {
       newList = storedPets.map((sP: SavedPetState) => {
-        if(sP.id === activePet.id){
+        if (sP.id === activePet.id) {
           const curStats = sP.beingTracked ? cachedDeltaStats : sP.stats;
-          
+
           return {
             id: activePet.id,
             stats: curStats,
             bornOn: activePet.bornOn,
             lastSaved: lastSaved,
-            beingTracked: true
-          }
+            beingTracked: true,
+          };
         }
 
         return {
           ...sP,
-          beingTracked:false
+          beingTracked: false,
         };
-      })
-    }else{
-      newList = storedPets.concat([{
-        id: activePet.id,
-        stats: cachedDeltaStats,
-        bornOn: activePet.bornOn,
-        lastSaved: lastSaved,
-        beingTracked: false
-      }]);
+      });
+    } else {
+      newList = storedPets.concat([
+        {
+          id: activePet.id,
+          stats: cachedDeltaStats,
+          bornOn: activePet.bornOn,
+          lastSaved: lastSaved,
+          beingTracked: false,
+        },
+      ]);
     }
 
     // console.log('>> returning savedPayload', newList);
-    
+
     return {
-      config:{
+      config: {
         activePet: activePet?.id || '',
-        lastSaved: lastSaved
+        lastSaved: lastSaved,
       },
-      interactions:activeInteractions,
-      pets:newList
+      interactions: activeInteractions,
+      pets: newList,
     };
   }
 );
-
 
 export default petStoreSlice.reducer;

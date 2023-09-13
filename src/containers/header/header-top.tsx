@@ -1,11 +1,10 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+// import { useHistory } from 'react-router-dom';
 import { clearSave } from '../../services/petstore';
 
 import { getColor, getShade } from '../../themes/';
 import { PetTabs } from './pet-tabs';
+import { styled } from 'styled-components';
 
 const ScResetButton = styled.div`
   position:absolute;

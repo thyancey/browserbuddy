@@ -1,10 +1,10 @@
-import React from 'react';
-import { ConditionOperator, WhenNumber, WhenThenNumberGroup, WhenThenStringGroup } from '../types';
+import { WhenThenNumberGroup, WhenThenStringGroup } from '../types';
 import { evaluateWhenThenNumberGroup, evaluateWhenThenStringGroup, evaluateWhenNumber } from './whenthen';
 // import { render } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 
 describe('#evaluateWhenThenStringGroup', () => {
-  test('should match single when ', () => {
+  it('should match single when ', () => {
     const whenThenStringGroup = {
       when: ['MATCHING_CRITERIA'],
       then: ['EXPECTED_RESULT']
@@ -13,7 +13,7 @@ describe('#evaluateWhenThenStringGroup', () => {
     expect(result).toBe('EXPECTED_RESULT');
   });
 
-  test('should match multiple when requirements', () => {
+  it('should match multiple when requirements', () => {
     const whenThenStringGroup = {
       when: ['MATCHING_ONE', 'MATCHING_TWO'],
       then: ['EXPECTED_RESULT']
@@ -22,7 +22,7 @@ describe('#evaluateWhenThenStringGroup', () => {
     expect(result).toBe('EXPECTED_RESULT');
   });
 
-  test('should return null on no match', () => {
+  it('should return null on no match', () => {
     const whenThenStringGroup = {
       when: ['NOT_MATCHING_CRITERIA'],
       then: ['SHOULDNT_GET_THIS']
@@ -31,7 +31,7 @@ describe('#evaluateWhenThenStringGroup', () => {
     expect(result).toBe(null);
   });
 
-  test('should return null on only one when match', () => {
+  it('should return null on only one when match', () => {
     const whenThenStringGroup = {
       when: ['MATCHING_ONE', 'MATCHING_TWO'],
       then: ['SHOULDNT_GET_THIS']
@@ -40,7 +40,7 @@ describe('#evaluateWhenThenStringGroup', () => {
     expect(result).toBe(null);
   });
 
-  test('should return null on no provided criteria', () => {
+  it('should return null on no provided criteria', () => {
     const whenThenStringGroup = {
       when: ['MATCHING_ONE'],
       then: ['SHOULDNT_GET_THIS']
@@ -49,7 +49,7 @@ describe('#evaluateWhenThenStringGroup', () => {
     expect(result).toBe(null);
   });
 
-  test('should return then if no required when', () => {
+  it('should return then if no required when', () => {
     const whenThenStringGroup = {
       when: [],
       then: ['EXPECTED_RESULT']
@@ -60,7 +60,7 @@ describe('#evaluateWhenThenStringGroup', () => {
 });
 
 describe('#evaluateWhenThenNumberGroup', () => {
-  test('should match on = when reference matches', () => {
+  it('should match on = when reference matches', () => {
     const whenThenNumberGroup = {
       when: [
         {
@@ -80,7 +80,7 @@ describe('#evaluateWhenThenNumberGroup', () => {
     ).toBe(null);
   });
 
-  test('should not match if all when are true', () => {
+  it('should not match if all when are true', () => {
     const whenThenNumberGroup = {
       when: [
         {
@@ -102,7 +102,7 @@ describe('#evaluateWhenThenNumberGroup', () => {
     ).toBe('EXPECTED_RESULT');
   });
 
-  test('should not match if all "whens" are not true', () => {
+  it('should not match if all "whens" are not true', () => {
     const whenThenNumberGroup = {
       when: [
         {
@@ -125,7 +125,7 @@ describe('#evaluateWhenThenNumberGroup', () => {
   });
 
   // just to maintain behavior, unless i want to validate for these ahead of time and not let em in
-  test('should match on redundant', () => {
+  it('should match on redundant', () => {
     const whenThenNumberGroup = {
       when: [
         {
@@ -147,7 +147,7 @@ describe('#evaluateWhenThenNumberGroup', () => {
     ).toBe('EXPECTED_RESULT');
   });
   
-  test('should match literal "=" condition', () => {
+  it('should match literal "=" condition', () => {
     const whenThenNumberGroup = {
       when: [
         {
@@ -164,7 +164,7 @@ describe('#evaluateWhenThenNumberGroup', () => {
 });
 
 describe('#evaluateWhenNumber', () => {
-  test('should match on literal "=" condition', () => {
+  it('should match on literal "=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '=',
@@ -173,7 +173,7 @@ describe('#evaluateWhenNumber', () => {
       }, 50, 100)
     ).toBe(true);
   });
-  test('should not match on unequal literal "=" condition', () => {
+  it('should not match on unequal literal "=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '=',
@@ -184,7 +184,7 @@ describe('#evaluateWhenNumber', () => {
   });
 
   // percentage "=" matching isnt intended, but is still expected to work
-  test('should match on percentage "=" condition', () => {
+  it('should match on percentage "=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '=',
@@ -207,7 +207,7 @@ describe('#evaluateWhenNumber', () => {
       }, 100, 100)
     ).toBe(true);
   });
-  test('should not match on unequal percentage "=" condition', () => {
+  it('should not match on unequal percentage "=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '=',
@@ -217,7 +217,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(false);
   });
 
-  test('should match on literal ">" condition', () => {
+  it('should match on literal ">" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '>',
@@ -241,7 +241,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(false);
   });
 
-  test('should match on percentage ">" condition', () => {
+  it('should match on percentage ">" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '>',
@@ -265,7 +265,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(false);
   });
 
-  test('should match on literal ">=" condition', () => {
+  it('should match on literal ">=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '>=',
@@ -289,7 +289,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(true);
   });
 
-  test('should match on percentage ">=" condition', () => {
+  it('should match on percentage ">=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '>=',
@@ -313,7 +313,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(true);
   });
 
-  test('should match on literal "<=" condition', () => {
+  it('should match on literal "<=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '<=',
@@ -337,7 +337,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(true);
   });
 
-  test('should match on percentage "<=" condition', () => {
+  it('should match on percentage "<=" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '<=',
@@ -361,7 +361,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(true);
   });
 
-  test('should match on literal "<" condition', () => {
+  it('should match on literal "<" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '<',
@@ -385,7 +385,7 @@ describe('#evaluateWhenNumber', () => {
     ).toBe(false);
   });
 
-  test('should match on percentage "<" condition', () => {
+  it('should match on percentage "<" condition', () => {
     expect(
       evaluateWhenNumber({
         condition: '<',

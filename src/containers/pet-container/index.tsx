@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 
 import { getColor } from '../../themes/';
@@ -64,12 +63,9 @@ export const PetContainer = () => {
     backgroundImage: `url(${activeBehavior.imageUrl})`, 
     backgroundPosition: `${activeBehavior.position}`,
     left: `${activeBehavior.offsetX}px`,
-    bottom: `${activeBehavior.offsetY}px`
+    bottom: `${activeBehavior.offsetY}px`,
+    backgroundColor: backgroundColor || 'initial'
   };
-
-  if(backgroundColor){
-    backgroundStyles.backgroundColor = backgroundColor;
-  }
 
   return (
     <ScContainer $bgImageUrl={imageUrl}>

@@ -7,7 +7,7 @@ import { DEFAULT_LOCALSTORAGE_STATE } from '../../services/store';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '@reduxjs/toolkit';
 import { log } from '../../util/tools';
-import AssetMap, { getUrl } from '../../assets';
+import { getUrl } from '../../assets';
 
 const fetchAllData = async (url: string, dispatch: any, savedData: LocalStorageState) => {
   log('-------fetchAllData----------');
