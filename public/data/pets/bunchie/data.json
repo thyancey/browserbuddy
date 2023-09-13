@@ -9,7 +9,7 @@
         "id": "xp",
         "label": "XP",
         "value": 50.0,
-        "perSecond": 0,
+        "perMinute": 0,
         "max": 100.0,
         "fullIsGood": true
       },
@@ -17,7 +17,7 @@
         "id": "food",
         "label": "Food",
         "value": 250.0,
-        "perSecond": -10.0,
+        "perMinute": -10.0,
         "max": 500.0,
         "fullIsGood": true,
         "statEffects":[
@@ -32,7 +32,7 @@
         "id": "brains",
         "label": "Brains",
         "value": 50.0,
-        "perSecond": -1.0,
+        "perMinute": -1.0,
         "max": 100.0,
         "fullIsGood": true,
         "statEffects":[
@@ -45,7 +45,7 @@
         "id": "poop",
         "label": "Poop",
         "value": 0.0,
-        "perSecond": 2.3,
+        "perMinute": 2.3,
         "max": 100.0,
         "fullIsGood": false
       }

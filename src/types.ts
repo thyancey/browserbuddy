@@ -30,7 +30,7 @@ export type PetStatDefinitionJSON = {
   id: string,
   label: string,
   value: number,
-  perSecond: number,
+  perMinute: number,
   max: number,
   fullIsGood: boolean,
   statEffects: RawWhenThen[]
@@ -40,7 +40,7 @@ export type PetStatDefinition = {
   id: string,
   label: string,
   value: number,
-  perSecond: number,
+  perMinute: number,
   max: number,
   fullIsGood: boolean,
   statEffects: WhenThenNumberGroup[]
