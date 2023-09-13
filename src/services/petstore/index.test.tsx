@@ -60,7 +60,7 @@ describe('#petstore.selectors', () => {
             id: 'food',
             label: 'Food',
             value: 5,
-            perSecond: 1,
+            perMinute: 1,
             max: 10,
             fullIsGood: true,
             statEffects: []
@@ -68,7 +68,8 @@ describe('#petstore.selectors', () => {
         ],
         [],
         lastTime,
-        time
+        time,
+        false
       )).toEqual([{
         id: 'food',
         label: 'Food',
@@ -86,7 +87,7 @@ describe('#petstore.selectors', () => {
             id: 'food',
             label: 'Food',
             value: 5,
-            perSecond: -1.5,
+            perMinute: -1.5,
             max: 10,
             fullIsGood: true,
             statEffects: []
@@ -94,7 +95,8 @@ describe('#petstore.selectors', () => {
         ],
         [],
         lastTime,
-        time
+        time,
+        false
       )).toEqual([{
         id: 'food',
         label: 'Food',
@@ -112,7 +114,7 @@ describe('#petstore.selectors', () => {
             id: 'food',
             label: 'Food',
             value: 5,
-            perSecond: 3,
+            perMinute: 3,
             max: 10,
             fullIsGood: true,
             statEffects: []
@@ -120,7 +122,7 @@ describe('#petstore.selectors', () => {
             id: 'other',
             label: 'Other',
             value: 5,
-            perSecond: -3,
+            perMinute: -3,
             max: 10,
             fullIsGood: true,
             statEffects: []
@@ -128,7 +130,8 @@ describe('#petstore.selectors', () => {
         ],
         [],
         lastTime,
-        time
+        time,
+        false
       )).toEqual([{
         id: 'food',
         label: 'Food',

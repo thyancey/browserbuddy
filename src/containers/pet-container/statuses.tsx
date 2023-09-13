@@ -1,12 +1,12 @@
 import styled from 'styled-components';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { selectDetailedActiveDeltaStatuses } from '../../services/petstore';
-import { shallowEqual, useSelector } from 'react-redux';
-import { getColor, mixinColorBubble, tColor } from '../../themes';
+import { mixinColorBubble } from '../../themes';
 import { AlertType } from '../../types';
 
 const ScContainer = styled.div`
-  color:${getColor('black')};
+  color:var(--color-black);
   position:absolute;
   right:0;
   bottom:1rem;
@@ -18,7 +18,7 @@ const ScStatuses = styled.ul`
 `;
 
 interface ScStatusProps {
-  $bubbleColors: tColor[]
+  $bubbleColors: string[]
 }
 const ScStatus = styled.li<ScStatusProps>`
   /* display:inline-block; */
@@ -27,7 +27,7 @@ const ScStatus = styled.li<ScStatusProps>`
   z-index:1;
   
   list-style:none;
-  color:black;
+  color:var(--color-black);
   margin-top: -.5rem;
   margin-right: -1rem;
   font-weight:bold;
@@ -49,10 +49,10 @@ const ScStatus = styled.li<ScStatusProps>`
 
 const getBubbleColors = (alertType?: AlertType) => {
   switch(alertType){
-    case 'alert': return [ 'red', 'yellow' ];
-    case 'warning': return [ 'yellow', 'red' ];
-    case 'reward': return [ 'green', 'white' ];
-    default: return [ 'white', 'red' ];
+    case 'alert': return [ '--color-red', '--color-yellow' ];
+    case 'warning': return [ '--color-yellow', '--color-red' ];
+    case 'reward': return [ '--color-green', '--color-white' ];
+    default: return [ '--color-white', '--color-red' ];
   }
 }
 
@@ -73,7 +73,7 @@ export const Statuses = () => {
           <ScStatus 
             key={dS.id} 
             id={dS.id}
-            $bubbleColors={getBubbleColors(dS.alertType) as tColor[]} 
+            $bubbleColors={getBubbleColors(dS.alertType)} 
             style={{ bottom: getBottom(i), transform: `rotate(${getRotation()}deg)`}}>
               {dS.label}
           </ScStatus>

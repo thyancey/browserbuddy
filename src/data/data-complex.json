@@ -10,7 +10,7 @@
       {
         "id": "food",
         "value": 0.0,
-        "perSecond": 1.0,
+        "perMinute": 1.0,
         "min": 0.0,
         "max": 500.0,
         "alignment": 1,

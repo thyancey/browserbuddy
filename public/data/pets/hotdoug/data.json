@@ -10,7 +10,7 @@
         "id": "xp",
         "label": "XP",
         "value": 50.0,
-        "perSecond": 0,
+        "perMinute": 0,
         "max": 100.0,
         "fullIsGood": true
       },
@@ -18,7 +18,7 @@
         "id": "shelflife",
         "label": "Shelf-Life",
         "value": 250.0,
-        "perSecond": -10.0,
+        "perMinute": -10.0,
         "max": 500.0,
         "fullIsGood": true,
         "statEffects":[
@@ -31,7 +31,7 @@
         "id": "meatyness",
         "label": "Meatyness",
         "value": 50.0,
-        "perSecond": -5.0,
+        "perMinute": -5.0,
         "max": 100.0,
         "fullIsGood": true,
         "statEffects":[
@@ -45,7 +45,7 @@
         "id": "poop",
         "label": "Poop",
         "value": 0.0,
-        "perSecond": 0,
+        "perMinute": 0,
         "max": 100.0,
         "fullIsGood": false
       }

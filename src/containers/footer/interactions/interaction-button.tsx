@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { getColor } from '../../../themes';
 import { InteractionCooldownStatus, PetInteractionDefinition } from '../../../types';
 import { ProgressBar } from './progress-bar';
 
@@ -27,16 +26,16 @@ const ScButton = styled.div`
   cursor:pointer;
 
   
-  background-color: ${getColor('blue')};
-  color: ${getColor('white')};
-  border: .5rem solid ${getColor('white')};
+  background-color: var(--color-blue);
+  color: var(--color-white);
+  border: .5rem solid var(--color-white);
   border-radius: 1rem;
 `;
 
 const ScCooldownButton = styled(ScButton)`
-  background-color: ${getColor('red')};
-  border-color: ${getColor('white')};
-  color: ${getColor('white')};
+  background-color: var(--color-red);
+  border-color: var(--color-white);
+  color: var(--color-white);
 
   cursor:not-allowed;
 `;
@@ -52,7 +51,7 @@ type InteractionButtonProps = {
   cooldownStatus?: InteractionCooldownStatus,
   interaction: PetInteractionDefinition,
   isEnabled: boolean,
-  onClickHandler?: Function
+  onClickHandler?: () => void
 }
 
 export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onClickHandler}: InteractionButtonProps) => {

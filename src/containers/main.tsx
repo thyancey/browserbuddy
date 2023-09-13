@@ -1,31 +1,32 @@
 import styled from 'styled-components';
 
-import { getColor } from '../themes/';
-
 import Helpers from './helpers';
 import { Footer } from './footer';
 import { PetContainer } from './pet-container';
 import { Header } from './header';
 
 const ScContainer = styled.div`
-  padding:1rem;
-  color: ${getColor('blue')};
-  position:absolute;
-  left:0;
-  right:0;
-  top:0;
-  bottom:0;
+  position: absolute;
+  inset: 0;
+  margin: auto auto;
+  padding: 1rem;
+  min-width:var(--val-min-width);
+  min-height:var(--val-min-height);
+  max-width: 90rem;
+  max-height: 100rem;
 
-  display:grid;
+  display: grid;
   grid-template-columns: auto;
   grid-template-rows: 10rem auto 20rem;
   grid-template-areas:
-    "header"
-    "body"
-    "footer";
+    'header'
+    'body'
+    'footer';
+    
+  color: var(--color-blue);
 
-  >div{
-    position:relative;
+  > div {
+    position: relative;
   }
 `;
 
@@ -37,11 +38,9 @@ const ScBody = styled.div`
   grid-area: body;
 `;
 
-
 const ScFooter = styled.div`
   grid-area: footer;
 `;
-
 
 export const Main = () => {
   return (
@@ -57,5 +56,5 @@ export const Main = () => {
         <Footer />
       </ScFooter>
     </ScContainer>
-  )
-}
+  );
+};

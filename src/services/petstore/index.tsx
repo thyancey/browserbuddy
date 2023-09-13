@@ -33,6 +33,7 @@ import {
 } from '../../util/whenthen';
 
 import { RootState } from '../store';
+import { getDebugMode } from '../ui';
 
 const DEFAULT_LOCALSTORAGE_STATE: LocalStorageState = {
   config: {
@@ -414,9 +415,9 @@ export const selectActiveLastCached = createSelector(
 );
 
 export const selectRenderedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastRendered],
-  (statDefinitions, cachedStats, petTime, time) => {
-    return getRenderedDeltaStats(statDefinitions, cachedStats, petTime, time);
+  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastRendered, getDebugMode],
+  (statDefinitions, cachedStats, petTime, time, debugMode) => {
+    return getRenderedDeltaStats(statDefinitions, cachedStats, petTime, time, debugMode);
   }
 );
 
@@ -497,10 +498,10 @@ export const selectPetList = createSelector([selectPets, selectActiveIdx], (pets
 );
 
 export const selectCachedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved],
-  (petStats, cachedPetStats, lastCachedTime, lastSavedTime) => {
+  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved, getDebugMode],
+  (petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode) => {
     if (lastCachedTime === lastSavedTime) return null;
-    return getCachedDeltaStats(petStats, cachedPetStats, lastCachedTime, lastSavedTime);
+    return getCachedDeltaStats(petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode);
   }
 );
 

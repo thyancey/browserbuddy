@@ -1,8 +1,7 @@
 import styled, { css } from 'styled-components';
-
-import { getColor } from '../../themes/';
-import { selectActiveBehavior, selectActiveBg } from '../../services/petstore';
 import { shallowEqual, useSelector } from 'react-redux';
+
+import { selectActiveBehavior, selectActiveBg } from '../../services/petstore';
 import { Statuses } from './statuses';
 
 type ScContainerProps = {
@@ -17,8 +16,8 @@ const ScContainer = styled.div<ScContainerProps>`
   padding-top:2rem;
   bottom:-2rem;
   padding-bottom:2rem;
-  background-color: ${getColor('blue')};
-  border:.5rem solid ${getColor('white')};
+  background-color: var(--color-blue);
+  border:.5rem solid var(--color-white);
 
   ${p => p.$bgImageUrl && css`
     background-size:cover;
@@ -42,7 +41,7 @@ const ScPetImage = styled.div`
 
 const ScBehavior = styled.p`
   font-size:2rem;
-  color:${getColor('white')};
+  color:var(--color-white);
   opacity: .5;
 
   position:absolute;
