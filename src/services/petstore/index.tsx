@@ -9,7 +9,6 @@ import {
   PetInfo,
   PetBehaviorDefinition,
   PetStatDefinitionJSON,
-  PetInteractionDefinition,
   StatChangeDefinition,
   PetInteractionDetail,
   LocalStorageState,
@@ -21,6 +20,7 @@ import {
   WhenThenStringBooleanGroup,
   RawWhenThen,
   PetInteractionDefinitionJSON,
+  PetInteractionEvent,
 } from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
 import {
@@ -55,7 +55,7 @@ export type PetStoreState = {
 export type CreatePetPayload = {
   isActive: boolean;
   petDefinition: RawPetJSON;
-  initialState: SavedPetState;
+  initialState: SavedPetState | null;
 };
 
 const initialStoreState: PetStoreState = {
@@ -68,7 +68,7 @@ const initialStoreState: PetStoreState = {
 };
 
 // might want to do some validation and pre-processing here
-export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState: SavedPetState) => {
+export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetState) => {
   return {
     stats: parseStatsGroup(petDefJSON.logic.stats, initialState),
     statuses: petDefJSON.logic.statuses || [],
@@ -112,7 +112,7 @@ export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSO
   }));
 };
 
-export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState: SavedPetState) => {
+export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState?: SavedPetState) => {
   return statsDef.map((pS) => {
     const foundStat = initialState?.stats.find((iS) => iS.id === pS.id);
     const statEffects = parseStatsWhenThenGroup(pS.statEffects);
@@ -201,7 +201,7 @@ export const petStoreSlice = createSlice({
       window.localStorage.clear();
       window.location.reload();
     },
-    setActiveId: (state: PetStoreState, action: PayloadAction<any>) => {
+    setActiveId: (state: PetStoreState, action: PayloadAction<string>) => {
       const petIdx = state.pets.findIndex((p: PetDefinition) => p.id === action.payload);
       if (petIdx === -1) {
         console.log(`Cannot find pet with id "${action.payload}"`);
@@ -214,18 +214,18 @@ export const petStoreSlice = createSlice({
         hackySave(state);
       }
     },
-    setActiveIdx: (state: PetStoreState, action: PayloadAction<any>) => {
+    setActiveIdx: (state: PetStoreState, action: PayloadAction<number>) => {
       state.activeIdx = action.payload;
 
       // TODO: this seems sketchy
       hackySave(state);
     },
-    setCachedPayload: (state: PetStoreState, action: PayloadAction<any>) => {
-      const lsState = action.payload as LocalStorageState;
+    setCachedPayload: (state: PetStoreState, action: PayloadAction<LocalStorageState>) => {
+      const lsState = action.payload;
       state.cachedPets = lsState.pets;
     },
-    restoreInteractionFromSave: (state: PetStoreState, action: PayloadAction<any>) => {
-      const interaction = action.payload as InteractionCooldownStatus;
+    restoreInteractionFromSave: (state: PetStoreState, action: PayloadAction<InteractionCooldownStatus>) => {
+      const interaction = action.payload;
       if (!state.interactions.find((iE) => iE.id === interaction.id)) {
         console.log(
           `restoreInteractionFromSave ${interaction.id} with ${
@@ -235,11 +235,8 @@ export const petStoreSlice = createSlice({
         state.interactions.push(interaction);
       }
     },
-    addNewInteractionEvent: (state: PetStoreState, action: PayloadAction<any>) => {
-      const { interaction, time } = action.payload as {
-        interaction: PetInteractionDefinition;
-        time: number;
-      };
+    addNewInteractionEvent: (state: PetStoreState, action: PayloadAction<PetInteractionEvent>) => {
+      const { interaction, time } = action.payload;
 
       let doSave = false;
       // interaction has to sit a bit, so save it for later
@@ -274,17 +271,17 @@ export const petStoreSlice = createSlice({
         hackySave(state, time);
       }
     },
-    removeInteractionEvent: (state: PetStoreState, action: PayloadAction<any>) => {
-      const intId = action.payload as string;
+    removeInteractionEvent: (state: PetStoreState, action: PayloadAction<string>) => {
+      const intId = action.payload;
 
       state.interactions = state.interactions.filter((interaction) => interaction.id !== intId);
     },
-    createPet: (state: PetStoreState, action: PayloadAction<any>) => {
+    createPet: (state: PetStoreState, action: PayloadAction<CreatePetPayload>) => {
       log('\n\ncreatePet', action.payload);
-      const { petDefinition, initialState, isActive } = action.payload as CreatePetPayload;
+      const { petDefinition, initialState, isActive } = action.payload;
       const foundPet = state.pets.find((p) => p.id === petDefinition.id);
       const nowTime = new Date().getTime();
-      const logicGroup = parseLogicGroup(petDefinition, initialState);
+      const logicGroup = parseLogicGroup(petDefinition, initialState || undefined);
 
       log(`>> createPet: ${petDefinition.id}, isActive? ${isActive}, beingTracked? ${initialState?.beingTracked}`);
       if (!initialState) {
@@ -509,9 +506,9 @@ export const selectCachedDeltaStats = createSelector(
 
 export const getFromLocalStorage = () => {
   try {
-    return JSON.parse((global as any).localStorage.getItem('browserpet'));
+    return JSON.parse(window.localStorage.getItem('browserbuddy') || '');
   } catch (e) {
-    console.log('no localStorage entry found for "browserpet"');
+    console.log('no localStorage entry found for "browserbuddy"');
     return null;
   }
 };

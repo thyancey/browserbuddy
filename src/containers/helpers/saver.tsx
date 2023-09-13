@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 let lastSaved = 0;
 
 export const Saver = () => {
-  const [ , setLocalStorage ] = useLocalStorage('browserpet', DEFAULT_LOCALSTORAGE_STATE);
+  const [ , setLocalStorage ] = useLocalStorage('browserbuddy', DEFAULT_LOCALSTORAGE_STATE);
   const savePayload = useSelector(selectNewSavePayload);
   const dispatch = useDispatch();
 

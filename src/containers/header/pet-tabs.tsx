@@ -22,7 +22,6 @@ type ScTabProps = {
 
 const ScTab = styled.li<ScTabProps>`
   list-style:none;
-  margin:none;
   position:relative;
   z-index:1;
   
@@ -36,8 +35,7 @@ const ScTab = styled.li<ScTabProps>`
   font-weight:bold;
   padding: .1rem .2rem;
   padding-bottom: 0rem;
-  margin-right:-.75rem;
-  margin-bottom: -.25rem;
+  margin: 0 -.75rem -.25rem 1rem;
   box-shadow: .2rem .2rem .2rem .2rem ${getColor('black')};
 
   border:.5rem solid ${getColor('white')};
@@ -62,7 +60,7 @@ const ScTab = styled.li<ScTabProps>`
     font-size: 3rem;
     z-index:2;
     margin-right: -.25rem;
-    margin-left: 0.25rem;
+    /* margin-left: 0.25rem; */
     margin-bottom: 0rem;
     border-radius:1rem;
     box-shadow: .2rem .2rem .4rem .05rem ${getColor('black')};

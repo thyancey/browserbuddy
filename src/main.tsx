@@ -10,7 +10,6 @@ import GlobalStyle from './themes/index';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <h1>{'hello'}</h1>
       <HashRouter>
         <App />
         <GlobalStyle />

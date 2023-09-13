@@ -22,7 +22,7 @@ export const evaluateAvailabilityWhenThenGroup = (wTSG: WhenThenStringBooleanGro
 export const getFirstOfWhenThenStringGroups = (whenThenGroup: WhenThenStringGroup[], stringCriteria: string[]) => {
   // console.log('getFirstOfWhenThenStringGroup', whenThenGroup, stringCriteria)
   for(let i = 0; i < whenThenGroup.length; i++){
-    let thenResult = evaluateWhenThenStringGroup(whenThenGroup[i], stringCriteria);
+    const thenResult = evaluateWhenThenStringGroup(whenThenGroup[i], stringCriteria);
     if(thenResult){
       return thenResult;
     }
@@ -31,7 +31,7 @@ export const getFirstOfWhenThenStringGroups = (whenThenGroup: WhenThenStringGrou
 }
 
 // i made 'then' annoying. when its an array, return a random one, when its not, just return it
-export const returnThen = (then: any[] | any) => {
+export const returnThen = (then: unknown[] | unknown) => {
   if(Array.isArray(then)){
     return then[Math.floor(Math.random() * then.length)];
   }else{
@@ -78,7 +78,7 @@ export const parseStatsWhenThenGroup = (rawWhenThenGroup: RawWhenThen[]) => {
   if(!rawWhenThenGroup) return [] as WhenThenNumberGroup[];
   return rawWhenThenGroup.map(rwt => {
     // json should support string or array, make this better
-    const whens = ensureArray(rwt.when);
+    const whens = ensureArray(rwt.when) as string[];
     return {
       when: whens.map(w => parseExpressionString(w)).filter(w => w !== null),
       then: ensureArray(rwt.then)

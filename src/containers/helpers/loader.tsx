@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { LocalStorageState, PetManifestEntry, RawManifest, RawManifestItem, RawPetJSON } from '../../types';
 import useLocalStorage from '../../util/hooks/useLocalStorage';
 import { createPet, removeInteractionEvent, restoreInteractionFromSave, setActiveId, setActiveIdx } from '../../services/petstore';
-import { DEFAULT_LOCALSTORAGE_STATE } from '../../services/store';
+import { AppDispatch, DEFAULT_LOCALSTORAGE_STATE } from '../../services/store';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '@reduxjs/toolkit';
 import { log } from '../../util/tools';
 // import { getUrl } from '../../assets';
 
-const fetchAllData = async (url: string, dispatch: any, savedData: LocalStorageState) => {
+const fetchAllData = async (url: string, dispatch: AppDispatch, savedData: LocalStorageState) => {
   log('-------fetchAllData----------');
   const pets = await readManifest(url)
   log('fetchAllData: received pets', pets);
@@ -80,7 +80,7 @@ const fetchPetFile = async (petManifestEntry: PetManifestEntry) => {
   }
 }
 
-const finishUp = (parsedPets: RawPetJSON[], dispatch: any, savedData: LocalStorageState) => {
+const finishUp = (parsedPets: RawPetJSON[], dispatch: AppDispatch, savedData: LocalStorageState) => {
   const now = new Date().getTime();
   log(`JSON definitions parsed successfully`, parsedPets);
   log(`LocalStorage was read successfully`, savedData);
@@ -124,16 +124,16 @@ const finishUp = (parsedPets: RawPetJSON[], dispatch: any, savedData: LocalStora
 export const Loader = () => {
   const dispatch = useDispatch();
   const [ loaded, setLoaded ] = useState(false);
-  const [ savedData, ] = useLocalStorage('browserpet', DEFAULT_LOCALSTORAGE_STATE);
+  const [ savedData, ] = useLocalStorage('browserbuddy', DEFAULT_LOCALSTORAGE_STATE);
 
   useEffect(() => {
     if(!loaded){
       setLoaded(true);
       
       // const url = getUrl('pet-manifest.json');
+      // fetchAllData(getUrl('/pet-manifest.json'), dispatch, savedData);
       const url = 'data/pet-manifest.json';
       fetchAllData(url, dispatch, savedData);
-      // fetchAllData(getUrl('/pet-manifest.json'), dispatch, savedData);
     }
   }, [ loaded, savedData, setLoaded, dispatch ]);
 

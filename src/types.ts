@@ -6,7 +6,7 @@ export enum Sender {
 
 export interface ChromeMessage {
   from: Sender,
-  message: any
+  message: unknown
 }
 
 export type RawManifest = {
@@ -58,6 +58,12 @@ export type PetStatusDefinition = {
   message: string,
   alertType?: AlertType
 }
+
+export type PetInteractionEvent = {
+  interaction: PetInteractionDefinition;
+  time: number;
+}
+
 export type PetInteractionDefinition = {
   id: string,
   label: string,

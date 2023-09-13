@@ -31,6 +31,7 @@ function useEventListener<
     // Define the listening target
     // TLY: couldn't figure out how to get the T to not have a compile issue with 'addEventListener'
     // const targetElement: T | Window = element?.current || window
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const targetElement: any = element?.current || window
     if (!(targetElement && targetElement.addEventListener)) {
       return

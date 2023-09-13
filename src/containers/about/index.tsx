@@ -36,8 +36,8 @@ export const About = () => {
 
   return (
     <ScContainer>
-      <ScLogo>{'About BrowserPet'}</ScLogo>
-      <p>{'© Tom Yancey 2022'}</p>
+      <ScLogo>{'About BrowserBuddy'}</ScLogo>
+      <p>{'© Tom Yancey 2023'}</p>
       <ScButton>
         <Link to={'/'}>{'BACK'}</Link>
       </ScButton>
