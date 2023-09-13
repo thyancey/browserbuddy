@@ -7,7 +7,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Statuses } from './statuses';
 
 type ScContainerProps = {
-  bgImageUrl?: string;
+  $bgImageUrl?: string;
 }
 
 const ScContainer = styled.div<ScContainerProps>`
@@ -21,10 +21,10 @@ const ScContainer = styled.div<ScContainerProps>`
   background-color: ${getColor('blue')};
   border:.5rem solid ${getColor('white')};
 
-  ${p => p.bgImageUrl && css`
+  ${p => p.$bgImageUrl && css`
     background-size:cover;
     background-position: center;
-    background-image:url(${p.bgImageUrl});
+    background-image:url(${p.$bgImageUrl});
   `}
 `;
 
@@ -55,7 +55,7 @@ export const PetContainer = () => {
   const activeBehavior = useSelector(selectActiveBehavior, shallowEqual);
   const { imageUrl, backgroundColor } = useSelector(selectActiveBg, shallowEqual);
   if(!activeBehavior){
-    return <ScContainer bgImageUrl={imageUrl} />
+    return <ScContainer $bgImageUrl={imageUrl} />
   }
   
   // console.log('selectActiveBehavior', activeBehavior);
@@ -65,14 +65,14 @@ export const PetContainer = () => {
     backgroundPosition: `${activeBehavior.position}`,
     left: `${activeBehavior.offsetX}px`,
     bottom: `${activeBehavior.offsetY}px`
-  } as any;
+  };
 
   if(backgroundColor){
     backgroundStyles.backgroundColor = backgroundColor;
   }
 
   return (
-    <ScContainer bgImageUrl={imageUrl}>
+    <ScContainer $bgImageUrl={imageUrl}>
       <>
         <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
         <Statuses />

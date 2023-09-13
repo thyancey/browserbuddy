@@ -18,7 +18,7 @@ const ScTabs = styled.ul`
 `;
 
 type ScTabProps = {
-  isActive?: boolean
+  $isActive?: boolean
 };
 
 const ScTab = styled.li<ScTabProps>`
@@ -53,7 +53,7 @@ const ScTab = styled.li<ScTabProps>`
     background-color:${getShade('blue', 20)};
   }
   
-  ${props => props.isActive && css`
+  ${props => props.$isActive && css`
 
     background-color:${getColor('green')};
     /* padding-bottom: .5rem;
@@ -90,7 +90,7 @@ export const PetTabs = () => {
         <ScTab 
           key={idx} 
           onClick={() => dispatch(setActiveIdx(idx))} 
-          isActive={p.isActive}
+          $isActive={p.isActive}
         >
           {idx + 1}
         </ScTab>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getColor } from '../../../themes';
 
 type ScProgressBarProps = {
-  startWidth: string
+  $startWidth: string
 }
 
 const ScWrapper = styled.div`
@@ -28,7 +28,7 @@ const ScProgressBar = styled.div<ScProgressBarProps>`
   position:absolute;
   height:100%;
   left:0;
-  width: ${p => p.startWidth};
+  width: ${p => p.$startWidth};
 
   &.full{
     width:100% !important;
@@ -53,7 +53,7 @@ export const ProgressBar = ({startProgress, duration}: ProgressBarProps) => {
   return (
     <ScWrapper>
       <ScProgressBar 
-        startWidth={`${startProgress * 100}%`} 
+        $startWidth={`${startProgress * 100}%`} 
         className={loaded ? 'full' : ''} 
         style={{ transition: `all ${duration}s linear` }} />
       <ScProgressBg />

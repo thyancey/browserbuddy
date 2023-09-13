@@ -2,7 +2,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PetDefinition, SavedPetState, PetLogicGroup, RawPetJSON, PetStatusDefinition, PetInfo, PetBehaviorDefinition, PetStatDefinitionJSON, PetInteractionDefinition, StatChangeDefinition, PetInteractionDetail, LocalStorageState, InteractionCooldownStatus, DeltaStat, PetBehaviorJSON, CachedPetStat, PingPayload, WhenThenNumberGroup, WhenThenStringGroup, WhenThenStringBooleanGroup, RawWhenThen, PetInteractionDefinitionJSON } from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
-import { evaluateAvailabilityWhenThenGroup, evaluateWhenThenNumberGroup, evaluateWhenThenStringGroup, getFirstOfWhenThenStringGroups, parseInteractionWhenThenGroup, parseStatsWhenThenGroup, parseStatusesWhenThenGroup } from '../../util/whenthen';
+import { evaluateAvailabilityWhenThenGroup, evaluateWhenThenNumberGroup, getFirstOfWhenThenStringGroups, parseInteractionWhenThenGroup, parseStatsWhenThenGroup, parseStatusesWhenThenGroup } from '../../util/whenthen';
 
 import { RootState } from '../store';
 
@@ -169,8 +169,8 @@ export const petStoreSlice = createSlice({
     },
     clearSave: (state: PetStoreState) => {
       // TODO, this should be handled differently, or taken out of redux otherwise
-      (global as any).localStorage.clear();
-      (global as any).location.reload();
+      window.localStorage.clear();
+      window.location.reload();
     },
     setActiveId: (state: PetStoreState, action: PayloadAction<any>) => {
       const petIdx = state.pets.findIndex((p:PetDefinition) => p.id === action.payload);

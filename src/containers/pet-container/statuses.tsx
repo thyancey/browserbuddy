@@ -19,7 +19,7 @@ const ScStatuses = styled.ul`
 `;
 
 interface ScStatusProps {
-  bubbleColors: tColor[]
+  $bubbleColors: tColor[]
 }
 const ScStatus = styled.li<ScStatusProps>`
   /* display:inline-block; */
@@ -45,7 +45,7 @@ const ScStatus = styled.li<ScStatusProps>`
   /* transition: transform .2s ease-in-out, bottom .2s ease-out; */
   -webkit-transition: all 0.2s cubic-bezier(.72,1.79,.4,.8);
   transition: all 0.2s cubic-bezier(.72,1.79,.4,.8);
-  ${props => mixinColorBubble(props.bubbleColors[0], props.bubbleColors[1])}
+  ${props => mixinColorBubble(props.$bubbleColors[0], props.$bubbleColors[1])}
 `;
 
 const getBubbleColors = (alertType?: AlertType) => {
@@ -74,7 +74,7 @@ export const Statuses = () => {
           <ScStatus 
             key={dS.id} 
             id={dS.id}
-            bubbleColors={getBubbleColors(dS.alertType) as tColor[]} 
+            $bubbleColors={getBubbleColors(dS.alertType) as tColor[]} 
             style={{ bottom: getBottom(i), transform: `rotate(${getRotation()}deg)`}}>
               {dS.label}
           </ScStatus>

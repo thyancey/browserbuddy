@@ -5,13 +5,13 @@ import { InteractionCooldownStatus, PetInteractionDefinition } from '../../../ty
 import { ProgressBar } from './progress-bar';
 
 type ScInteractionProps = {
-  isEnabled?: boolean
+  $isEnabled?: boolean
 }
 
 const ScInteraction = styled.li<ScInteractionProps>`
   text-align:center;
 
-  ${p => !p.isEnabled && css`
+  ${p => !p.$isEnabled && css`
     opacity: .5;
     pointer-events:none;
   `}
@@ -63,7 +63,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onCli
     const timeLeft = (cooldownStatus.endAt - new Date().getTime()) / 1000;
 
     return(
-      <ScInteraction isEnabled={isEnabled}>
+      <ScInteraction $isEnabled={isEnabled}>
         <ScCooldownButton>
           <ScLabel>{interaction.label}</ScLabel>
           <ProgressBar startProgress={progress} duration={timeLeft} />
@@ -72,7 +72,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onCli
     );
   }else{
     return(
-      <ScInteraction isEnabled={isEnabled} onClick={() => onClickHandler && onClickHandler()} >
+      <ScInteraction $isEnabled={isEnabled} onClick={() => onClickHandler && onClickHandler()} >
         <ScButton>
           <ScLabel>{`${interaction.label}`}</ScLabel>
         </ScButton>
