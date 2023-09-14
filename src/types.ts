@@ -119,8 +119,10 @@ export type WhenThenNumberGroup = {
   then: (string | string[])
 }
 
+// in whens, first depth is AND, second depth is OR
+// [ "REQUIRED", [ "AND", "AT_LEAST", "ONE_OF", "THESE"]]
 export type WhenThenStringGroup = {
-  when: string[],
+  when: string[] | string[][],
   then: (string | string[])
 }
 export type WhenThenStringBooleanGroup = {

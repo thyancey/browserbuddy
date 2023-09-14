@@ -48,12 +48,33 @@ export const evaluateWhenThenNumberGroup = (whenThenNumberGroup: WhenThenNumberG
 };
 
 export const evaluateWhenThenStringGroup = (whenThenStringGroup: WhenThenStringGroup, stringCriteria: string[]) => {
+  // in first depth, every result must match the stringCriteria (AND)
+  // in second depth (if provided for a 1d value), at least one result must match string criteria (OR)
+  let matchCount = 0;
+  for(let i = 0; i < whenThenStringGroup.when.length; i++){
+    if (Array.isArray(whenThenStringGroup.when[i])) {
+      // do OR checks
+      if((whenThenStringGroup.when[i] as string[]).some((whenString: string) => stringCriteria.includes(whenString))) {
+        matchCount++;
+      }
+    } else {
+      // check this value
+      if(stringCriteria.indexOf(whenThenStringGroup.when[i] as string) > -1) matchCount++;
+    }
+  }
+
+  if(matchCount === whenThenStringGroup.when.length){
+    return returnThen(whenThenStringGroup.then);
+  }
+  return null;
+  /*
   // remember, an empty when skips this and just returns the result
   if (whenThenStringGroup.when.find(w => stringCriteria.indexOf(w) === -1)){
     // something in the required group was not found
     return null;
   }
   return returnThen(whenThenStringGroup.then);
+  */
 };
 
 export const parseInteractionWhenThenGroup = (rawWhenThenGroup: RawWhenThen[]) => {

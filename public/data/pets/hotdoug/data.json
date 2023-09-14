@@ -115,23 +115,14 @@
     },
     "behaviorRules": [
       {
-        "when": "STATUS_DEAD",
+        "when": [ "STATUS_DEAD" ],
         "then": "BE_DEAD"
       },
       {
-        "when": ["STATUS_AGE_BABY", "STATUS_WASTE_DIRTY"],
-        "then": "BE_BABY_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_BABY", "STATUS_TEMP_COLD"],
-        "then": "BE_BABY_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_BABY", "STATUS_TEMP_BURNING"],
-        "then": "BE_BABY_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_BABY", "STATUS_FOOD_HUNGRY"],
+        "when": [
+          "STATUS_AGE_BABY",
+          ["STATUS_WASTE_DIRTY", "STATUS_TEMP_COLD", "STATUS_TEMP_BURNING", "STATUS_FOOD_HUNGRY"]
+        ],
         "then": "BE_BABY_SAD"
       },
       {
@@ -147,17 +138,12 @@
         "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_BURNING"],
         "then": "BE_ADULT_BURNING"
       },
-
       {
         "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_COLD"],
         "then": "BE_ADULT_RAW_SAD"
       },
       {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_FOOD_HUNGRY"],
-        "then": "BE_ADULT_RAW_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_WASTE_DIRTY"],
+        "when": ["STATUS_AGE_ADULT", ["STATUS_TEMP_COLD", "STATUS_TEMP_NORMAL"], [ "STATUS_FOOD_HUNGRY", "STATUS_WASTE_DIRTY" ]],
         "then": "BE_ADULT_RAW_SAD"
       },
       {
