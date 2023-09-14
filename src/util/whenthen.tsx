@@ -52,7 +52,7 @@ export const evaluateWhenThenStringGroup = (whenThenStringGroup: WhenThenStringG
   if (whenThenStringGroup.when.find(w => stringCriteria.indexOf(w) === -1)){
     // something in the required group was not found
     return null;
-  };
+  }
   return returnThen(whenThenStringGroup.then);
 };
 

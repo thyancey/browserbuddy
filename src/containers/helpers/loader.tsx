@@ -21,10 +21,10 @@ const fetchAllData = async (url: string, dispatch: AppDispatch, savedData: Local
   const pets = await readManifest(url);
   log('fetchAllData: received pets', pets);
 
-  const jsonParsedPets = await fetchPetFiles(pets);
-  log('fetchAllData: received jsonParsedPets', jsonParsedPets);
+  const fetchedPetJson = await fetchPetFiles(pets);
+  log('fetchAllData: received fetchedPetJson', fetchedPetJson);
 
-  finishUp(jsonParsedPets, dispatch, savedData);
+  finishUp(fetchedPetJson, dispatch, savedData);
 
   log('\n\n\n');
 };
@@ -87,9 +87,9 @@ const fetchPetFile = async (petManifestEntry: PetManifestEntry) => {
   }
 };
 
-const finishUp = (parsedPets: RawPetJSON[], dispatch: AppDispatch, savedData: LocalStorageState) => {
+const finishUp = (rawPetsJson: RawPetJSON[], dispatch: AppDispatch, savedData: LocalStorageState) => {
   const now = new Date().getTime();
-  log(`JSON definitions parsed successfully`, parsedPets);
+  log(`JSON definitions parsed successfully`, rawPetsJson);
   log(`LocalStorage was read successfully`, savedData);
   let activeId = '';
 
@@ -97,7 +97,7 @@ const finishUp = (parsedPets: RawPetJSON[], dispatch: AppDispatch, savedData: Lo
     activeId = savedData.config.activePet;
   }
 
-  parsedPets.forEach((petDef: RawPetJSON) => {
+  rawPetsJson.forEach((petDef: RawPetJSON) => {
     const savedStatus = savedData?.pets.find((p) => p.id === petDef.id) || null;
     if (!activeId && savedStatus && savedData.config.activePet === savedStatus.id) {
       activeId = savedStatus.id;

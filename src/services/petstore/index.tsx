@@ -21,6 +21,7 @@ import {
   RawWhenThen,
   PetInteractionDefinitionJSON,
   PetInteractionEvent,
+  RawPetStatuses,
 } from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
 import {
@@ -72,7 +73,7 @@ const initialStoreState: PetStoreState = {
 export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetState) => {
   return {
     stats: parseStatsGroup(petDefJSON.logic.stats, initialState),
-    statuses: petDefJSON.logic.statuses || [],
+    statuses: parseStatusesGroup(petDefJSON.logic.statuses),
     behaviorRules: parseStatusesWhenThenGroup(petDefJSON.logic.behaviorRules),
     behaviors: parsePetBehaviors(petDefJSON.logic.behaviors || [], petDefJSON.baseUrl),
     interactions: parseInteractionsGroup(petDefJSON.logic.interactions),
@@ -133,6 +134,17 @@ export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState?
     }
   });
 };
+
+export const parseStatusesGroup = (statuses: RawPetStatuses): PetStatusDefinition[] => {
+  return Object.keys(statuses).map((key: string) => (
+    {
+      id: key,
+      label: statuses[key].label || '',
+      message: statuses[key].message || '',
+      alertType: statuses[key].alertType
+    }
+  ));
+}
 
 export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) => {
   try {

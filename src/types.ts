@@ -140,6 +140,9 @@ export type PingPayload = {
   doSave?: boolean
 }
 
+export type RawPetStatuses = {
+  [key: string]: PetStatusDefinition
+}
 export type RawPetJSON = {
   id: string,
   name: string,
@@ -148,7 +151,7 @@ export type RawPetJSON = {
   baseUrl: string,
   logic: {
     stats: PetStatDefinitionJSON[],
-    statuses: PetStatusDefinition[],
+    statuses: RawPetStatuses,
     behaviors: PetBehaviorJSON[],
     behaviorRules: {when:string[], then:string}[],
     interactions: PetInteractionDefinitionJSON[]

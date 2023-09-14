@@ -4,8 +4,8 @@
   "bio": "hot doug.",
   "level": 0,
   "backgroundImage": "",
-  "logic":{
-    "stats":[
+  "logic": {
+    "stats": [
       {
         "id": "age",
         "label": "Age",
@@ -13,7 +13,7 @@
         "perMinute": 0,
         "max": 1,
         "fullIsGood": true,
-        "statEffects":[
+        "statEffects": [
           { "when": "<=_25%", "then": "STATUS_AGE_BABY" },
           { "when": ">_25%", "then": "STATUS_AGE_ADULT" }
         ]
@@ -25,7 +25,7 @@
         "perMinute": -5.0,
         "max": 650.0,
         "fullIsGood": false,
-        "statEffects":[
+        "statEffects": [
           { "when": "<=_32", "then": "STATUS_TEMP_COLD" },
           { "when": [">=_32", "<_90"], "then": "STATUS_TEMP_NORMAL" },
           { "when": [">=_90", "<_500"], "then": "STATUS_TEMP_HOT" },
@@ -40,7 +40,7 @@
         "perMinute": -1,
         "max": 100.0,
         "fullIsGood": true,
-        "statEffects":[
+        "statEffects": [
           { "when": "<=_25%", "then": "STATUS_FOOD_HUNGRY" },
           { "when": ">_25%", "then": "STATUS_FOOD_FULL" }
         ]
@@ -52,7 +52,7 @@
         "perMinute": -1,
         "max": 100.0,
         "fullIsGood": true,
-        "statEffects":[
+        "statEffects": [
           { "when": "<=_25%", "then": "STATUS_SLEEP_ASLEEP" },
           { "when": ">_25%", "then": "STATUS_SLEEP_AWAKE" },
           { "when": ">_75%", "then": "STATUS_SLEEP_ALERT" }
@@ -65,7 +65,7 @@
         "perMinute": 1,
         "max": 100.0,
         "fullIsGood": false,
-        "statEffects":[
+        "statEffects": [
           { "when": "<=_50%", "then": "STATUS_WASTE_CLEAN" },
           { "when": ">_80%", "then": "STATUS_WASTE_DIRTY" }
         ]
@@ -77,187 +77,119 @@
         "perMinute": 0,
         "max": 1.0,
         "fullIsGood": false,
-        "statEffects":[
+        "statEffects": [
           { "when": "=_0", "then": "STATUS_CLOTHES_NAKED" },
           { "when": "=_1", "then": "STATUS_CLOTHES_DRESSED" }
         ]
       }
     ],
-    "statuses":[
-      {
-        "id": "STATUS_TEMP_COLD",
-        "label": "frozen",
-        "message": "",
-        "alertType": "warning" 
+    "statuses": {
+      "STATUS_TEMP_COLD": {
+        "label": "frozen!"
       },
-      {
-        "id": "STATUS_TEMP_NORMAL",
-        "label": "",
-        "message": "",
-        "alertType": "" 
+      "STATUS_TEMP_NORMAL": {},
+      "STATUS_TEMP_HOT": {
+        "label": "hotz!"
       },
-      {
-        "id": "STATUS_TEMP_HOT",
-        "label": "hot!",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_TEMP_BURNING",
+      "STATUS_TEMP_BURNING": {
         "label": "burning!",
-        "message": "",
-        "alertType": "alert" 
+        "alertType": "alert"
       },
-      {
-        "id": "STATUS_WASTE_CLEAN",
-        "label": "clean",
-        "message": "It's clean in here!",
-        "alertType": "reward" 
+      "STATUS_WASTE_CLEAN": {},
+      "STATUS_WASTE_DIRTY": {},
+      "STATUS_FOOD_HUNGRY": {
+        "label": "hungry"
       },
-      {
-        "id": "STATUS_WASTE_DIRTY",
-        "label": "filthy",
-        "message": "It's filthy!",
-        "alertType": "warning" 
-      },
-      {
-        "id": "STATUS_FOOD_HUNGRY",
-        "label": "hungry",
-        "message": "I'm hungry",
-        "alertType": "warning" 
-      },
-      {
-        "id": "STATUS_FOOD_FULL",
-        "label": "full",
-        "message": "It's filthy!",
-        "alertType": "reward" 
-      },
-      {
-        "id": "STATUS_AGE_BABY",
-        "label": "",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_AGE_ADULT",
-        "label": "",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_SLEEP_ASLEEP",
-        "label": "zzzzz",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_SLEEP_AWAKE",
-        "label": "",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_SLEEP_ALERT",
-        "label": "alert!",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_CLOTHES_NAKED",
-        "label": "",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_CLOTHES_DRESSED",
-        "label": "dressed up!",
-        "message": "",
-        "alertType": "" 
-      },
-      {
-        "id": "STATUS_DEAD",
-        "label": "i'm dead :(",
-        "message": "",
+      "STATUS_FOOD_FULL": {},
+      "STATUS_AGE_BABY": {},
+      "STATUS_AGE_ADULT": {},
+      "STATUS_SLEEP_ASLEEP": {},
+      "STATUS_SLEEP_AWAKE": {},
+      "STATUS_SLEEP_ALERT": {},
+      "STATUS_CLOTHES_NAKED": {},
+      "STATUS_CLOTHES_DRESSED": {},
+      "STATUS_DEAD": {
+        "label": "RIP",
         "alertType": "alert"
       }
-    ],
-    "behaviorRules":[
+    },
+    "behaviorRules": [
       {
-        "when":"STATUS_DEAD",
+        "when": "STATUS_DEAD",
         "then": "BE_DEAD"
       },
       {
-        "when": [ "STATUS_AGE_BABY", "STATUS_WASTE_DIRTY" ],
+        "when": ["STATUS_AGE_BABY", "STATUS_WASTE_DIRTY"],
         "then": "BE_BABY_SAD"
       },
       {
-        "when": [ "STATUS_AGE_BABY", "STATUS_TEMP_COLD" ],
+        "when": ["STATUS_AGE_BABY", "STATUS_TEMP_COLD"],
         "then": "BE_BABY_SAD"
       },
       {
-        "when": [ "STATUS_AGE_BABY", "STATUS_TEMP_BURNING" ],
+        "when": ["STATUS_AGE_BABY", "STATUS_TEMP_BURNING"],
         "then": "BE_BABY_SAD"
       },
       {
-        "when": [ "STATUS_AGE_BABY", "STATUS_FOOD_HUNGRY" ],
+        "when": ["STATUS_AGE_BABY", "STATUS_FOOD_HUNGRY"],
         "then": "BE_BABY_SAD"
       },
       {
-        "when": [ "STATUS_AGE_BABY", "STATUS_SLEEP_ASLEEP" ],
+        "when": ["STATUS_AGE_BABY", "STATUS_SLEEP_ASLEEP"],
         "then": "BE_BABY_ASLEEP"
       },
       {
-        "when": [ "STATUS_AGE_BABY" ],
+        "when": ["STATUS_AGE_BABY"],
         "then": "BE_BABY_IDLE"
       },
-      
+
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_BURNING" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_BURNING"],
         "then": "BE_ADULT_BURNING"
       },
 
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_COLD" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_COLD"],
         "then": "BE_ADULT_RAW_SAD"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_FOOD_HUNGRY" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_FOOD_HUNGRY"],
         "then": "BE_ADULT_RAW_SAD"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_WASTE_DIRTY" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_WASTE_DIRTY"],
         "then": "BE_ADULT_RAW_SAD"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_SLEEP_ASLEEP" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_SLEEP_ASLEEP"],
         "then": "BE_ADULT_RAW_SLEEP"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL"],
         "then": "BE_ADULT_RAW_IDLE"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED", "STATUS_SLEEP_ASLEEP" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED", "STATUS_SLEEP_ASLEEP"],
         "then": "BE_ADULT_DRESSED_SLEEP"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED"],
         "then": "BE_ADULT_DRESSED_IDLE"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_SLEEP_ASLEEP" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_SLEEP_ASLEEP"],
         "then": "BE_ADULT_COOKED_SLEEP"
       },
       {
-        "when": [ "STATUS_AGE_ADULT", "STATUS_TEMP_HOT" ],
+        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT"],
         "then": "BE_ADULT_COOKED_IDLE"
       },
       {
-        "when":[],
+        "when": [],
         "then": "BE_NORMAL"
       }
     ],
-    "behaviors":[
+    "behaviors": [
       { "id": "BE_NORMAL", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": 0 },
       { "id": "BE_BABY_IDLE", "image": "assets/baby_idle.gif", "position": "bottom", "offsetY": 0 },
       { "id": "BE_BABY_SAD", "image": "assets/baby_sad.gif", "position": "bottom", "offsetY": 0 },
@@ -272,77 +204,83 @@
 
       { "id": "BE_ADULT_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_ADULT_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
-      
-      { "id": "BE_ADULT_BURNING", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50, "backgroundImage": "assets/bg_flames.gif" },
+
+      {
+        "id": "BE_ADULT_BURNING",
+        "image": "assets/hot_idle.gif",
+        "position": "bottom",
+        "offsetY": -50,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
       { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
     ],
-    "interactions":[
+    "interactions": [
       {
-        "id":"INT_FEED",
+        "id": "INT_FEED",
         "label": "Feed",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"food",
+            "statId": "food",
             "value": 20.0
           },
           {
-            "statId":"waste",
+            "statId": "waste",
             "value": 5.0
           }
         ]
       },
       {
-        "id":"INT_CLEAN",
+        "id": "INT_CLEAN",
         "label": "Clean",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"waste",
+            "statId": "waste",
             "value": -25
           }
         ]
       },
       {
-        "id":"INT_GRILL",
+        "id": "INT_GRILL",
         "label": "Grill",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"temperature",
+            "statId": "temperature",
             "value": 100.0
           }
         ]
       },
       {
-        "id":"INT_AGE",
+        "id": "INT_AGE",
         "label": "Age",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"age",
+            "statId": "age",
             "value": 1
           }
         ]
       },
       {
-        "id":"INT_CONDIMENT",
+        "id": "INT_CONDIMENT",
         "label": "Condiments",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"condiments",
+            "statId": "condiments",
             "value": 1
           }
         ]
       },
       {
-        "id":"INT_WAKEUP",
+        "id": "INT_WAKEUP",
         "label": "Coffee",
         "cooldown": 300,
-        "changeStats":[
+        "changeStats": [
           {
-            "statId":"awake",
+            "statId": "awake",
             "value": 10
           }
         ]
@@ -350,4 +288,3 @@
     ]
   }
 }
-  
