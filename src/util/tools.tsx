@@ -19,7 +19,7 @@ export const randBetween = (range: number[]) => {
 export const getStatValue = (
   s: PetStatDefinition,
   cachedPetStats: CachedPetStat[],
-  timeDiff: number,
+  timeDiffInSeconds: number,
   forceCurrent?: boolean,
   debugMode?: boolean
 ) => {
@@ -31,8 +31,8 @@ export const getStatValue = (
   if (forceCurrent) return curValue; // from invalid time supplied, dont calculate
 
   // calculations are done at "second" granularity. Debug mode lets you see pets change faster.
-  const perSecond = debugMode ? s.perMinute : s.perMinute / 1000;
-  return Math.round(clamp(curValue + perSecond * timeDiff, 0, s.max) * 100) / 100;
+  const perSecond = debugMode ? s.perMinute : s.perMinute / 60;
+  return Math.round(clamp(curValue + perSecond * timeDiffInSeconds, 0, s.max) * 100) / 100;
 };
 
 export const getRenderedDeltaStats = (
@@ -42,18 +42,18 @@ export const getRenderedDeltaStats = (
   newSaveTime: number,
   debugMode?: boolean
 ) => {
-  const timeDiff = (newSaveTime - oldSaveTime) / 1000;
+  const timeDiffInSeconds = (newSaveTime - oldSaveTime) / 1000;
   /*
     TODO, this could get removed simplified after resolving:
     - redundant call on save
     - negative time on change pet between saves
   */
 
-  if (timeDiff <= 0) {
+  if (timeDiffInSeconds <= 0) {
     return stats.map((s) => {
       return {
         id: s.id,
-        value: getStatValue(s, cachedPetStats, timeDiff, true, debugMode),
+        value: getStatValue(s, cachedPetStats, timeDiffInSeconds, true, debugMode),
         max: s.max,
         label: s.label,
       };
@@ -63,7 +63,7 @@ export const getRenderedDeltaStats = (
   return stats.map((s) => {
     return {
       id: s.id,
-      value: getStatValue(s, cachedPetStats, timeDiff, undefined, debugMode),
+      value: getStatValue(s, cachedPetStats, timeDiffInSeconds, undefined, debugMode),
       max: s.max,
       label: s.label,
     };
@@ -77,11 +77,11 @@ export const getCachedDeltaStats = (
   newSaveTime: number,
   debugMode?: boolean
 ) => {
-  const timeDiff = newSaveTime && oldSaveTime ? (newSaveTime - oldSaveTime) / 1000 : 0;
+  const timeDiffInSeconds = newSaveTime && oldSaveTime ? (newSaveTime - oldSaveTime) / 1000 : 0;
   return stats.map((s) => {
     return {
       id: s.id,
-      value: getStatValue(s, cachedPetStats, timeDiff, undefined, debugMode),
+      value: getStatValue(s, cachedPetStats, timeDiffInSeconds, undefined, debugMode),
     } as DeltaStat;
   });
 };
@@ -92,5 +92,6 @@ export const log = (...messages: unknown[]) => {
 };
 
 export const ensureArray = (thing: unknown): unknown[] => {
+  if(thing === undefined) return [];
   return Array.isArray(thing) ? thing : [thing];
 };

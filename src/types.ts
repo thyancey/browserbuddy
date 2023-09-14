@@ -111,19 +111,22 @@ export type WhenNumber = {
   isPercent: boolean
 }
 export type RawWhenThen = {
-  when: string[],
-  then: (string | string[] | boolean),
+  when?: string | string[] | string[][],
+  then: (string | string[] | boolean | WhenThenStringGroup[]),
 }
 export type WhenThenNumberGroup = {
   when: WhenNumber[],
-  then: (string | string[])
+  then: string
 }
 
 // in whens, first depth is AND, second depth is OR
-// [ "REQUIRED", [ "AND", "AT_LEAST", "ONE_OF", "THESE"]]
+// when: [ "REQUIRED", [ "AND", "AT_LEAST", "ONE_OF", "THESE"]]
+// then: "this"
+// OR
+// then : { when: [], then: "" }
 export type WhenThenStringGroup = {
-  when: string[] | string[][],
-  then: (string | string[])
+  when: string | string[] | string[][],
+  then: (string | WhenThenStringGroup[])
 }
 export type WhenThenStringBooleanGroup = {
   when: string[],
@@ -155,7 +158,7 @@ export type RawPetJSON = {
     stats: PetStatDefinitionJSON[],
     statuses: RawPetStatuses,
     behaviors: PetBehaviorJSON[],
-    behaviorRules: {when:string[], then:string}[],
+    behaviorRules: WhenThenStringGroup[],
     interactions: PetInteractionDefinitionJSON[]
   },
   backgroundImage?:string,

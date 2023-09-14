@@ -11,18 +11,19 @@
         "label": "Age",
         "value": 0.0,
         "perMinute": 0,
-        "max": 1,
+        "max": 2,
         "fullIsGood": true,
         "statEffects": [
-          { "when": "<=_25%", "then": "STATUS_AGE_BABY" },
-          { "when": ">_25%", "then": "STATUS_AGE_ADULT" }
+          { "when": "=_0", "then": "STATUS_AGE_BABY" },
+          { "when": "=_1", "then": "STATUS_AGE_ADULT" },
+          { "when": "=_2", "then": "STATUS_AGE_COOKED" }
         ]
       },
       {
         "id": "temperature",
         "label": "Internal Temp",
         "value": 50.0,
-        "perMinute": -5.0,
+        "perMinute": -50.0,
         "max": 650.0,
         "fullIsGood": false,
         "statEffects": [
@@ -85,11 +86,12 @@
     ],
     "statuses": {
       "STATUS_TEMP_COLD": {
-        "label": "frozen!"
+        "label": "frozen!",
+        "alertType": "warning"
       },
       "STATUS_TEMP_NORMAL": {},
       "STATUS_TEMP_HOT": {
-        "label": "hotz!"
+        "label": "cookin'"
       },
       "STATUS_TEMP_BURNING": {
         "label": "burning!",
@@ -98,12 +100,15 @@
       "STATUS_WASTE_CLEAN": {},
       "STATUS_WASTE_DIRTY": {},
       "STATUS_FOOD_HUNGRY": {
-        "label": "hungry"
+        "label": "hungry!",
+        "alertType": "warning"
       },
       "STATUS_FOOD_FULL": {},
       "STATUS_AGE_BABY": {},
       "STATUS_AGE_ADULT": {},
-      "STATUS_SLEEP_ASLEEP": {},
+      "STATUS_SLEEP_ASLEEP": {
+        "label": "zzzzz.."
+      },
       "STATUS_SLEEP_AWAKE": {},
       "STATUS_SLEEP_ALERT": {},
       "STATUS_CLOTHES_NAKED": {},
@@ -115,89 +120,160 @@
     },
     "behaviorRules": [
       {
-        "when": [ "STATUS_DEAD" ],
+        "when": "STATUS_DEAD",
         "then": "BE_DEAD"
       },
       {
-        "when": [
-          "STATUS_AGE_BABY",
-          ["STATUS_WASTE_DIRTY", "STATUS_TEMP_COLD", "STATUS_TEMP_BURNING", "STATUS_FOOD_HUNGRY"]
-        ],
-        "then": "BE_BABY_SAD"
+        "when": "STATUS_AGE_BABY",
+        "then": [
+          {
+            "when": "STATUS_TEMP_BURNING",
+            "then": "BE_BABY_BURNING"
+          },
+          {
+            "when": "STATUS_TEMP_HOT",
+            "then": "BE_BABY_COOKING"
+          },
+          {
+            "when": "STATUS_TEMP_COLD",
+            "then": "BE_BABY_FROZEN"
+          },
+          {
+            "when": [["STATUS_WASTE_DIRTY", "STATUS_TEMP_COLD", "STATUS_FOOD_HUNGRY"]],
+            "then": "BE_BABY_SAD"
+          },
+          {
+            "when": ["STATUS_SLEEP_ASLEEP"],
+            "then": "BE_BABY_ASLEEP"
+          },
+          {
+            "then": "BE_BABY_IDLE"
+          }
+        ]
       },
       {
-        "when": ["STATUS_AGE_BABY", "STATUS_SLEEP_ASLEEP"],
-        "then": "BE_BABY_ASLEEP"
+        "when": "STATUS_AGE_ADULT",
+        "then": [
+          {
+            "when": "STATUS_TEMP_BURNING",
+            "then": "BE_RAW_BURNING"
+          },
+          {
+            "when": "STATUS_TEMP_HOT",
+            "then": "BE_RAW_COOKING"
+          },
+          {
+            "when": "STATUS_TEMP_COLD",
+            "then": "BE_RAW_FROZEN"
+          },
+          {
+            "when": "STATUS_TEMP_NORMAL",
+            "then": [
+              {
+                "when": [["STATUS_FOOD_HUNGRY", "STATUS_WASTE_DIRTY"]],
+                "then": "BE_RAW_SAD"
+              },
+              {
+                "when": "STATUS_SLEEP_ASLEEP",
+                "then": "BE_RAW_ASLEEP"
+              }
+            ]
+          },
+          {
+            "then": "BE_RAW_IDLE"
+          }
+        ]
       },
       {
-        "when": ["STATUS_AGE_BABY"],
-        "then": "BE_BABY_IDLE"
-      },
-
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_BURNING"],
-        "then": "BE_ADULT_BURNING"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_COLD"],
-        "then": "BE_ADULT_RAW_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", ["STATUS_TEMP_COLD", "STATUS_TEMP_NORMAL"], [ "STATUS_FOOD_HUNGRY", "STATUS_WASTE_DIRTY" ]],
-        "then": "BE_ADULT_RAW_SAD"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL", "STATUS_SLEEP_ASLEEP"],
-        "then": "BE_ADULT_RAW_SLEEP"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_NORMAL"],
-        "then": "BE_ADULT_RAW_IDLE"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED", "STATUS_SLEEP_ASLEEP"],
-        "then": "BE_ADULT_DRESSED_SLEEP"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_CLOTHES_DRESSED"],
-        "then": "BE_ADULT_DRESSED_IDLE"
+        "when": "STATUS_AGE_COOKED",
+        "then": [
+          {
+            "when": "STATUS_WASTE_DIRTY",
+            "then": [
+              {
+                "when": "STATUS_SLEEP_ASLEEP",
+                "then": "BE_COOKED_DRESSED_SLEEP"
+              },
+              {
+                "then": "BE_COOKED_DRESSED_IDLE"
+              }
+            ]
+          },
+          {
+            "then": [
+              {
+                "when": "STATUS_SLEEP_ASLEEP",
+                "then": "BE_COOKED_SLEEP"
+              },
+              {
+                "then": "BE_COOKED_IDLE"
+              }
+            ]
+          }
+        ]
       },
       {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT", "STATUS_SLEEP_ASLEEP"],
-        "then": "BE_ADULT_COOKED_SLEEP"
-      },
-      {
-        "when": ["STATUS_AGE_ADULT", "STATUS_TEMP_HOT"],
-        "then": "BE_ADULT_COOKED_IDLE"
-      },
-      {
-        "when": [],
         "then": "BE_NORMAL"
       }
     ],
     "behaviors": [
       { "id": "BE_NORMAL", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": 0 },
+
       { "id": "BE_BABY_IDLE", "image": "assets/baby_idle.gif", "position": "bottom", "offsetY": 0 },
       { "id": "BE_BABY_SAD", "image": "assets/baby_sad.gif", "position": "bottom", "offsetY": 0 },
       { "id": "BE_BABY_ASLEEP", "image": "assets/baby_sleep.gif", "position": "bottom", "offsetY": 0 },
-
-      { "id": "BE_ADULT_RAW_IDLE", "image": "assets/raw_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_ADULT_RAW_SAD", "image": "assets/raw_sad.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_ADULT_RAW_SLEEP", "image": "assets/raw_sleep.gif", "position": "bottom", "offsetY": -50 },
-
-      { "id": "BE_ADULT_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_ADULT_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": -50 },
-
-      { "id": "BE_ADULT_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_ADULT_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
-
       {
-        "id": "BE_ADULT_BURNING",
+        "id": "BE_BABY_FROZEN",
+        "image": "assets/baby_frozen.gif",
+        "position": "bottom",
+        "offsetY": 0,
+        "backgroundImage": "assets/bg_frozen.gif"
+      },
+      {
+        "id": "BE_BABY_COOKING",
+        "image": "assets/baby_cooking.gif",
+        "position": "bottom",
+        "offsetY": 0,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
+      {
+        "id": "BE_BABY_BURNING",
+        "image": "assets/baby_burning.gif",
+        "position": "bottom",
+        "offsetY": 0,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
+
+      { "id": "BE_RAW_IDLE", "image": "assets/raw_idle.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_RAW_SAD", "image": "assets/raw_sad.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_RAW_ASLEEP", "image": "assets/raw_sleep.gif", "position": "bottom", "offsetY": -50 },
+      {
+        "id": "BE_RAW_FROZEN",
+        "image": "assets/adult_frozen.gif",
+        "position": "bottom",
+        "offsetY": -50,
+        "backgroundImage": "assets/bg_frozen.gif"
+      },
+      {
+        "id": "BE_RAW_COOKING",
+        "image": "assets/raw_cooking.gif",
+        "position": "bottom",
+        "offsetY": -50,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
+      {
+        "id": "BE_RAW_BURNING",
         "image": "assets/hot_idle.gif",
         "position": "bottom",
         "offsetY": -50,
         "backgroundImage": "assets/bg_flames.gif"
       },
+
+      { "id": "BE_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_COOKED_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_COOKED_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
+
       { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
     ],
     "interactions": [
@@ -234,7 +310,7 @@
         "changeStats": [
           {
             "statId": "temperature",
-            "value": 100.0
+            "value": 150.0
           }
         ]
       },

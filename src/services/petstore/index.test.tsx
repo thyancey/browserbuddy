@@ -53,7 +53,7 @@ describe('#petstore.selectors', () => {
   describe('#selectRenderedDeltaStats', () => {
     it('should increase stat over time', () => {
       const lastTime = 1000;
-      const time = 3000;
+      const time = 121000;
       expect(selectRenderedDeltaStats.resultFunc(
         [
           {
@@ -80,15 +80,15 @@ describe('#petstore.selectors', () => {
     
     it('should decrease stat over time', () => {
       const lastTime = 1000;
-      const time = 3000;
+      const time = 61000;
       expect(selectRenderedDeltaStats.resultFunc(
         [
           {
             id: 'food',
             label: 'Food',
-            value: 5,
-            perMinute: -1.5,
-            max: 10,
+            value: 500,
+            perMinute: -50,
+            max: 1000,
             fullIsGood: true,
             statEffects: []
           }
@@ -100,14 +100,14 @@ describe('#petstore.selectors', () => {
       )).toEqual([{
         id: 'food',
         label: 'Food',
-        value: 2,
-        max: 10
+        value: 450,
+        max: 1000
       }]);
     });
     
     it('stat should not go past 0 or max', () => {
       const lastTime = 1000;
-      const time = 10000;
+      const time = 601000; // 10 minutes later...
       expect(selectRenderedDeltaStats.resultFunc(
         [
           {

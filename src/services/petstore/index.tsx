@@ -30,7 +30,7 @@ import {
   getFirstOfWhenThenStringGroups,
   parseInteractionWhenThenGroup,
   parseStatsWhenThenGroup,
-  parseStatusesWhenThenGroup,
+  parseBehaviorRulesWhenThenGroup,
 } from '../../util/whenthen';
 
 import { RootState } from '../store';
@@ -74,7 +74,7 @@ export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetS
   return {
     stats: parseStatsGroup(petDefJSON.logic.stats, initialState),
     statuses: parseStatusesGroup(petDefJSON.logic.statuses),
-    behaviorRules: parseStatusesWhenThenGroup(petDefJSON.logic.behaviorRules),
+    behaviorRules: parseBehaviorRulesWhenThenGroup(petDefJSON.logic.behaviorRules),
     behaviors: parsePetBehaviors(petDefJSON.logic.behaviors || [], petDefJSON.baseUrl),
     interactions: parseInteractionsGroup(petDefJSON.logic.interactions),
   } as PetLogicGroup;
@@ -296,6 +296,7 @@ export const petStoreSlice = createSlice({
       const foundPet = state.pets.find((p) => p.id === petDefinition.id);
       const nowTime = new Date().getTime();
       const logicGroup = parseLogicGroup(petDefinition, initialState || undefined);
+      console.log('logicGroup', logicGroup);
 
       log(`>> createPet: ${petDefinition.id}, isActive? ${isActive}, beingTracked? ${initialState?.beingTracked}`);
       if (!initialState) {

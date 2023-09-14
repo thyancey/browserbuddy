@@ -52,7 +52,7 @@ const getBubbleColors = (alertType?: AlertType) => {
     case 'alert': return [ '--color-red', '--color-yellow' ];
     case 'warning': return [ '--color-yellow', '--color-red' ];
     case 'reward': return [ '--color-green', '--color-white' ];
-    default: return [ '--color-white', '--color-red' ];
+    default: return [ '--color-white', '--color-grey' ];
   }
 }
 
