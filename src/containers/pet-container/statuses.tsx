@@ -65,11 +65,13 @@ const getBottom = (index:number) => {
 
 export const Statuses = () => {
   const activeDeltaStatuses = useSelector(selectDetailedActiveDeltaStatuses, shallowEqual);
+
+  const withLabel = activeDeltaStatuses.filter((dS) => dS.label);
   
   return (
     <ScContainer>
       <ScStatuses>
-        {activeDeltaStatuses.map((dS,i) => (
+        {withLabel.map((dS,i) => (
           <ScStatus 
             key={dS.id} 
             id={dS.id}
