@@ -55,9 +55,8 @@ export const PetContainer = () => {
   if(!activeBehavior){
     return <ScContainer $bgImageUrl={imageUrl} />
   }
-  
-  // console.log('selectActiveBehavior', activeBehavior);
 
+  const bgImageUrl = activeBehavior.bgImageUrl || imageUrl;
   const backgroundStyles = {
     backgroundImage: `url(${activeBehavior.imageUrl})`, 
     backgroundPosition: `${activeBehavior.position}`,
@@ -67,7 +66,7 @@ export const PetContainer = () => {
   };
 
   return (
-    <ScContainer $bgImageUrl={imageUrl}>
+    <ScContainer $bgImageUrl={bgImageUrl}>
       <>
         <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
         <Statuses />

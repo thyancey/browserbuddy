@@ -88,6 +88,7 @@ export type StatChangeDefinition = {
 export type PetBehaviorDefinition = {
   id: string,
   imageUrl: string,
+  bgImageUrl?: string,
   position: string,
   offsetX: number,
   offsetY: number
@@ -97,6 +98,8 @@ export type PetBehaviorJSON = {
   id: string,
   image?: string,
   imageUrl?: string,
+  
+  backgroundImage?: string,
   position: string,
   offsetX?: number,
   offsetY?: number

@@ -3,7 +3,7 @@
   "name": "Hot Doug the hotdog",
   "bio": "hot doug.",
   "level": 0,
-  "backgroundImage": "assets/bg_flames.gif",
+  "backgroundImage": "",
   "logic":{
     "stats":[
       {
@@ -273,7 +273,7 @@
       { "id": "BE_ADULT_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_ADULT_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
       
-      { "id": "BE_ADULT_BURNING", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_ADULT_BURNING", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50, "backgroundImage": "assets/bg_flames.gif" },
       { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
     ],
     "interactions":[

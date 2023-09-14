@@ -83,6 +83,7 @@ export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: 
   return petBehaviorsJson.map((pB) => ({
     ...pB,
     imageUrl: pB.image ? `${baseUrl}/${pB.image}` : pB.imageUrl || '',
+    bgImageUrl: pB.backgroundImage ? `${baseUrl}/${pB.backgroundImage}` : '',
     position: pB.position ? pB.position : 'center',
     offsetX: pB.offsetX ? pB.offsetX : 0,
     offsetY: pB.offsetY ? pB.offsetY : 0,
