@@ -3,7 +3,7 @@
   "name": "Hot Doug the hotdog",
   "bio": "hot doug.",
   "level": 0,
-  "backgroundImage": "assets/bg_oven.gif",
+  "backgroundImage": "",
   "logic": {
     "stats": [
       {
