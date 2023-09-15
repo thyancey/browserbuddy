@@ -15,7 +15,7 @@
         "fullIsGood": true,
         "statEffects": [
           { "when": "=_0", "then": "STATUS_AGE_BABY" },
-          { "when": "=_1", "then": "STATUS_AGE_ADULT" },
+          { "when": "=_1", "then": "STATUS_AGE_RAW" },
           { "when": "=_2", "then": "STATUS_AGE_COOKED" }
         ]
       },
@@ -24,13 +24,13 @@
         "label": "Internal Temp",
         "value": 50.0,
         "perMinute": -10.0,
-        "max": 650.0,
+        "max": 600.0,
         "fullIsGood": false,
         "statEffects": [
           { "when": "<=_32", "then": "STATUS_TEMP_COLD" },
-          { "when": [">=_32", "<_90"], "then": "STATUS_TEMP_NORMAL" },
-          { "when": [">=_90", "<_500"], "then": "STATUS_TEMP_HOT" },
-          { "when": ">_500", "then": "STATUS_TEMP_BURNING" },
+          { "when": [">=_32", "<_100"], "then": "STATUS_TEMP_NORMAL" },
+          { "when": [">=_100", "<_400"], "then": "STATUS_TEMP_HOT" },
+          { "when": ">_400", "then": "STATUS_TEMP_BURNING" },
           { "when": ">=_100%", "then": "STATUS_DEAD" }
         ]
       },
@@ -105,7 +105,7 @@
       },
       "STATUS_FOOD_FULL": {},
       "STATUS_AGE_BABY": {},
-      "STATUS_AGE_ADULT": {},
+      "STATUS_AGE_RAW": {},
       "STATUS_SLEEP_ASLEEP": {
         "label": "zzzzz.."
       },
@@ -117,23 +117,25 @@
         "label": "RIP",
         "alertType": "alert"
       },
-      "STATUS_GRILL_ON": {
-        "label": "grill ON",
-        "changeStats": [
-          {
-            "statId": "temperature",
-            "value": 100.0
-          }
-        ]
-      },
-      "STATUS_GRILL_OFF": {
-        "label": "grill OFF"
-      }
+      "STATUS_GRILL_ON": {},
+      "STATUS_GRILL_OFF": {}
     },
     "behaviorRules": [
       {
         "when": "STATUS_DEAD",
-        "then": "BE_DEAD"
+        "then": [
+          {
+            "when": "STATUS_AGE_BABY",
+            "then": "BE_BABY_DEAD"
+          },
+          {
+            "when": "STATUS_AGE_RAW",
+            "then": "BE_RAW_DEAD"
+          },
+          {
+            "then": "BE_DEAD"
+          }
+        ]
       },
       {
         "when": "STATUS_AGE_BABY",
@@ -164,7 +166,7 @@
         ]
       },
       {
-        "when": "STATUS_AGE_ADULT",
+        "when": "STATUS_AGE_RAW",
         "then": [
           {
             "when": "STATUS_TEMP_BURNING",
@@ -255,6 +257,14 @@
         "offsetY": 0,
         "backgroundImage": "assets/bg_flames.gif"
       },
+      {
+        "id": "BE_BABY_DEAD",
+        "type": "dead",
+        "image": "assets/baby_dead.gif",
+        "position": "bottom",
+        "offsetY": 0,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
 
       { "id": "BE_RAW_IDLE", "image": "assets/raw_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_RAW_SAD", "image": "assets/raw_sad.gif", "position": "bottom", "offsetY": -50 },
@@ -275,28 +285,43 @@
       },
       {
         "id": "BE_RAW_BURNING",
-        "image": "assets/hot_idle.gif",
+        "image": "assets/raw_burning.gif",
         "position": "bottom",
         "offsetY": -50,
         "backgroundImage": "assets/bg_flames.gif"
       },
+      {
+        "id": "BE_RAW_DEAD",
+        "type": "dead",
+        "image": "assets/raw_dead.gif",
+        "position": "bottom",
+        "offsetY": -50,
+        "backgroundImage": "assets/bg_flames.gif"
+      },
+
 
       { "id": "BE_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_COOKED_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_COOKED_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
 
-      { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
+      { "id": "BE_DEAD", "type": "dead", "image": "assets/raw_dead.gif", "position": "bottom", "offsetY": -50 }
     ],
     "interactions": [
       {
         "id": "INT_GRILL",
         "label": "Grill",
-        "cooldown": 3000,
+        "cooldown": 0,
         "changeToggle": {
-          "on": "STATUS_GRILL_ON",
-          "off": "STATUS_GRILL_OFF",
-          "defaultState": "off"
+          "defaultState": "off",
+          "onState": {
+            "statusId": "STATUS_GRILL_ON",
+            "statId": "temperature",
+            "perMinute": 100.0
+          },
+          "offState": {
+            "statusId": "STATUS_GRILL_OFF"
+          }
         }
       },
       {
