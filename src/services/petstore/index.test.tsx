@@ -53,7 +53,7 @@ describe('#petstore.selectors', () => {
   describe('#selectRenderedDeltaStats', () => {
     it('should increase stat over time', () => {
       const lastTime = 1000;
-      const time = 121000;
+      const time = 121000; // 2 minutes
       expect(selectRenderedDeltaStats.resultFunc(
         [
           {

@@ -20,7 +20,7 @@
       },
       {
         "id": "temperature",
-        "label": "Internal Temp.",
+        "label": "Internal Temp. (ideal: 325 - 450)",
         "value": 50.0,
         "perMinute": -10.0,
         "max": 600.0,
@@ -28,30 +28,30 @@
         "statEffects": [
           { "when": "<=_32", "then": "STATUS_TEMP_COLD" },
           { "when": [">=_32", "<_100"], "then": "STATUS_TEMP_NORMAL" },
-          { "when": [">=_100", "<_400"], "then": "STATUS_TEMP_HOT" },
-          { "when": [">=_200", "<_400"], "then": "STATUS_TEMP_GOLDENBROWN" },
-          { "when": ">_400", "then": "STATUS_TEMP_BURNING" },
+          { "when": [">=_100", "<_450"], "then": "STATUS_TEMP_HOT" },
+          { "when": [">=_325", "<_450"], "then": "STATUS_TEMP_GOLDENBROWN" },
+          { "when": ">_450", "then": "STATUS_TEMP_BURNING" },
           { "when": ">=_100%", "then": "STATUS_DEAD" }
         ]
       },
       {
-        "id": "awake",
+        "id": "sleepy",
         "label": "Sleepyness",
         "value": 50.0,
-        "perMinute": -1,
+        "perMinute": 10,
         "max": 100.0,
-        "fullIsGood": true,
+        "fullIsGood": false,
         "statEffects": [
-          { "when": "<=_25%", "then": "STATUS_SLEEP_ASLEEP" },
-          { "when": ">_25%", "then": "STATUS_SLEEP_AWAKE" },
-          { "when": ">_75%", "then": "STATUS_SLEEP_ALERT" }
+          { "when": "<=_25%", "then": "STATUS_SLEEP_ALERT" },
+          { "when": [">_25%", "<=_75%"], "then": "STATUS_SLEEP_AWAKE" },
+          { "when": ">_75%", "then": "STATUS_SLEEP_ASLEEP" }
         ]
       },
       {
         "id": "waste",
-        "label": "Waste",
+        "label": "Grease drippings",
         "value": 0.0,
-        "perMinute": 5,
+        "perMinute": 0,
         "max": 100.0,
         "fullIsGood": false,
         "statEffects": [
@@ -92,7 +92,7 @@
       },
       "STATUS_SLEEP_AWAKE": {},
       "STATUS_SLEEP_ALERT": {},
-      
+
       "STATUS_DEAD": {
         "label": "RIP",
         "alertType": "alert"
@@ -303,7 +303,6 @@
         "bgImage": "assets/bg_flames.gif"
       },
 
-
       { "id": "BE_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": -50 },
       { "id": "BE_COOKED_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
@@ -318,19 +317,31 @@
         "cooldown": 0,
         "changeToggle": {
           "defaultState": "off",
-          "onState": {
-            "statusId": "STATUS_GRILL_ON",
-            "statId": "temperature",
-            "perMinute": 50.0
-          },
-          "offState": {
-            "statusId": "STATUS_GRILL_OFF"
-          }
+          "onState": [
+            {
+              "statusId": "STATUS_GRILL_ON",
+              "statId": "temperature",
+              "perMinute": 30.0
+            },
+            {
+              "statId": "waste",
+              "perMinute": 15.0
+            },
+            {
+              "statId": "sleepy",
+              "perMinute": -50.0
+            }
+          ],
+          "offState": [
+            {
+              "statusId": "STATUS_GRILL_OFF"
+            }
+          ]
         }
       },
       {
         "id": "INT_CLEAN",
-        "label": "Clean",
+        "label": "Clean grill",
         "cooldown": 5000,
         "changeStats": [
           {
@@ -362,6 +373,11 @@
           },
           {
             "statId": "waste",
+            "type": "absolute",
+            "value": 0
+          },
+          {
+            "statId": "sleepy",
             "type": "absolute",
             "value": 0
           }

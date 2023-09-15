@@ -77,7 +77,7 @@ export type PetInteractionDefinitionJSON = {
   id: string,
   label: string,
   cooldown: number,
-  changeToggle?: PetToggleDefinition,
+  changeToggle?: PetToggleDefinitionJSON,
   changeStats?: StatChangeDefinition[],
   availability: RawWhenThen[],
   hideWhenUnavailable?: boolean
@@ -145,9 +145,14 @@ export type ToggleStateDefinition = {
   perMinute?: number
 }
 export type PetToggleDefinition = {
+  defaultState: 'on' | 'off',
+  onState: ToggleStateDefinition[],
+  offState: ToggleStateDefinition[]
+}
+export type PetToggleDefinitionJSON = {
   defaultState?: 'on' | 'off',
-  onState?: ToggleStateDefinition,
-  offState?: ToggleStateDefinition
+  onState?: ToggleStateDefinition[],
+  offState?: ToggleStateDefinition[]
 }
 
 export type PetLogicGroup = {
@@ -207,7 +212,7 @@ export type CachedPetStat = {
 export type ActiveToggleState = {
   id: string,
   state: 'on' | 'off',
-  effect?: ToggleStateDefinition
+  effect: ToggleStateDefinition[]
 }
 export type SavedPetState = {
   id: string,

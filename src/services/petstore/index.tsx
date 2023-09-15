@@ -24,6 +24,7 @@ import {
   RawPetStatuses,
   PetToggleDefinition,
   ActiveToggleState,
+  PetToggleDefinitionJSON,
 } from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
 import {
@@ -108,7 +109,7 @@ export const parseInteractionAvailability = (availability: RawWhenThen[]) => {
   return availability ? parseInteractionWhenThenGroup(availability) : [];
 };
 
-export const parseInteractionToggleDefinition = (toggleDef?: PetToggleDefinition) => {
+export const parseInteractionToggleDefinition = (toggleDef?: PetToggleDefinitionJSON) => {
   if (!toggleDef) return null;
   return {
     defaultState: toggleDef.defaultState || 'off',
@@ -169,7 +170,7 @@ const getDefaultToggleStatus = (toggleId: string, toggleDef: PetToggleDefinition
     id: toggleId,
     state: defaultState,
     effect: defaultEffect,
-  };
+  } as ActiveToggleState;
 };
 
 export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) => {
@@ -196,10 +197,10 @@ export const getUpdatedToggles = (
   // whether it was an existing one or a new one, flip it.
   if (updatedToggleStatus.state === 'on') {
     updatedToggleStatus.state = 'off';
-    updatedToggleStatus.effect = toggleDef.offState || undefined;
+    updatedToggleStatus.effect = toggleDef.offState;
   } else {
     updatedToggleStatus.state = 'on';
-    updatedToggleStatus.effect = toggleDef.onState || undefined;
+    updatedToggleStatus.effect = toggleDef.onState;
   }
 
   // give back the same junk, with the new toggle value
@@ -313,7 +314,7 @@ export const petStoreSlice = createSlice({
     },
     addNewInteractionEvent: (state: PetStoreState, action: PayloadAction<PetInteractionEvent>) => {
       const { interaction, time } = action.payload;
-      console.log('addNewInteractioNEvent', interaction);
+      // console.log('addNewInteractionEvent', interaction);
 
       let doSave = false;
       // interaction has to sit a bit, so save it for later
@@ -493,7 +494,6 @@ export const selectActiveCachedToggles = createSelector(
   [selectActiveCachedPet],
   (savedPetState): ActiveToggleState[] => {
     if (!savedPetState) return [];
-    // console.log('hey', savedPetState);
     return savedPetState.activeToggles || [];
   }
 );
@@ -547,7 +547,7 @@ export const selectActiveDeltaStatuses = createSelector(
     // all stats should be evaluated, and output all unique statuses matched
     const findDeltaStat = (id: string) => deltaStats.find((ds) => ds.id === id);
 
-    const allStatuses: string[] = [];
+    let allStatuses: string[] = [];
     for (let i = 0; i < statDefinitions.length; i++) {
       const dS = findDeltaStat(statDefinitions[i].id);
       if (!dS) continue;
@@ -560,20 +560,23 @@ export const selectActiveDeltaStatuses = createSelector(
       }
     }
 
-    let newStatus: string | undefined = '';
+    let newStatuses: string[];
     activeToggles.forEach((activeToggle) => {
       const changeToggleDef = interactionDefs.find((intDef) => intDef.id === activeToggle.id);
       if (changeToggleDef?.changeToggle) {
         if (activeToggle.state === 'on') {
-          newStatus = changeToggleDef.changeToggle.onState?.statusId;
+          // all this cause of optional undefined bullshit
+          newStatuses = changeToggleDef.changeToggle.onState?.filter(sd => sd.statusId).map(sd => sd.statusId as string) || [];
         } else {
-          newStatus = changeToggleDef.changeToggle.offState?.statusId;
+          newStatuses = changeToggleDef.changeToggle.offState?.filter(sd => sd.statusId).map(sd => sd.statusId as string) || [];
         }
       }
 
-      if (newStatus && !allStatuses.includes(newStatus)) {
-        allStatuses.push(newStatus);
-      }
+      // if the statuses are unique, add em to the full list
+      allStatuses = allStatuses.concat(newStatuses.filter(sd => !allStatuses.includes(sd)));
+      // if (newStatus && !allStatuses.includes(newStatus)) {
+      //   allStatuses.push(newStatus);
+      // }
     });
 
     return allStatuses
@@ -726,7 +729,7 @@ export const selectNewSavePayload = createSelector(
           return {
             id: interactionDef.id,
             state: defaultState,
-            effect: defaultEffect,
+            effect: defaultEffect || [],
           } as ActiveToggleState;
         });
 
