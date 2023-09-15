@@ -1,10 +1,5 @@
 {
   "pets":[
-    { "id": "hotdoug", "baseUrl": "data/pets/hotdoug" },
-    { "id": "bunchie", "baseUrl": "data/pets/bunchie" },
-    { "id": "mika", "baseUrl": "https://thyancey.github.io/browserpet-library/pets/mika" },
-    { "id": "cheerimonster", "baseUrl": "https://thyancey.github.io/browserpet-library/pets/cheerimonster" },
-    { "id": "lisa", "baseUrl": "https://thyancey.github.io/browserpet-library/pets/lisa" },
-    { "id": "marshall", "baseUrl": "https://thyancey.github.io/browserpet-library/pets/marshall" }
+    { "id": "hotdoug", "baseUrl": "data/pets/hotdoug" }
   ]
 } 
