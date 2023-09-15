@@ -173,14 +173,6 @@ const getDefaultToggleStatus = (toggleId: string, toggleDef: PetToggleDefinition
   } as ActiveToggleState;
 };
 
-export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) => {
-  try {
-    return !previous[activeIdx].beingTracked;
-  } catch (e) {
-    return false;
-  }
-};
-
 /*
 { toggle, status }
 { id, on, off, defaultState }
@@ -269,6 +261,15 @@ export const petStoreSlice = createSlice({
       // TODO, this should be handled differently, or taken out of redux otherwise
       window.localStorage.clear();
       window.location.reload();
+    },
+    resetActivePet: (state: PetStoreState) => {
+      // like other of these cleanup operations, this one is sketchy and could produce weird bugs.
+      const activePet = state.pets[state.activeIdx];
+      const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
+      if(cachedIdx > -1) {
+        state.cachedPets.splice(cachedIdx, 1);
+        // hackySave(state);
+      }
     },
     killActivePet: (state: PetStoreState) => {
       console.log('------ PET WAS KILLED ----------');
@@ -436,6 +437,7 @@ export const {
   restoreInteractionFromSave,
   removeInteractionEvent,
   killActivePet,
+  resetActivePet,
 } = petStoreSlice.actions;
 
 export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;
@@ -480,7 +482,7 @@ export const selectCachedPets = createSelector([getCachedPets], (cachedPets) => 
 export const selectActiveCachedPet = createSelector(
   [getCachedPets, selectActivePet],
   (cachedPets, activePet): SavedPetState | null => {
-    if (!activePet) null;
+    if (!activePet) return null;
     return cachedPets.find((cP) => cP.id === activePet.id) || null;
   }
 );
@@ -537,12 +539,22 @@ export const selectRenderedDeltaStats = createSelector(
 
 export const selectActiveDeltaStatuses = createSelector(
   [
+    selectActiveCachedPet,
     selectRenderedDeltaStats,
     selectActiveStatDefinitions,
     selectActiveCachedToggles,
     selectActiveInteractionDefinitions,
   ],
-  (deltaStats, statDefinitions, activeToggles, interactionDefs) => {
+  (cachedPet, deltaStats, statDefinitions, activeToggles, interactionDefs) => {
+    // This is a great example of where state, caching vs rendering, and swapping pet states
+    // is a huge shitshow, this (!beingTracked) prevents prematurely applying status calculations (death)
+    // when swapping to them, and everyhthing is ready.
+    // BUT do not skip if they are dead, cause then there is no way to render the death stuff,
+    // cause dead pets are also beingTracked = false
+    if(cachedPet && !cachedPet.beingTracked && cachedPet.diedOn === undefined) {
+      return [];
+    }
+
     // for each statDef, look through statDef.statEffects, which is a whenThenNumberGroup[]
     // all stats should be evaluated, and output all unique statuses matched
     const findDeltaStat = (id: string) => deltaStats.find((ds) => ds.id === id);
@@ -574,9 +586,6 @@ export const selectActiveDeltaStatuses = createSelector(
 
       // if the statuses are unique, add em to the full list
       allStatuses = allStatuses.concat(newStatuses.filter(sd => !allStatuses.includes(sd)));
-      // if (newStatus && !allStatuses.includes(newStatus)) {
-      //   allStatuses.push(newStatus);
-      // }
     });
 
     return allStatuses
@@ -599,8 +608,11 @@ export const selectDetailedActiveDeltaStatuses = createSelector(
 );
 
 export const selectActiveBehavior = createSelector(
-  [selectActiveDeltaStatuses, selectActiveBehaviorRuleDefinitions, selectActiveBehaviorDefinitions],
-  (deltaStatusIds, behaviorRules, behaviorDefinitions): PetBehaviorDefinition | null => {
+  [selectActiveCachedPet, selectActiveDeltaStatuses, selectActiveBehaviorRuleDefinitions, selectActiveBehaviorDefinitions],
+  (activeCachedPet, deltaStatusIds, behaviorRules, behaviorDefinitions): PetBehaviorDefinition | null => {
+    if(!activeCachedPet){
+      return null;
+    }
     const foundBehaviorId = getFirstOfWhenThenStringGroups(behaviorRules, deltaStatusIds);
     return behaviorDefinitions.find((bD) => bD.id === foundBehaviorId) || null;
   }
@@ -701,8 +713,7 @@ export const selectNewSavePayload = createSelector(
           return {
             id: activePet.id,
             stats: curStats,
-            // bornOn: sP.bornOn || activePet.bornOn, // i dont think activePet does anything here
-            bornOn: sP.bornOn, // i dont think activePet does anything here
+            bornOn: sP.bornOn,
             diedOn: sP.diedOn,
             lastSaved: lastSaved,
             beingTracked: sP.diedOn === undefined ? true : false,
@@ -748,7 +759,6 @@ export const selectNewSavePayload = createSelector(
     }
 
     // console.log('>> returning savedPayload', newList);
-
     return {
       config: {
         activePet: activePet?.id || '',

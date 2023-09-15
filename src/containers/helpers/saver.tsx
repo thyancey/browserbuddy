@@ -13,13 +13,15 @@ export const Saver = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log('SAVER');
     // this check avoids trying to save the initialState on first load, maybe there's a better way around this.
-    if(savePayload && !!savePayload.config.activePet){
-      // console.log('saving with ', savePayload.pets[0])
-      // console.log('> setLocalStorage', savePayload.config.lastSaved, savePayload);
-      setLocalStorage(() => savePayload);
+    // it used to check activePet, but resetting a specific pet created some issues there
+    if(savePayload && savePayload.config.lastSaved > -1){
+      // the line below used to be here (and not within the next if block) to accomodate the split rendering vs saving intervals
+      // however, it was causing a stack overflow when resetting a pet (clearing it's definition from storage)
+      // the whole caching/rendering system needs to be reworked.
+      // setLocalStorage(() => savePayload);
       if(lastSaved !== savePayload.config.lastSaved){
+        setLocalStorage(() => savePayload);
         lastSaved = savePayload.config.lastSaved;
         dispatch(setCachedPayload(savePayload));
       }

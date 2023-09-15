@@ -5,6 +5,9 @@ import { pingStore } from '../../services/petstore';
 import { useDispatch } from 'react-redux';
 import { log } from '../../util/tools';
 
+// although these *sort of* split rendering from saving, THEY SHOULD ALWAYS MATCH
+// the whole caching/rendering behavior needs to get ripped out, simplified, and
+// redone.
 const PING_RATE = 2000;
 const SAVE_RATE = 2000;
 

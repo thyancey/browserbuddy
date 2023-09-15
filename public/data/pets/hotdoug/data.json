@@ -21,7 +21,7 @@
       {
         "id": "temperature",
         "label": "Internal Temp. (ideal: 325 - 450)",
-        "value": 50.0,
+        "value": 0.0,
         "perMinute": -10.0,
         "max": 600.0,
         "fullIsGood": false,
@@ -321,7 +321,7 @@
             {
               "statusId": "STATUS_GRILL_ON",
               "statId": "temperature",
-              "perMinute": 30.0
+              "perMinute": 80.0
             },
             {
               "statId": "waste",

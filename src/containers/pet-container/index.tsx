@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
-import { selectActiveBehavior, selectActiveBg, killActivePet } from '../../services/petstore';
+import { selectActiveBehavior, selectActiveBg, killActivePet, resetActivePet } from '../../services/petstore';
 
 import { Statuses } from './statuses';
 import { useEffect } from 'react';
@@ -32,6 +32,60 @@ const ScContainer = styled.div<ScContainerProps>`
 interface ScOverlayProps {
   $isActive?: boolean;
 }
+
+const ScWastedBtn = styled.div`
+  color: var(--color-white);
+  background-color: var(--color-red);
+  display: block;
+  padding: 6rem;
+  border-radius: 5rem;
+  border: 1rem solid var(--color-white);
+  text-align: center;
+
+  transform: rotate(2deg) translateY(200%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.2s;
+
+  span {
+    font-size: 8rem;
+  }
+
+  &:before{
+    content: 'WASTED';
+    font-size: 8rem;
+  }
+
+  &:hover{
+    background-color: var(--color-green);
+
+    &:before{
+      content: 'revive?';
+    }
+  }
+  /* cursor: pointer; */
+
+  /* 
+      transform: rotate(-7deg) translateY(125%);
+      opacity: 1;
+
+
+      &:hover {
+        background-color: var(--color-green);
+        &:after {
+          content: 'revive?';
+          position: absolute;
+          display: block;
+          margin-top: 4rem;
+          background-color: var(--color-blue);
+          border: 1rem solid var(--color-white);
+          border-radius: 5rem;
+          padding: 2rem;
+          font-size: 4rem;
+        }
+      }
+    } */
+`;
+
 const ScOverlay = styled.div<ScOverlayProps>`
   position: absolute;
   inset: 0;
@@ -41,27 +95,18 @@ const ScOverlay = styled.div<ScOverlayProps>`
   justify-content: center;
   z-index: 1;
   pointer-events: none;
+  ${(p) =>
+    p.$isActive &&
+    css`
+      pointer-events: all;
 
-  > span {
-    font-size: 8rem;
-    color: var(--color-white);
-    background-color: var(--color-red);
-    display: block;
-    padding: 6rem;
-    border-radius: 5rem;
-    border: 1rem solid var(--color-white);
-
-    transform: rotate(2deg) translateY(200%);
-    opacity: 0;
-    transition: transform .3s ease-out, opacity .2s;
-
-    ${p => p.$isActive && css`
-      transform: rotate(-7deg) translateY(125%);
-      opacity: 1;
+      ${ScWastedBtn} {
+        transform: rotate(-7deg) translateY(125%);
+        opacity: 1;
+        cursor: pointer;
+      }
     `}
-  }
 `;
-
 
 const ScPetImage = styled.div`
   background-size: contain;
@@ -118,7 +163,8 @@ export const PetContainer = () => {
         <Statuses />
         <ScPetImage style={backgroundStyles} />
         <ScOverlay $isActive={activeBehavior.type === 'dead'}>
-          <span>{'WASTED'}</span>
+          <ScWastedBtn onClick={() => dispatch(resetActivePet())}>
+          </ScWastedBtn>
         </ScOverlay>
       </>
     </ScContainer>

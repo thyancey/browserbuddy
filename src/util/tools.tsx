@@ -28,7 +28,6 @@ export const getStatValue = (
   if (curValue === undefined) {
     curValue = s.value;
   }
-
   if (forceCurrent) return curValue; // from invalid time supplied, dont calculate
 
   // overrides may come from an activeToggle thats changing the behavior of a stat
@@ -70,6 +69,7 @@ export const getRenderedDeltaStats = (
   const timeDiffInSeconds = (newSaveTime - oldSaveTime) / 1000;
 
   const statOverrides = getStatOverrides(activeToggles);
+
 
   /*
     TODO, this could get removed simplified after resolving:
