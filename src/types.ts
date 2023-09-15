@@ -129,7 +129,7 @@ export type WhenThenNumberGroup = {
 // then : { when: [], then: "" }
 export type WhenThenStringGroup = {
   when: string | string[] | string[][],
-  then: (string | WhenThenStringGroup[])
+  then: string | WhenThenStringGroup[]
 }
 export type WhenThenStringBooleanGroup = {
   when: string[],
