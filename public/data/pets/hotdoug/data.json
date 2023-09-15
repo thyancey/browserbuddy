@@ -288,20 +288,16 @@
 
       { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
     ],
-    "toggles": [
-      {
-        "id": "TOGGLE_GRILLING",
-        "on": "STATUS_GRILL_ON",
-        "off": "",
-        "defaultOn": false
-      }
-    ],
     "interactions": [
       {
         "id": "INT_GRILL",
         "label": "Grill",
         "cooldown": 3000,
-        "changeToggle": "TOGGLE_GRILLING"
+        "changeToggle": {
+          "on": "STATUS_GRILL_ON",
+          "off": "STATUS_GRILL_OFF",
+          "defaultState": "off"
+        }
       },
       {
         "id": "INT_FEED",

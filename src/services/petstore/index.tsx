@@ -23,7 +23,7 @@ import {
   PetInteractionEvent,
   RawPetStatuses,
   PetToggleDefinition,
-  ActiveToggleStatus,
+  ActiveToggleState,
 } from '../../types';
 import { clamp, getRenderedDeltaStats, getCachedDeltaStats, log } from '../../util/tools';
 import {
@@ -78,18 +78,8 @@ export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetS
     statuses: parseStatusesGroup(petDefJSON.logic.statuses),
     behaviorRules: parseBehaviorRulesWhenThenGroup(petDefJSON.logic.behaviorRules),
     behaviors: parsePetBehaviors(petDefJSON.logic.behaviors || [], petDefJSON.baseUrl),
-    interactions: parseInteractionsGroup(petDefJSON.logic.interactions),
-    toggles: parseTogglesGroup(petDefJSON.logic.toggles),
+    interactions: parseInteractionsGroup(petDefJSON.logic.interactions)
   } as PetLogicGroup;
-};
-
-export const parseTogglesGroup = (petToggles: PetToggleDefinition[]) => {
-  return petToggles.map((petToggles) => ({
-    id: petToggles.id,
-    on: petToggles.on || '',
-    off: petToggles.off || '',
-    defaultOn: petToggles.defaultOn !== undefined ? petToggles.defaultOn : false,
-  }));
 };
 
 export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: string) => {
@@ -115,6 +105,15 @@ export const parseInteractionAvailability = (availability: RawWhenThen[]) => {
   return availability ? parseInteractionWhenThenGroup(availability) : [];
 };
 
+export const parseInteractionToggleDefinition = (toggleDef?: PetToggleDefinition) => {
+  if (!toggleDef) return null;
+  return {
+    on: toggleDef.on || '',
+    off: toggleDef.off || '',
+    defaultState: toggleDef.defaultState || 'off',
+  }
+};
+
 export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSON[]) => {
   if (!interactions) return [];
 
@@ -123,7 +122,7 @@ export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSO
     label: int.label,
     cooldown: int.cooldown,
     changeStats: parseStatChanges(int.changeStats),
-    changeToggle: int.changeToggle || '',
+    changeToggle: parseInteractionToggleDefinition(int.changeToggle),
     availability: parseInteractionAvailability(int.availability),
   }));
 };
@@ -167,31 +166,25 @@ export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) =>
 
 /*
 { toggle, status }
-{ id, on, off, defaultOn }
+{ id, on, off, defaultState }
 { string }
 */
 export const getUpdatedToggles = (
-  cachedToggles: ActiveToggleStatus[],
-  toggleDefs: PetToggleDefinition[],
-  toggleToFlip: string
+  toggleId: string,
+  toggleDef: PetToggleDefinition,
+  cachedToggles: ActiveToggleState[],
 ) => {
-  const toggleDef = toggleDefs.find((td) => td.id === toggleToFlip);
-  if (!toggleDef) {
-    // this shouldnt happen, just to help debug later
-    console.error(`invalid toggle "${toggleToFlip}" attempted`);
-    return cachedToggles;
-  } else {
-    const curToggleStatus = cachedToggles.find((ats) => ats.toggle === toggleToFlip) || {
-      toggle: toggleToFlip,
-      status: toggleDef.defaultOn ? 'on' : 'off',
-    };
 
-    // whether it was an existing one or a new one, flip it.
-    curToggleStatus.status = curToggleStatus.status === 'on' ? 'off' : 'on';
+  const updatedToggleStatus = cachedToggles.find((ats) => ats.id === toggleId) || {
+    id: toggleId,
+    state: toggleDef.defaultState || 'off',
+  };
 
-    // give back the same junk, with the new toggle value
-    return cachedToggles.filter(ct => ct.toggle !== toggleToFlip).concat([curToggleStatus])
-  }
+  // whether it was an existing one or a new one, flip it.
+  updatedToggleStatus.state = updatedToggleStatus.state === 'on' ? 'off' : 'on';
+
+  // give back the same junk, with the new toggle value
+  return cachedToggles.filter(ct => ct.id !== toggleId).concat([updatedToggleStatus])
 };
 
 export const getUpdatedStats = (
@@ -329,9 +322,9 @@ export const petStoreSlice = createSlice({
         const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
         if (cachedIdx > -1) {
           const cachedToggles = state.cachedPets[cachedIdx]?.activeToggles || [];
-          const toggleDefs = activePet.logic.toggles;
+          // const toggleDefs = activePet.logic.toggles;
 
-          const newToggles = getUpdatedToggles(cachedToggles, toggleDefs, interaction.changeToggle);
+          const newToggles = getUpdatedToggles(interaction.id, interaction.changeToggle, cachedToggles);
 
           state.cachedPets[cachedIdx] = {
             ...state.cachedPets[cachedIdx],
@@ -434,10 +427,6 @@ export const selectActiveStatusDefinitions = createSelector(
   [selectActivePet],
   (activePet) => activePet?.logic?.statuses || []
 );
-export const selectActiveToggleDefinitions = createSelector(
-  [selectActivePet],
-  (activePet) => activePet?.logic?.toggles || []
-);
 export const selectActiveInteractionDefinitions = createSelector(
   [selectActivePet],
   (activePet) => activePet?.logic?.interactions || []
@@ -474,7 +463,7 @@ export const selectActiveCachedPetStats = createSelector(
 );
 export const selectActiveCachedToggles = createSelector(
   [selectActiveCachedPet],
-  (savedPetState): ActiveToggleStatus[] => {
+  (savedPetState): ActiveToggleState[] => {
     if (!savedPetState) return [];
     return savedPetState.activeToggles || [];
   }
@@ -513,15 +502,15 @@ export const selectRenderedDeltaStats = createSelector(
 );
 
 export const selectActiveDeltaStatuses = createSelector(
-  [selectRenderedDeltaStats, selectActiveStatDefinitions, selectActiveCachedToggles, selectActiveStatusDefinitions, selectActiveToggleDefinitions],
-  (deltaStats, statDefinitions, activeToggles, statusDefs, allToggleDefs) => {
+  [selectRenderedDeltaStats, selectActiveStatDefinitions, selectActiveCachedToggles, selectActiveInteractionDefinitions],
+  (deltaStats, statDefinitions, activeToggles, interactionDefs) => {
     // for each statDef, look through statDef.statEffects, which is a whenThenNumberGroup[]
     // all stats should be evaluated, and output all unique statuses matched
     const findDeltaStat = (id: string) => deltaStats.find((ds) => ds.id === id);
 
     // console.log('activeToggles', allToggleDefs, activeToggles, statusDefs)
 
-    const allStatuses = [];
+    const allStatuses: string[] = [];
     for (let i = 0; i < statDefinitions.length; i++) {
       const dS = findDeltaStat(statDefinitions[i].id);
       if (!dS) continue;
@@ -534,25 +523,21 @@ export const selectActiveDeltaStatuses = createSelector(
       }
     }
 
-    // now check toggles, toggles override whatever stats had done
-
-    for(let i = 0; i < allToggleDefs.length; i++){
-      const foundActiveToggle = activeToggles.find(tog => tog.toggle === allToggleDefs[i].id);
-      let newStatus: string | undefined = '';
-      if (foundActiveToggle) {
-        if (foundActiveToggle.status === 'on') {
-          newStatus = allToggleDefs[i].on;
+    let newStatus: string | undefined = '';
+    activeToggles.forEach(activeToggle => {
+      const changeToggleDef = interactionDefs.find(intDef => intDef.id === activeToggle.id);
+      if(changeToggleDef?.changeToggle){
+        if (activeToggle.state === 'on') {
+          newStatus = changeToggleDef.changeToggle.on;
         } else {
-          newStatus = allToggleDefs[i].off;
+          newStatus = changeToggleDef.changeToggle.off;
         }
-      } else {
-        newStatus = allToggleDefs[i].defaultOn ? allToggleDefs[i].on : allToggleDefs[i].off;
       }
 
       if(newStatus && !allStatuses.includes(newStatus)) {
         allStatuses.push(newStatus);
       }
-    }
+    });
 
     return allStatuses
       .map((statusId) => {
@@ -675,6 +660,14 @@ export const selectNewSavePayload = createSelector(
         };
       });
     } else {
+      // default activeToggles for interactions;
+      const defaultToggles = activePet.logic.interactions.filter(interactionDef => {
+        return !!interactionDef.changeToggle
+      }).map(interactionDef => ({
+        id: interactionDef.id,
+        state: interactionDef.changeToggle?.defaultState || 'off'
+      } as ActiveToggleState));
+
       // create new pet data in cookie
       newList = storedPets.concat([
         {
@@ -683,7 +676,7 @@ export const selectNewSavePayload = createSelector(
           bornOn: activePet.bornOn,
           lastSaved: lastSaved,
           beingTracked: false,
-          activeToggles: [],
+          activeToggles: defaultToggles,
         },
       ]);
     }

@@ -58,7 +58,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onCli
   let label = interaction.label;
   // if(label === 'Grill') console.log(interaction);
   if(interaction.changeToggle){
-    label = `t(${interaction.changeToggle}): ${label}`;
+    label = `(TOGGLE): ${label}`;
   }
   if(cooldownStatus){
     const total = cooldownStatus.endAt - cooldownStatus.startAt; 

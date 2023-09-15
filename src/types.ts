@@ -64,12 +64,13 @@ export type PetInteractionEvent = {
   time: number;
 }
 
+
 export type PetInteractionDefinition = {
   id: string,
   label: string,
   cooldown: number,
   changeStats: StatChangeDefinition[],
-  changeToggle: string,
+  changeToggle: PetToggleDefinition | null,
   availability: WhenThenStringBooleanGroup[]
 }
 
@@ -77,7 +78,7 @@ export type PetInteractionDefinitionJSON = {
   id: string,
   label: string,
   cooldown: number,
-  changeToggle?: string,
+  changeToggle?: PetToggleDefinition,
   changeStats: StatChangeDefinition[],
   availability: RawWhenThen[]
 }
@@ -136,10 +137,9 @@ export type WhenThenStringBooleanGroup = {
 }
 
 export type PetToggleDefinition = {
-  id: string,
   on?: string,
   off?: string,
-  defaultOn?: boolean
+  defaultState?: 'on' | 'off'
 }
 
 export type PetLogicGroup = {
@@ -147,8 +147,7 @@ export type PetLogicGroup = {
   statuses: PetStatusDefinition[],
   behaviors: PetBehaviorDefinition[],
   behaviorRules: WhenThenStringGroup[],
-  interactions: PetInteractionDefinition[],
-  toggles: PetToggleDefinition[]
+  interactions: PetInteractionDefinition[]
 }
 
 export type PingPayload = {
@@ -170,8 +169,7 @@ export type RawPetJSON = {
     statuses: RawPetStatuses,
     behaviors: PetBehaviorJSON[],
     behaviorRules: WhenThenStringGroup[],
-    interactions: PetInteractionDefinitionJSON[],
-    toggles: PetToggleDefinition[]
+    interactions: PetInteractionDefinitionJSON[]
   },
   backgroundImage?:string,
   backgroundColor?:string
@@ -199,9 +197,9 @@ export type CachedPetStat = {
   id: string,
   value: number
 }
-export type ActiveToggleStatus = {
-  toggle: string,
-  status: 'on' | 'off'
+export type ActiveToggleState = {
+  id: string,
+  state: 'on' | 'off'
 }
 export type SavedPetState = {
   id: string,
@@ -209,7 +207,7 @@ export type SavedPetState = {
   lastSaved?: number,
   bornOn?: number,
   beingTracked?: boolean,
-  activeToggles: ActiveToggleStatus[]
+  activeToggles: ActiveToggleState[]
 }
 
 export type InteractionCooldownStatus = {

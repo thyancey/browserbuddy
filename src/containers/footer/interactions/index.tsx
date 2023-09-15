@@ -24,7 +24,8 @@ const ScInteractions = styled.ul`
 
 export const Interactions = () => {
   const interactionDetails = useSelector(selectActiveInteractionDetail, shallowEqual);
-  // const activeStatuses = useSelector(selectActiveDeltaStatuses, shallowEqual);
+  const activeStatuses = useSelector(selectActiveDeltaStatuses, shallowEqual);
+  // console.log('activeStatuses', activeStatuses);
 
   // thunk madness, cause I don't know how else to do this.
   const dispatch = useDispatch();
