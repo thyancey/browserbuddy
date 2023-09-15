@@ -67,6 +67,7 @@ describe('#petstore.selectors', () => {
           }
         ],
         [],
+        [],
         lastTime,
         time,
         false
@@ -93,6 +94,7 @@ describe('#petstore.selectors', () => {
             statEffects: []
           }
         ],
+        [],
         [],
         lastTime,
         time,
@@ -128,6 +130,7 @@ describe('#petstore.selectors', () => {
             statEffects: []
           }
         ],
+        [],
         [],
         lastTime,
         time,

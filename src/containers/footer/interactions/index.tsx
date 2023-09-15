@@ -5,7 +5,6 @@ import { Dispatch } from '@reduxjs/toolkit';
 import {
   addNewInteractionEvent,
   removeInteractionEvent,
-  selectActiveBehavior,
   selectActiveCachedToggles,
   selectActiveInteractionDetail,
   selectIsActivePetAlive,
