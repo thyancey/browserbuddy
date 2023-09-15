@@ -52,7 +52,7 @@ const getBubbleColors = (alertType?: AlertType) => {
     case 'alert': return [ '--color-red', '--color-yellow' ];
     case 'warning': return [ '--color-yellow', '--color-red' ];
     case 'reward': return [ '--color-green', '--color-white' ];
-    default: return [ '--color-white', '--color-red' ];
+    default: return [ '--color-white', '--color-grey' ];
   }
 }
 
@@ -65,11 +65,13 @@ const getBottom = (index:number) => {
 
 export const Statuses = () => {
   const activeDeltaStatuses = useSelector(selectDetailedActiveDeltaStatuses, shallowEqual);
+
+  const withLabel = activeDeltaStatuses.filter((dS) => dS.label);
   
   return (
     <ScContainer>
       <ScStatuses>
-        {activeDeltaStatuses.map((dS,i) => (
+        {withLabel.map((dS,i) => (
           <ScStatus 
             key={dS.id} 
             id={dS.id}

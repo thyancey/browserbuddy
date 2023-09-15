@@ -22,7 +22,6 @@ export type PetInfo = {
   id: string,
   name: string,
   bio: string,
-  bornOn?: number,
   level: number
 }
 
@@ -64,11 +63,13 @@ export type PetInteractionEvent = {
   time: number;
 }
 
+
 export type PetInteractionDefinition = {
   id: string,
   label: string,
   cooldown: number,
   changeStats: StatChangeDefinition[],
+  changeToggle: PetToggleDefinition | null,
   availability: WhenThenStringBooleanGroup[]
 }
 
@@ -76,6 +77,7 @@ export type PetInteractionDefinitionJSON = {
   id: string,
   label: string,
   cooldown: number,
+  changeToggle?: PetToggleDefinition,
   changeStats: StatChangeDefinition[],
   availability: RawWhenThen[]
 }
@@ -87,7 +89,9 @@ export type StatChangeDefinition = {
 
 export type PetBehaviorDefinition = {
   id: string,
+  type: 'normal' | 'dead',
   imageUrl: string,
+  bgImageUrl?: string,
   position: string,
   offsetX: number,
   offsetY: number
@@ -95,8 +99,11 @@ export type PetBehaviorDefinition = {
 
 export type PetBehaviorJSON = {
   id: string,
+  type?: 'dead',
   image?: string,
   imageUrl?: string,
+  
+  backgroundImage?: string,
   position: string,
   offsetX?: number,
   offsetY?: number
@@ -108,28 +115,45 @@ export type WhenNumber = {
   isPercent: boolean
 }
 export type RawWhenThen = {
-  when: string[],
-  then: (string | string[] | boolean),
+  when?: string | string[] | string[][],
+  then: (string | string[] | boolean | WhenThenStringGroup[]),
 }
 export type WhenThenNumberGroup = {
   when: WhenNumber[],
-  then: (string | string[])
+  then: string
 }
 
+// in whens, first depth is AND, second depth is OR
+// when: [ "REQUIRED", [ "AND", "AT_LEAST", "ONE_OF", "THESE"]]
+// then: "this"
+// OR
+// then : { when: [], then: "" }
 export type WhenThenStringGroup = {
-  when: string[],
-  then: (string | string[])
+  when: string | string[] | string[][],
+  then: string | WhenThenStringGroup[]
 }
 export type WhenThenStringBooleanGroup = {
   when: string[],
   then: boolean
 }
+
+export type ToggleStateDefinition = {
+  statusId?: string,
+  statId?: string,
+  perMinute?: number
+}
+export type PetToggleDefinition = {
+  defaultState?: 'on' | 'off',
+  onState?: ToggleStateDefinition,
+  offState?: ToggleStateDefinition
+}
+
 export type PetLogicGroup = {
   stats: PetStatDefinition[],
   statuses: PetStatusDefinition[],
   behaviors: PetBehaviorDefinition[],
   behaviorRules: WhenThenStringGroup[],
-  interactions: PetInteractionDefinition[],
+  interactions: PetInteractionDefinition[]
 }
 
 export type PingPayload = {
@@ -137,6 +161,9 @@ export type PingPayload = {
   doSave?: boolean
 }
 
+export type RawPetStatuses = {
+  [key: string]: PetStatusDefinition
+}
 export type RawPetJSON = {
   id: string,
   name: string,
@@ -145,9 +172,9 @@ export type RawPetJSON = {
   baseUrl: string,
   logic: {
     stats: PetStatDefinitionJSON[],
-    statuses: PetStatusDefinition[],
+    statuses: RawPetStatuses,
     behaviors: PetBehaviorJSON[],
-    behaviorRules: {when:string[], then:string}[],
+    behaviorRules: WhenThenStringGroup[],
     interactions: PetInteractionDefinitionJSON[]
   },
   backgroundImage?:string,
@@ -159,6 +186,7 @@ export type PetDefinition = {
   name: string,
   bio: string,
   bornOn?: number,
+  diedOn?: number,
   level: number,
   logic: PetLogicGroup,
   bgImage?:string,
@@ -176,12 +204,19 @@ export type CachedPetStat = {
   id: string,
   value: number
 }
+export type ActiveToggleState = {
+  id: string,
+  state: 'on' | 'off',
+  effect?: ToggleStateDefinition
+}
 export type SavedPetState = {
   id: string,
   stats: CachedPetStat[],
   lastSaved?: number,
   bornOn?: number,
-  beingTracked?: boolean
+  diedOn?: number,
+  beingTracked?: boolean,
+  activeToggles: ActiveToggleState[]
 }
 
 export type InteractionCooldownStatus = {
