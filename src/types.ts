@@ -23,6 +23,7 @@ export type PetInfo = {
   name: string,
   bio: string,
   bornOn?: number,
+  diedOn?: number,
   level: number
 }
 
@@ -185,6 +186,7 @@ export type PetDefinition = {
   name: string,
   bio: string,
   bornOn?: number,
+  diedOn?: number,
   level: number,
   logic: PetLogicGroup,
   bgImage?:string,
@@ -212,6 +214,7 @@ export type SavedPetState = {
   stats: CachedPetStat[],
   lastSaved?: number,
   bornOn?: number,
+  diedOn?: number,
   beingTracked?: boolean,
   activeToggles: ActiveToggleState[]
 }

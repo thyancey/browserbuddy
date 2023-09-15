@@ -264,6 +264,14 @@ export const petStoreSlice = createSlice({
       window.localStorage.clear();
       window.location.reload();
     },
+    killActivePet: (state: PetStoreState) => {
+      console.log('------ PET WAS KILLED ----------');
+      state.cachedPets[state.activeIdx] = {
+        ...state.cachedPets[state.activeIdx],
+        diedOn: new Date().getTime(),
+        beingTracked: false
+      };
+    },
     setActiveId: (state: PetStoreState, action: PayloadAction<string>) => {
       const petIdx = state.pets.findIndex((p: PetDefinition) => p.id === action.payload);
       if (petIdx === -1) {
@@ -376,6 +384,7 @@ export const petStoreSlice = createSlice({
         ...petDefinition,
         logic: logicGroup,
         bornOn: initialState?.bornOn || nowTime,
+        diedOn: initialState?.diedOn || undefined, // this should always be undefined?
         bgImage: petDefinition.backgroundImage ? `${petDefinition.baseUrl}/${petDefinition.backgroundImage}` : null,
         bgColor: petDefinition.backgroundColor || null,
       } as PetDefinition;
@@ -420,6 +429,7 @@ export const {
   addNewInteractionEvent,
   restoreInteractionFromSave,
   removeInteractionEvent,
+  killActivePet,
 } = petStoreSlice.actions;
 
 export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;
@@ -492,6 +502,7 @@ export const selectActiveInfo = createSelector([selectActivePet], (activePet): P
     level: activePet.level,
     bio: activePet.bio,
     bornOn: activePet.bornOn,
+    diedOn: activePet.diedOn,
   };
 });
 
@@ -662,9 +673,10 @@ export const selectNewSavePayload = createSelector(
     const foundIdx = storedPets.findIndex((sP: SavedPetState) => sP.id === activePet.id);
     let newList = [];
     if (foundIdx > -1) {
-      // this is where pet data is saved on an interval
+      // A pet was found, this is where pet data is saved on an interval
       newList = storedPets.map((sP: SavedPetState) => {
         if (sP.id === activePet.id) {
+          // console.log('checking beingTracked', sP.beingTracked);
           const curStats = sP.beingTracked ? cachedDeltaStats : sP.stats;
           // TODO, do i need to do this caching stuff like stats for toggles??
 
@@ -672,8 +684,9 @@ export const selectNewSavePayload = createSelector(
             id: activePet.id,
             stats: curStats,
             bornOn: activePet.bornOn,
+            diedOn: sP.diedOn,
             lastSaved: lastSaved,
-            beingTracked: true,
+            beingTracked: sP.diedOn === undefined ? true : false,
             activeToggles: sP.activeToggles,
           };
         }
@@ -684,7 +697,7 @@ export const selectNewSavePayload = createSelector(
         };
       });
     } else {
-      // default activeToggles for interactions;
+      // a pet was not found
       const defaultToggles = activePet.logic.interactions
         .filter((interactionDef) => {
           return !!interactionDef.changeToggle;
@@ -705,11 +718,13 @@ export const selectNewSavePayload = createSelector(
         });
 
       // create new pet data in cookie
+      console.log('A');
       newList = storedPets.concat([
         {
           id: activePet.id,
           stats: cachedDeltaStats,
           bornOn: activePet.bornOn,
+          diedOn: undefined,
           lastSaved: lastSaved,
           beingTracked: false,
           activeToggles: defaultToggles,

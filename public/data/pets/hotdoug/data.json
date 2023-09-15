@@ -288,7 +288,7 @@
           "onState": {
             "statusId": "STATUS_GRILL_ON",
             "statId": "temperature",
-            "perMinute": 50.0
+            "perMinute": 100.0
           },
           "offState": {
             "statusId": "STATUS_GRILL_OFF"
