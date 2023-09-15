@@ -78,7 +78,7 @@ export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetS
     statuses: parseStatusesGroup(petDefJSON.logic.statuses),
     behaviorRules: parseBehaviorRulesWhenThenGroup(petDefJSON.logic.behaviorRules),
     behaviors: parsePetBehaviors(petDefJSON.logic.behaviors || [], petDefJSON.baseUrl),
-    interactions: parseInteractionsGroup(petDefJSON.logic.interactions)
+    interactions: parseInteractionsGroup(petDefJSON.logic.interactions),
   } as PetLogicGroup;
 };
 
@@ -108,10 +108,10 @@ export const parseInteractionAvailability = (availability: RawWhenThen[]) => {
 export const parseInteractionToggleDefinition = (toggleDef?: PetToggleDefinition) => {
   if (!toggleDef) return null;
   return {
-    on: toggleDef.on || '',
-    off: toggleDef.off || '',
     defaultState: toggleDef.defaultState || 'off',
-  }
+    onState: toggleDef.onState,
+    offState: toggleDef.offState
+  };
 };
 
 export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSON[]) => {
@@ -156,6 +156,19 @@ export const parseStatusesGroup = (statuses: RawPetStatuses): PetStatusDefinitio
   }));
 };
 
+const getDefaultToggleStatus = (toggleId: string, toggleDef: PetToggleDefinition) => {
+  const defaultState = toggleDef.defaultState || 'off';
+  const defaultEffect =
+    defaultState === 'on' ? toggleDef.onState : toggleDef.offState;
+  console.log('getDefaultToggleStatus, defaultEffect is ', defaultEffect);
+
+  return {
+    id: toggleId,
+    state: defaultState,
+    effect: defaultEffect,
+  };
+};
+
 export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) => {
   try {
     return !previous[activeIdx].beingTracked;
@@ -172,19 +185,22 @@ export const getWasntTracked = (previous: SavedPetState[], activeIdx: number) =>
 export const getUpdatedToggles = (
   toggleId: string,
   toggleDef: PetToggleDefinition,
-  cachedToggles: ActiveToggleState[],
+  cachedToggles: ActiveToggleState[]
 ) => {
-
-  const updatedToggleStatus = cachedToggles.find((ats) => ats.id === toggleId) || {
-    id: toggleId,
-    state: toggleDef.defaultState || 'off',
-  };
+  const updatedToggleStatus =
+    cachedToggles.find((ats) => ats.id === toggleId) || getDefaultToggleStatus(toggleId, toggleDef);
 
   // whether it was an existing one or a new one, flip it.
-  updatedToggleStatus.state = updatedToggleStatus.state === 'on' ? 'off' : 'on';
+  if (updatedToggleStatus.state === 'on') {
+    updatedToggleStatus.state = 'off';
+    updatedToggleStatus.effect = toggleDef.offState || undefined;
+  } else {
+    updatedToggleStatus.state = 'on';
+    updatedToggleStatus.effect = toggleDef.onState || undefined;
+  }
 
   // give back the same junk, with the new toggle value
-  return cachedToggles.filter(ct => ct.id !== toggleId).concat([updatedToggleStatus])
+  return cachedToggles.filter((ct) => ct.id !== toggleId).concat([updatedToggleStatus]);
 };
 
 export const getUpdatedStats = (
@@ -454,17 +470,15 @@ export const selectActiveCachedPet = createSelector(
 );
 export const selectCachedPetStats = createSelector([getCachedPets], (cachedPets) => cachedPets.map((cp) => cp.stats));
 
-export const selectActiveCachedPetStats = createSelector(
-  [selectActiveCachedPet],
-  (savedPetState): CachedPetStat[] => {
-    if (!savedPetState) return [];
-    return savedPetState.stats || [];
-  }
-);
+export const selectActiveCachedPetStats = createSelector([selectActiveCachedPet], (savedPetState): CachedPetStat[] => {
+  if (!savedPetState) return [];
+  return savedPetState.stats || [];
+});
 export const selectActiveCachedToggles = createSelector(
   [selectActiveCachedPet],
   (savedPetState): ActiveToggleState[] => {
     if (!savedPetState) return [];
+    // console.log('hey', savedPetState);
     return savedPetState.activeToggles || [];
   }
 );
@@ -495,20 +509,30 @@ export const selectActiveLastCached = createSelector(
 );
 
 export const selectRenderedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastRendered, getDebugMode],
-  (statDefinitions, cachedStats, petTime, time, debugMode) => {
-    return getRenderedDeltaStats(statDefinitions, cachedStats, petTime, time, debugMode);
+  [
+    selectActiveStatDefinitions,
+    selectActiveCachedPetStats,
+    selectActiveCachedToggles,
+    selectActiveLastCached,
+    selectLastRendered,
+    getDebugMode,
+  ],
+  (statDefinitions, cachedStats, activeToggles, petTime, time, debugMode) => {
+    return getRenderedDeltaStats(statDefinitions, cachedStats, activeToggles, petTime, time, debugMode);
   }
 );
 
 export const selectActiveDeltaStatuses = createSelector(
-  [selectRenderedDeltaStats, selectActiveStatDefinitions, selectActiveCachedToggles, selectActiveInteractionDefinitions],
+  [
+    selectRenderedDeltaStats,
+    selectActiveStatDefinitions,
+    selectActiveCachedToggles,
+    selectActiveInteractionDefinitions,
+  ],
   (deltaStats, statDefinitions, activeToggles, interactionDefs) => {
     // for each statDef, look through statDef.statEffects, which is a whenThenNumberGroup[]
     // all stats should be evaluated, and output all unique statuses matched
     const findDeltaStat = (id: string) => deltaStats.find((ds) => ds.id === id);
-
-    // console.log('activeToggles', allToggleDefs, activeToggles, statusDefs)
 
     const allStatuses: string[] = [];
     for (let i = 0; i < statDefinitions.length; i++) {
@@ -524,17 +548,17 @@ export const selectActiveDeltaStatuses = createSelector(
     }
 
     let newStatus: string | undefined = '';
-    activeToggles.forEach(activeToggle => {
-      const changeToggleDef = interactionDefs.find(intDef => intDef.id === activeToggle.id);
-      if(changeToggleDef?.changeToggle){
+    activeToggles.forEach((activeToggle) => {
+      const changeToggleDef = interactionDefs.find((intDef) => intDef.id === activeToggle.id);
+      if (changeToggleDef?.changeToggle) {
         if (activeToggle.state === 'on') {
-          newStatus = changeToggleDef.changeToggle.on;
+          newStatus = changeToggleDef.changeToggle.onState?.statusId;
         } else {
-          newStatus = changeToggleDef.changeToggle.off;
+          newStatus = changeToggleDef.changeToggle.offState?.statusId;
         }
       }
 
-      if(newStatus && !allStatuses.includes(newStatus)) {
+      if (newStatus && !allStatuses.includes(newStatus)) {
         allStatuses.push(newStatus);
       }
     });
@@ -597,10 +621,10 @@ export const selectPetList = createSelector([selectPets, selectActiveIdx], (pets
 );
 
 export const selectCachedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved, getDebugMode],
-  (petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode) => {
+  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved, getDebugMode, selectActiveCachedToggles],
+  (petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode, activeToggles) => {
     if (lastCachedTime === lastSavedTime) return null;
-    return getCachedDeltaStats(petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode);
+    return getCachedDeltaStats(petStats, cachedPetStats, activeToggles, lastCachedTime, lastSavedTime, debugMode);
   }
 );
 
@@ -661,12 +685,24 @@ export const selectNewSavePayload = createSelector(
       });
     } else {
       // default activeToggles for interactions;
-      const defaultToggles = activePet.logic.interactions.filter(interactionDef => {
-        return !!interactionDef.changeToggle
-      }).map(interactionDef => ({
-        id: interactionDef.id,
-        state: interactionDef.changeToggle?.defaultState || 'off'
-      } as ActiveToggleState));
+      const defaultToggles = activePet.logic.interactions
+        .filter((interactionDef) => {
+          return !!interactionDef.changeToggle;
+        })
+        .map((interactionDef) => {
+          const defaultState = interactionDef.changeToggle?.defaultState || 'off';
+          console.log('selectNewSavePayload, defaultState is ', defaultState, interactionDef.changeToggle);
+          const defaultEffect =
+            defaultState === 'on' ? interactionDef.changeToggle?.onState : interactionDef.changeToggle?.offState;
+            
+          console.log('selectNewSavePayload, defaultEffect is ', defaultEffect);
+
+          return {
+            id: interactionDef.id,
+            state: defaultState,
+            effect: defaultEffect,
+          } as ActiveToggleState;
+        });
 
       // create new pet data in cookie
       newList = storedPets.concat([

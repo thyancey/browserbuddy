@@ -136,10 +136,15 @@ export type WhenThenStringBooleanGroup = {
   then: boolean
 }
 
+export type ToggleStateDefinition = {
+  statusId?: string,
+  statId?: string,
+  perMinute?: number
+}
 export type PetToggleDefinition = {
-  on?: string,
-  off?: string,
-  defaultState?: 'on' | 'off'
+  defaultState?: 'on' | 'off',
+  onState?: ToggleStateDefinition,
+  offState?: ToggleStateDefinition
 }
 
 export type PetLogicGroup = {
@@ -199,7 +204,8 @@ export type CachedPetStat = {
 }
 export type ActiveToggleState = {
   id: string,
-  state: 'on' | 'off'
+  state: 'on' | 'off',
+  effect?: ToggleStateDefinition
 }
 export type SavedPetState = {
   id: string,
