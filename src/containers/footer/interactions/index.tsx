@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { addNewInteractionEvent, removeInteractionEvent, selectActiveInteractionDetail } from '../../../services/petstore';
+import { addNewInteractionEvent, removeInteractionEvent, selectActiveDeltaStatuses, selectActiveInteractionDetail } from '../../../services/petstore';
 import { PetInteractionDefinition } from '../../../types';
 import { InteractionButton } from './interaction-button';
 
@@ -24,6 +24,7 @@ const ScInteractions = styled.ul`
 
 export const Interactions = () => {
   const interactionDetails = useSelector(selectActiveInteractionDetail, shallowEqual);
+  // const activeStatuses = useSelector(selectActiveDeltaStatuses, shallowEqual);
 
   // thunk madness, cause I don't know how else to do this.
   const dispatch = useDispatch();

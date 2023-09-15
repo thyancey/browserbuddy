@@ -23,7 +23,7 @@
         "id": "temperature",
         "label": "Internal Temp",
         "value": 50.0,
-        "perMinute": -50.0,
+        "perMinute": -10.0,
         "max": 650.0,
         "fullIsGood": false,
         "statEffects": [
@@ -116,6 +116,18 @@
       "STATUS_DEAD": {
         "label": "RIP",
         "alertType": "alert"
+      },
+      "STATUS_GRILL_ON": {
+        "label": "grill ON",
+        "changeStats": [
+          {
+            "statId": "temperature",
+            "value": 100.0
+          }
+        ]
+      },
+      "STATUS_GRILL_OFF": {
+        "label": "grill OFF"
       }
     },
     "behaviorRules": [
@@ -276,7 +288,21 @@
 
       { "id": "BE_DEAD", "image": "assets/hot_idle.gif", "position": "bottom", "offsetY": -50 }
     ],
+    "toggles": [
+      {
+        "id": "TOGGLE_GRILLING",
+        "on": "STATUS_GRILL_ON",
+        "off": "",
+        "defaultOn": false
+      }
+    ],
     "interactions": [
+      {
+        "id": "INT_GRILL",
+        "label": "Grill",
+        "cooldown": 3000,
+        "changeToggle": "TOGGLE_GRILLING"
+      },
       {
         "id": "INT_FEED",
         "label": "Feed",
@@ -300,17 +326,6 @@
           {
             "statId": "waste",
             "value": -25
-          }
-        ]
-      },
-      {
-        "id": "INT_GRILL",
-        "label": "Grill",
-        "cooldown": 300,
-        "changeStats": [
-          {
-            "statId": "temperature",
-            "value": 150.0
           }
         ]
       },

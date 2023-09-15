@@ -55,6 +55,11 @@ type InteractionButtonProps = {
 }
 
 export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onClickHandler}: InteractionButtonProps) => {
+  let label = interaction.label;
+  // if(label === 'Grill') console.log(interaction);
+  if(interaction.changeToggle){
+    label = `t(${interaction.changeToggle}): ${label}`;
+  }
   if(cooldownStatus){
     const total = cooldownStatus.endAt - cooldownStatus.startAt; 
     const progress = (total - (cooldownStatus.endAt - new Date().getTime())) / total;
@@ -63,7 +68,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onCli
     return(
       <ScInteraction $isEnabled={isEnabled}>
         <ScCooldownButton>
-          <ScLabel>{interaction.label}</ScLabel>
+          <ScLabel>{label}</ScLabel>
           <ProgressBar startProgress={progress} duration={timeLeft} />
         </ScCooldownButton>
       </ScInteraction>
@@ -72,7 +77,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, onCli
     return(
       <ScInteraction $isEnabled={isEnabled} onClick={() => onClickHandler && onClickHandler()} >
         <ScButton>
-          <ScLabel>{`${interaction.label}`}</ScLabel>
+          <ScLabel>{`${label}`}</ScLabel>
         </ScButton>
       </ScInteraction>
     );

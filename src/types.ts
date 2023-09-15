@@ -69,6 +69,7 @@ export type PetInteractionDefinition = {
   label: string,
   cooldown: number,
   changeStats: StatChangeDefinition[],
+  changeToggle: string,
   availability: WhenThenStringBooleanGroup[]
 }
 
@@ -76,6 +77,7 @@ export type PetInteractionDefinitionJSON = {
   id: string,
   label: string,
   cooldown: number,
+  changeToggle?: string,
   changeStats: StatChangeDefinition[],
   availability: RawWhenThen[]
 }
@@ -132,12 +134,21 @@ export type WhenThenStringBooleanGroup = {
   when: string[],
   then: boolean
 }
+
+export type PetToggleDefinition = {
+  id: string,
+  on?: string,
+  off?: string,
+  defaultOn?: boolean
+}
+
 export type PetLogicGroup = {
   stats: PetStatDefinition[],
   statuses: PetStatusDefinition[],
   behaviors: PetBehaviorDefinition[],
   behaviorRules: WhenThenStringGroup[],
   interactions: PetInteractionDefinition[],
+  toggles: PetToggleDefinition[]
 }
 
 export type PingPayload = {
@@ -159,7 +170,8 @@ export type RawPetJSON = {
     statuses: RawPetStatuses,
     behaviors: PetBehaviorJSON[],
     behaviorRules: WhenThenStringGroup[],
-    interactions: PetInteractionDefinitionJSON[]
+    interactions: PetInteractionDefinitionJSON[],
+    toggles: PetToggleDefinition[]
   },
   backgroundImage?:string,
   backgroundColor?:string
@@ -187,12 +199,17 @@ export type CachedPetStat = {
   id: string,
   value: number
 }
+export type ActiveToggleStatus = {
+  toggle: string,
+  status: 'on' | 'off'
+}
 export type SavedPetState = {
   id: string,
   stats: CachedPetStat[],
   lastSaved?: number,
   bornOn?: number,
-  beingTracked?: boolean
+  beingTracked?: boolean,
+  activeToggles: ActiveToggleStatus[]
 }
 
 export type InteractionCooldownStatus = {
