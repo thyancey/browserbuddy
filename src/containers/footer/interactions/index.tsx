@@ -5,8 +5,10 @@ import { Dispatch } from '@reduxjs/toolkit';
 import {
   addNewInteractionEvent,
   removeInteractionEvent,
+  selectActiveBehavior,
   selectActiveCachedToggles,
   selectActiveInteractionDetail,
+  selectIsActivePetAlive,
 } from '../../../services/petstore';
 import { PetInteractionDefinition } from '../../../types';
 import { InteractionButton } from './interaction-button';
@@ -30,6 +32,7 @@ const ScInteractions = styled.ul`
 export const Interactions = () => {
   const interactionDetails = useSelector(selectActiveInteractionDetail, shallowEqual);
   const activeToggles = useSelector(selectActiveCachedToggles, shallowEqual);
+  const isActivePetAlive = useSelector(selectIsActivePetAlive);
 
   // thunk madness, cause I don't know how else to do this.
   const dispatch = useDispatch();
@@ -51,28 +54,13 @@ export const Interactions = () => {
     });
   };
 
-  // this is such a side-effect nightmare. Putting this in a thunk with a timeout was the only
-  // way to get this work without erroring out hard. This is bad! Things are not goin well!
-  
-  /*
-  if (activeBehavior?.id === 'BE_DEAD') {
-    console.log('INTERACTIONS')
-    setTimeout(() => {
-      //@ts-ignore
-      dispatch((thunkDispatch: Dispatch) => {
-        thunkDispatch(killActivePet());
-      });
-    }, 1);
-  }
-  */
-
   return (
     <ScInteractions>
       {interactionDetails.map((iDetail) => (
         <InteractionButton
           key={iDetail.id}
           cooldownStatus={iDetail.cooldownStatus}
-          isEnabled={iDetail.enabled}
+          isEnabled={isActivePetAlive ? iDetail.enabled : false}
           interaction={iDetail.definition}
           toggleState={activeToggles.find((toggle) => toggle.id === iDetail.id)}
           onClickHandler={() => addTemporaryInteraction(iDetail.definition)}

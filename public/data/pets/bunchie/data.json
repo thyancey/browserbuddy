@@ -110,7 +110,7 @@
       { "id": "BE_HUNGRY", "image": "assets/sad.gif" },
       { "id": "BE_DUMBGRY", "image": "assets/sad.gif" },
       { "id": "BE_FAT", "image": "assets/fat.gif" },
-      { "id": "BE_DEAD", "image": "assets/dead.gif" }
+      { "id": "BE_DEAD", "type": "dead", "image": "assets/dead.gif" }
     ],
     "interactions":[
       {

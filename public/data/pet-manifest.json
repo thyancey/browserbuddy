@@ -1,5 +1,6 @@
 {
   "pets":[
-    { "id": "hotdoug", "baseUrl": "data/pets/hotdoug" }
+    { "id": "hotdoug", "baseUrl": "data/pets/hotdoug" },
+    { "id": "bunchie", "baseUrl": "data/pets/bunchie" }
   ]
 } 

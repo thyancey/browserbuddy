@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { selectActiveInfo } from '../../services/petstore';
+import { selectActiveCachedPet, selectActiveInfo } from '../../services/petstore';
 
 const ScContainer = styled.div`
   width:100%;
@@ -68,6 +68,7 @@ const getDateLabel = (epoch?: number) => {
 
 export const HeaderBottom = () => {
   const petInfo = useSelector(selectActiveInfo);
+  const cachedInfo = useSelector(selectActiveCachedPet);
 
   return (
     <ScContainer>
@@ -75,7 +76,8 @@ export const HeaderBottom = () => {
         <>
           <ScLabel>
             <ScPetName>{petInfo.name}</ScPetName>
-            <ScBornOn>{`born on: ${getDateLabel(petInfo.bornOn)}`}</ScBornOn>
+            {cachedInfo?.bornOn && <ScBornOn>{`born on: ${getDateLabel(cachedInfo.bornOn)}`}</ScBornOn>}
+            {cachedInfo?.diedOn && <ScBornOn>{`died on: ${getDateLabel(cachedInfo.diedOn)}`}</ScBornOn>}
           </ScLabel>
           <ScPetLevel>
             {/* <h4>{`Level: ${petInfo.level}`}</h4> */}

@@ -9,7 +9,6 @@ import { useEffect } from 'react';
 type ScContainerProps = {
   $bgImageUrl?: string;
 };
-
 const ScContainer = styled.div<ScContainerProps>`
   position: absolute;
   left: 0;
@@ -29,6 +28,40 @@ const ScContainer = styled.div<ScContainerProps>`
       background-image: url(${p.$bgImageUrl});
     `}
 `;
+
+interface ScOverlayProps {
+  $isActive?: boolean;
+}
+const ScOverlay = styled.div<ScOverlayProps>`
+  position: absolute;
+  inset: 0;
+  color: red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+
+  > span {
+    font-size: 8rem;
+    color: var(--color-white);
+    background-color: var(--color-red);
+    display: block;
+    padding: 6rem;
+    border-radius: 5rem;
+    border: 1rem solid var(--color-white);
+
+    transform: rotate(2deg) translateY(200%);
+    opacity: 0;
+    transition: transform .3s ease-out, opacity .2s;
+
+    ${p => p.$isActive && css`
+      transform: rotate(-7deg) translateY(125%);
+      opacity: 1;
+    `}
+  }
+`;
+
 
 const ScPetImage = styled.div`
   background-size: contain;
@@ -60,10 +93,10 @@ export const PetContainer = () => {
 
   // STOP EVERYTHING AND DIE
   useEffect(() => {
-    if (activeBehavior?.id === 'BE_DEAD') {
+    if (activeBehavior?.type === 'dead') {
       dispatch(killActivePet());
     }
-  }, [ activeBehavior?.id, dispatch ])
+  }, [activeBehavior?.type, dispatch]);
 
   if (!activeBehavior) {
     return <ScContainer $bgImageUrl={imageUrl} />;
@@ -84,6 +117,9 @@ export const PetContainer = () => {
         <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
         <Statuses />
         <ScPetImage style={backgroundStyles} />
+        <ScOverlay $isActive={activeBehavior.type === 'dead'}>
+          <span>{'WASTED'}</span>
+        </ScOverlay>
       </>
     </ScContainer>
   );

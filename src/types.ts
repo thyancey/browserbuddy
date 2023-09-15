@@ -22,8 +22,6 @@ export type PetInfo = {
   id: string,
   name: string,
   bio: string,
-  bornOn?: number,
-  diedOn?: number,
   level: number
 }
 
@@ -91,6 +89,7 @@ export type StatChangeDefinition = {
 
 export type PetBehaviorDefinition = {
   id: string,
+  type: 'normal' | 'dead',
   imageUrl: string,
   bgImageUrl?: string,
   position: string,
@@ -100,6 +99,7 @@ export type PetBehaviorDefinition = {
 
 export type PetBehaviorJSON = {
   id: string,
+  type?: 'dead',
   image?: string,
   imageUrl?: string,
   

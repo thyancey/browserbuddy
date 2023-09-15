@@ -85,6 +85,7 @@ export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetS
 export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: string) => {
   return petBehaviorsJson.map((pB) => ({
     ...pB,
+    type: pB.type || 'normal',
     imageUrl: pB.image ? `${baseUrl}/${pB.image}` : pB.imageUrl || '',
     bgImageUrl: pB.backgroundImage ? `${baseUrl}/${pB.backgroundImage}` : '',
     position: pB.position ? pB.position : 'center',
@@ -500,9 +501,7 @@ export const selectActiveInfo = createSelector([selectActivePet], (activePet): P
     id: activePet.id,
     name: activePet.name,
     level: activePet.level,
-    bio: activePet.bio,
-    bornOn: activePet.bornOn,
-    diedOn: activePet.diedOn,
+    bio: activePet.bio
   };
 });
 
@@ -601,6 +600,10 @@ export const selectActiveBehavior = createSelector(
   }
 );
 
+export const selectIsActivePetAlive = createSelector(
+  [ selectActiveBehavior ], (activeBehavior) => activeBehavior && activeBehavior.type !== 'dead'
+)
+
 export const selectActiveInteractionDetail = createSelector(
   [selectActiveInteractionDefinitions, selectCooldownStatus, selectActiveDeltaStatuses],
   (activeInteractionDefinitions, cooldownStatuses, activeStatuses): PetInteractionDetail[] => {
@@ -683,7 +686,8 @@ export const selectNewSavePayload = createSelector(
           return {
             id: activePet.id,
             stats: curStats,
-            bornOn: activePet.bornOn,
+            // bornOn: sP.bornOn || activePet.bornOn, // i dont think activePet does anything here
+            bornOn: sP.bornOn, // i dont think activePet does anything here
             diedOn: sP.diedOn,
             lastSaved: lastSaved,
             beingTracked: sP.diedOn === undefined ? true : false,
@@ -704,11 +708,8 @@ export const selectNewSavePayload = createSelector(
         })
         .map((interactionDef) => {
           const defaultState = interactionDef.changeToggle?.defaultState || 'off';
-          console.log('selectNewSavePayload, defaultState is ', defaultState, interactionDef.changeToggle);
           const defaultEffect =
             defaultState === 'on' ? interactionDef.changeToggle?.onState : interactionDef.changeToggle?.offState;
-            
-          console.log('selectNewSavePayload, defaultEffect is ', defaultEffect);
 
           return {
             id: interactionDef.id,
@@ -718,7 +719,6 @@ export const selectNewSavePayload = createSelector(
         });
 
       // create new pet data in cookie
-      console.log('A');
       newList = storedPets.concat([
         {
           id: activePet.id,
