@@ -70,6 +70,8 @@ export const HeaderBottom = () => {
   const petInfo = useSelector(selectActiveInfo);
   const cachedInfo = useSelector(selectActiveCachedPet);
 
+  const level = cachedInfo?.stats.find(s => s.id === 'level')?.value;
+
   return (
     <ScContainer>
       {petInfo && (
@@ -80,7 +82,7 @@ export const HeaderBottom = () => {
             {cachedInfo?.diedOn && <ScBornOn>{`died on: ${getDateLabel(cachedInfo.diedOn)}`}</ScBornOn>}
           </ScLabel>
           <ScPetLevel>
-            {/* <h4>{`Level: ${petInfo.level}`}</h4> */}
+            {level && <h4>{`Level: ${level}`}</h4>}
           </ScPetLevel>
         </>
       )}

@@ -95,10 +95,12 @@ export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: 
 };
 
 // could do some validation here
-export const parseStatChanges = (statChangesJSON: StatChangeDefinition[] = []) => {
+export const parseStatChanges = (statChangesJSON: StatChangeDefinition[] | undefined) => {
+  if (!statChangesJSON) return [];
   return statChangesJSON.map((sE) => ({
     statId: sE.statId,
     value: sE.value || 0,
+    type: sE.type || 'incremental',
   }));
 };
 
@@ -111,7 +113,7 @@ export const parseInteractionToggleDefinition = (toggleDef?: PetToggleDefinition
   return {
     defaultState: toggleDef.defaultState || 'off',
     onState: toggleDef.onState,
-    offState: toggleDef.offState
+    offState: toggleDef.offState,
   };
 };
 
@@ -125,6 +127,7 @@ export const parseInteractionsGroup = (interactions: PetInteractionDefinitionJSO
     changeStats: parseStatChanges(int.changeStats),
     changeToggle: parseInteractionToggleDefinition(int.changeToggle),
     availability: parseInteractionAvailability(int.availability),
+    hideWhenUnavailable: int.hideWhenUnavailable === true
   }));
 };
 
@@ -159,8 +162,7 @@ export const parseStatusesGroup = (statuses: RawPetStatuses): PetStatusDefinitio
 
 const getDefaultToggleStatus = (toggleId: string, toggleDef: PetToggleDefinition) => {
   const defaultState = toggleDef.defaultState || 'off';
-  const defaultEffect =
-    defaultState === 'on' ? toggleDef.onState : toggleDef.offState;
+  const defaultEffect = defaultState === 'on' ? toggleDef.onState : toggleDef.offState;
   console.log('getDefaultToggleStatus, defaultEffect is ', defaultEffect);
 
   return {
@@ -208,25 +210,27 @@ export const getUpdatedStats = (
   cachedPetStats: CachedPetStat[],
   statDefinitions: DeltaStat[],
   newStats: StatChangeDefinition[]
-) => {
-  const getNewValue = (cachedStat: CachedPetStat, statDefs: DeltaStat[], changeDefs: StatChangeDefinition[]) => {
-    const found = changeDefs.find((cD) => cD.statId === cachedStat.id);
-    if (!found) return cachedStat.value;
-
-    const rawNew = cachedStat.value + found.value;
-    const max = statDefs.find((sD) => cachedStat.id === sD.id)?.max;
-    if (max) {
-      return clamp(rawNew, 0, max);
+) =>
+  cachedPetStats.map((curStat) => {
+    // skip stats that don't need to change
+    const statChange = newStats.find((newStat) => newStat.statId === curStat.id);
+    const statDef = statDefinitions.find((sD) => curStat.id === sD.id);
+    if (!statDef) {
+      // this is unexpected
+      console.error(`getUpdatedStats, invalid stat "${curStat.id}" requested`);
+      return curStat;
     }
-    return rawNew > 0 ? rawNew : 0;
-  };
+    if (!statChange || (statChange.type === 'incremental' && statChange.value === 0)) {
+      return curStat;
+    }
 
-  return cachedPetStats.map((oldStat) => ({
-    id: oldStat.id,
-    value: getNewValue(oldStat, statDefinitions, newStats),
-    // value: newStats.find(newStat => newStat.id === oldStat.id)?.value || oldStat.value
-  }));
-};
+    // change valid stats
+    const rawNew = statChange.type === 'absolute' ? statChange.value : curStat.value + statChange.value;
+    return {
+      ...curStat,
+      value: clamp(rawNew, 0, statDef.max),
+    };
+  });
 
 export const getNewStats = (oldStats: DeltaStat[], statChanges: StatChangeDefinition[]) => {
   return oldStats.map((stat) => {
@@ -270,7 +274,7 @@ export const petStoreSlice = createSlice({
       state.cachedPets[state.activeIdx] = {
         ...state.cachedPets[state.activeIdx],
         diedOn: new Date().getTime(),
-        beingTracked: false
+        beingTracked: false,
       };
     },
     setActiveId: (state: PetStoreState, action: PayloadAction<string>) => {
@@ -500,8 +504,7 @@ export const selectActiveInfo = createSelector([selectActivePet], (activePet): P
   return {
     id: activePet.id,
     name: activePet.name,
-    level: activePet.level,
-    bio: activePet.bio
+    bio: activePet.bio,
   };
 });
 
@@ -601,8 +604,9 @@ export const selectActiveBehavior = createSelector(
 );
 
 export const selectIsActivePetAlive = createSelector(
-  [ selectActiveBehavior ], (activeBehavior) => activeBehavior && activeBehavior.type !== 'dead'
-)
+  [selectActiveBehavior],
+  (activeBehavior) => activeBehavior && activeBehavior.type !== 'dead'
+);
 
 export const selectActiveInteractionDetail = createSelector(
   [selectActiveInteractionDefinitions, selectCooldownStatus, selectActiveDeltaStatuses],
@@ -619,6 +623,7 @@ export const selectActiveInteractionDetail = createSelector(
         startAt: cooldownStatus?.startAt || 0,
         endAt: cooldownStatus?.endAt || 0,
         enabled: isEnabled,
+        visible: isEnabled || !iD.hideWhenUnavailable,
         definition: iD,
         cooldownStatus: cooldownStatus,
       } as PetInteractionDetail;
@@ -635,7 +640,14 @@ export const selectPetList = createSelector([selectPets, selectActiveIdx], (pets
 );
 
 export const selectCachedDeltaStats = createSelector(
-  [selectActiveStatDefinitions, selectActiveCachedPetStats, selectActiveLastCached, selectLastSaved, getDebugMode, selectActiveCachedToggles],
+  [
+    selectActiveStatDefinitions,
+    selectActiveCachedPetStats,
+    selectActiveLastCached,
+    selectLastSaved,
+    getDebugMode,
+    selectActiveCachedToggles,
+  ],
   (petStats, cachedPetStats, lastCachedTime, lastSavedTime, debugMode, activeToggles) => {
     if (lastCachedTime === lastSavedTime) return null;
     return getCachedDeltaStats(petStats, cachedPetStats, activeToggles, lastCachedTime, lastSavedTime, debugMode);

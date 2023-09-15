@@ -21,8 +21,7 @@ export type RawManifestItem = {
 export type PetInfo = {
   id: string,
   name: string,
-  bio: string,
-  level: number
+  bio: string
 }
 
 export type PetStatDefinitionJSON = {
@@ -70,7 +69,8 @@ export type PetInteractionDefinition = {
   cooldown: number,
   changeStats: StatChangeDefinition[],
   changeToggle: PetToggleDefinition | null,
-  availability: WhenThenStringBooleanGroup[]
+  availability: WhenThenStringBooleanGroup[],
+  hideWhenUnavailable: boolean
 }
 
 export type PetInteractionDefinitionJSON = {
@@ -78,12 +78,14 @@ export type PetInteractionDefinitionJSON = {
   label: string,
   cooldown: number,
   changeToggle?: PetToggleDefinition,
-  changeStats: StatChangeDefinition[],
-  availability: RawWhenThen[]
+  changeStats?: StatChangeDefinition[],
+  availability: RawWhenThen[],
+  hideWhenUnavailable?: boolean
 }
 
 export type StatChangeDefinition = {
   statId: string,
+  type: 'incremental' | 'absolute',
   value: number
 }
 
@@ -168,7 +170,6 @@ export type RawPetJSON = {
   id: string,
   name: string,
   bio: string,
-  level: number,
   baseUrl: string,
   logic: {
     stats: PetStatDefinitionJSON[],
@@ -187,7 +188,6 @@ export type PetDefinition = {
   bio: string,
   bornOn?: number,
   diedOn?: number,
-  level: number,
   logic: PetLogicGroup,
   bgImage?:string,
   bgColor?:string
@@ -231,6 +231,7 @@ export type PetInteractionDetail = {
   startAt: number,
   endAt: number,
   enabled: boolean,
+  visible: boolean,
   definition: PetInteractionDefinition,
   cooldownStatus: InteractionCooldownStatus,
 }

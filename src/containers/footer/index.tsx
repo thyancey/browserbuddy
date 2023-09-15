@@ -9,7 +9,7 @@ const ScContainer = styled.div`
   position:absolute;
   left:0;
   right:0;
-  top:-.5rem;
+  top:-2rem;
   bottom:0;
 
   background-color:var(--color-green);

@@ -55,7 +55,7 @@ export const Interactions = () => {
 
   return (
     <ScInteractions>
-      {interactionDetails.map((iDetail) => (
+      {interactionDetails.filter(iDetail => iDetail.visible).map((iDetail) => (
         <InteractionButton
           key={iDetail.id}
           cooldownStatus={iDetail.cooldownStatus}
