@@ -89,7 +89,7 @@ const ScBehavior = styled.p`
 export const PetContainer = () => {
   const dispatch = useDispatch();
   const activeBehavior = useSelector(selectActiveBehavior, shallowEqual);
-  const { imageUrl, backgroundColor } = useSelector(selectActiveBg, shallowEqual);
+  const { imageUrl, bgColor } = useSelector(selectActiveBg, shallowEqual);
 
   // STOP EVERYTHING AND DIE
   useEffect(() => {
@@ -105,10 +105,10 @@ export const PetContainer = () => {
   const bgImageUrl = activeBehavior.bgImageUrl || imageUrl;
   const backgroundStyles = {
     backgroundImage: `url(${activeBehavior.imageUrl})`,
+    backgroundColor: bgColor || 'initial',
     backgroundPosition: `${activeBehavior.position}`,
     left: `${activeBehavior.offsetX}px`,
     bottom: `${activeBehavior.offsetY}px`,
-    backgroundColor: backgroundColor || 'initial',
   };
 
   return (

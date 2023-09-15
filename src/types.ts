@@ -105,7 +105,7 @@ export type PetBehaviorJSON = {
   image?: string,
   imageUrl?: string,
   
-  backgroundImage?: string,
+  bgImage?: string,
   position: string,
   offsetX?: number,
   offsetY?: number
@@ -178,8 +178,8 @@ export type RawPetJSON = {
     behaviorRules: WhenThenStringGroup[],
     interactions: PetInteractionDefinitionJSON[]
   },
-  backgroundImage?:string,
-  backgroundColor?:string
+  bgImage?:string,
+  bgColor?:string
 }
 
 export type PetDefinition = {

@@ -87,7 +87,7 @@ export const parsePetBehaviors = (petBehaviorsJson: PetBehaviorJSON[], baseUrl: 
     ...pB,
     type: pB.type || 'normal',
     imageUrl: pB.image ? `${baseUrl}/${pB.image}` : pB.imageUrl || '',
-    bgImageUrl: pB.backgroundImage ? `${baseUrl}/${pB.backgroundImage}` : '',
+    bgImageUrl: pB.bgImage ? `${baseUrl}/${pB.bgImage}` : '',
     position: pB.position ? pB.position : 'center',
     offsetX: pB.offsetX ? pB.offsetX : 0,
     offsetY: pB.offsetY ? pB.offsetY : 0,
@@ -389,9 +389,9 @@ export const petStoreSlice = createSlice({
         ...petDefinition,
         logic: logicGroup,
         bornOn: initialState?.bornOn || nowTime,
-        diedOn: initialState?.diedOn || undefined, // this should always be undefined?
-        bgImage: petDefinition.backgroundImage ? `${petDefinition.baseUrl}/${petDefinition.backgroundImage}` : null,
-        bgColor: petDefinition.backgroundColor || null,
+        diedOn: initialState?.diedOn || undefined, // should this always be undefined?
+        bgImage: petDefinition.bgImage ? `${petDefinition.baseUrl}/${petDefinition.bgImage}` : null,
+        bgColor: petDefinition.bgColor || null,
       } as PetDefinition;
 
       if (foundPet) {
@@ -472,7 +472,7 @@ export const selectActiveBehaviorDefinitions = createSelector(
 );
 export const selectActiveBg = createSelector([selectActivePet], (activePet) => ({
   imageUrl: activePet?.bgImage,
-  backgroundColor: activePet?.bgColor,
+  bgColor: activePet?.bgColor,
 }));
 
 export const selectCachedPets = createSelector([getCachedPets], (cachedPets) => cachedPets);
