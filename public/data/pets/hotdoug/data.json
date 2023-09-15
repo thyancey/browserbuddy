@@ -3,7 +3,7 @@
   "name": "Hot Doug the hotdog",
   "bio": "hot doug.",
   "level": 0,
-  "backgroundImage": "",
+  "backgroundImage": "assets/bg_oven.gif",
   "logic": {
     "stats": [
       {
@@ -327,7 +327,7 @@
       {
         "id": "INT_FEED",
         "label": "Feed",
-        "cooldown": 300,
+        "cooldown": 60000,
         "changeStats": [
           {
             "statId": "food",
@@ -342,7 +342,7 @@
       {
         "id": "INT_CLEAN",
         "label": "Clean",
-        "cooldown": 300,
+        "cooldown": 60000,
         "changeStats": [
           {
             "statId": "waste",
