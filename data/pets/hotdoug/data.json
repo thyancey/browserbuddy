@@ -2,7 +2,7 @@
   "id": "hotdoug",
   "name": "Hot Doug the hotdog",
   "bio": "hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. ",
-  "bgImage": "",
+  "bgImage": "assets/bg_grill_off.gif",
   "logic": {
     "stats": [
       {
@@ -97,7 +97,10 @@
         "label": "RIP",
         "alertType": "alert"
       },
-      "STATUS_GRILL_ON": {},
+      "STATUS_GRILL_ON": {
+        "fgImage": "assets/fg_flames.gif",
+        "bgImage": "assets/bg_grill_on.gif"
+      },
       "STATUS_GRILL_OFF": {}
     },
     "behaviorRules": [
@@ -236,79 +239,78 @@
         "id": "BE_BABY_FROZEN",
         "image": "assets/baby_frozen.gif",
         "position": "bottom",
-        "bgImage": "assets/bg_frozen.gif"
+        "bgImage": ""
       },
       {
         "id": "BE_BABY_COOKING",
         "image": "assets/baby_cooking.gif",
-        "position": "bottom",
-        "bgImage": "assets/bg_flames.gif"
+        "position": "bottom"
       },
       {
         "id": "BE_BABY_COOKING_SAD",
         "image": "assets/baby_cooking_sad.gif",
         "position": "bottom",
-        "bgImage": "assets/bg_flames.gif"
+        "bgImage": ""
       },
       {
         "id": "BE_BABY_BURNING",
         "image": "assets/baby_burning.gif",
         "position": "bottom",
-        "bgImage": "assets/bg_flames.gif"
+        "bgImage": ""
       },
       {
         "id": "BE_BABY_DEAD",
         "type": "dead",
         "image": "assets/baby_dead.gif",
         "position": "bottom",
-        "bgImage": "assets/bg_flames.gif"
+        "bgImage": ""
       },
-      { "id": "BE_RAW_IDLE", "image": "assets/raw_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_RAW_SAD", "image": "assets/raw_sad.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_RAW_ASLEEP", "image": "assets/raw_sleep.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_RAW_IDLE", "image": "assets/raw_idle.gif", "position": "bottom", "offsetY": 0 },
+      { "id": "BE_RAW_SAD", "image": "assets/raw_sad.gif", "position": "bottom", "offsetY": 0 },
+      { "id": "BE_RAW_ASLEEP", "image": "assets/raw_sleep.gif", "position": "bottom", "offsetY": 0 },
       {
         "id": "BE_RAW_FROZEN",
         "image": "assets/raw_frozen.gif",
         "position": "bottom",
-        "offsetY": -50,
-        "bgImage": "assets/bg_frozen.gif"
+        "offsetY": 0,
+        "bgImage": ""
       },
       {
         "id": "BE_RAW_COOKING",
         "image": "assets/raw_cooking.gif",
         "position": "bottom",
-        "offsetY": -50,
-        "bgImage": "assets/bg_flames.gif"
+        "offsetY": 0,
+        "bgImage": ""
       },
       {
         "id": "BE_RAW_COOKING_SAD",
         "image": "assets/raw_cooking_sad.gif",
         "position": "bottom",
-        "offsetY": -50,
-        "bgImage": "assets/bg_flames.gif"
+        "offsetY": 0,
+        "bgImage": ""
       },
       {
         "id": "BE_RAW_BURNING",
         "image": "assets/raw_burning.gif",
         "position": "bottom",
-        "offsetY": -50,
-        "bgImage": "assets/bg_flames.gif"
+        "offsetY": 0,
+        "bgImage": ""
       },
       {
         "id": "BE_RAW_DEAD",
         "type": "dead",
         "image": "assets/raw_dead.gif",
         "position": "bottom",
-        "offsetY": -50,
-        "bgImage": "assets/bg_flames.gif"
+        "offsetY": 0,
+        "bgImage": ""
       },
 
-      { "id": "BE_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_COOKED_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": -50 },
-      { "id": "BE_COOKED_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": -50 },
+      { "id": "BE_COOKED_IDLE", "image": "assets/cooked_idle.gif", "position": "bottom", "offsetY": 0 },
+      { "id": "BE_COOKED_SLEEP", "image": "assets/cooked_sleep.gif", "position": "bottom", "offsetY": 0 },
+      { "id": "BE_COOKED_DRESSED_IDLE", "image": "assets/dressed_idle.gif", "position": "bottom", "offsetY": 0 },
+      { "id": "BE_COOKED_DRESSED_SLEEP", "image": "assets/dressed_sleep.gif", "position": "bottom", "offsetY": 0 },
 
-      { "id": "BE_DEAD", "type": "dead", "image": "assets/raw_dead.gif", "position": "bottom", "offsetY": -50 }
+      { "id": "BE_DEAD", "type": "dead", "image": "assets/raw_dead.gif", "position": "bottom", "offsetY": 0 }
     ],
     "interactions": [
       {
@@ -342,7 +344,7 @@
       {
         "id": "INT_CLEAN",
         "label": "Clean grill",
-        "cooldown": 5000,
+        "cooldown": 1000,
         "changeStats": [
           {
             "statId": "waste",
