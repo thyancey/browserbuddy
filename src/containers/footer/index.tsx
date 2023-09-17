@@ -12,8 +12,13 @@ const ScContainer = styled.div`
   top:-2rem;
   bottom:0;
 
-  background-color:var(--color-green);
-  border:.5rem solid var(--color-white);
+  background-color:var(--theme-color-secondary);
+  border:.5rem solid var(--theme-color-secondary-border);
+  color: var(--theme-color-secondary-text);
+  hr {
+    border-color:var(--theme-color-secondary-text);
+  }
+
   border-radius:2rem;
   overflow:hidden;
 
@@ -30,13 +35,9 @@ const ScPetInfo = styled.div`
   padding: 1rem;
   padding-top: .5rem ;
   
-  color: var(--color-black);
-  
-
   overflow-y:auto;
 
-  hr{
-    border-color:var(--color-blue);
+  hr {
     border-style:dashed;
     margin-top:.5rem;
     margin-bottom:.5rem;

@@ -17,8 +17,6 @@ const ScTab = styled.li<ScTabProps>`
 
   display: inline-block;
   vertical-align: bottom;
-  background-color: var(--color-white);
-  color: var(--color-black);
 
   font-size: 2rem;
   line-height: 2rem;
@@ -27,33 +25,27 @@ const ScTab = styled.li<ScTabProps>`
   margin: 0 -0.75rem -3.25rem 1rem;
   box-shadow: 0.2rem 0.2rem 0.2rem 0.2rem var(--color-black);
 
-  border: 0.5rem solid var(--color-white);
   border-radius: 1rem 1rem 0 0;
 
-  background-color: var(--color-blue);
-  border-bottom-color: var(--color-white);
-  color: var(--color-black);
-  transition: all 0.3s;
+  background-color: var(--theme-color-primary);
+  color: var(--theme-color-primary-text);
+  border: 0.5rem solid var(--theme-color-primary-border);
 
-  &:hover {
-    background-color: var(--color-blue-light);
-  }
+  transition: all 0.3s;
 
   ${(props) =>
     props.$isActive &&
     css`
       cursor: default;
-      &:hover {
-        background-color: var(--color-green);
-      }
-      
-      background-color: var(--color-green);
-      color: var(--color-black);
-      padding: .75rem;
+      background-color: var(--theme-color-secondary);
+      color: var(--theme-color-secondary-text);
+      border: 0.5rem solid var(--theme-color-secondary-border);
+
+      padding: 0.75rem;
       transition: all 0.2s ease-out;
       font-size: 2.5rem;
       z-index: 2;
-      margin-left: .25rem;
+      margin-left: 0.25rem;
       margin-right: -1.25rem;
       margin-bottom: -2rem;
 

@@ -20,7 +20,7 @@ const ScButton = styled.button`
   margin: 1rem;
   font-size: 2rem;
   padding: 0.5rem 1rem;
-  background-color: var(--color-green);
+  background-color: var(--color-black);
   border: 0.5rem solid var(--color-white);
   border-radius: 1rem;
 

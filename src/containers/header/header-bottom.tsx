@@ -6,9 +6,9 @@ const ScContainer = styled.div`
   width:100%;
   height:100%;
   
-  color:var(--color-white);
-  background-color: var(--color-blue);
-  border:.5rem solid var(--color-white);
+  color:var(--theme-color-primary-text);
+  background-color: var(--theme-color-primary);
+  border:.5rem solid var(--theme-color-primary-border);
   border-radius: 1rem;
   position:relative;
   padding:0.5rem 1rem;
@@ -38,7 +38,7 @@ const ScLabel = styled.div`
 
 const ScPetLevel = styled.div`
   text-align:right;
-  color: var(--color-white);
+  color: var(--theme-color-primary-text);
   
   >h4{
     margin:0;

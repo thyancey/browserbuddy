@@ -8,8 +8,8 @@ const ScResetButton = styled.div`
   margin-bottom: -1rem;
 
   border-radius: 1rem 1rem 0 0;
-  background-color: var(--color-red);
-  color: var(--color-white);
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-color-secondary-text);
 
 
   text-decoration: none;
@@ -21,13 +21,9 @@ const ScResetButton = styled.div`
   font-weight: bold;
   text-align: center;
   line-height: 2rem;
-  text-shadow: 1px 1px 1px var(--color-black);
-  border: 0.5rem solid var(--color-white);
+  border: 0.5rem solid var(--theme-color-secondary-border);
 
   cursor: pointer;
-  &:hover {
-    background-color: var(--color-red-light);
-  }
 `;
 
 const ScContainer = styled.div`

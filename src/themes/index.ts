@@ -43,6 +43,24 @@ export default createGlobalStyle`
     font-family: 'Cabin', sans-serif;
     background-color: var(--color-black);
     color: var(--color-white);
+
+    --theme-color-primary: var(--color-blue);
+    --theme-color-primary-border: var(--color-white);
+    --theme-color-primary-text: var(--color-white);
+
+    --theme-color-secondary: var(--color-green);
+    --theme-color-secondary-border: var(--color-white);
+    --theme-color-secondary-text: var(--color-black);
+    
+    --theme-color-either-text: var(--color-black);
+    
+    --theme-color-special: var(--color-purple);
+    --theme-color-special-border: var(--color-white);
+    --theme-color-special-text: var(--color-black);
+
+    --theme-color-bar-bg: var(--color-white);
+    --theme-color-bar-text: var(--color-black);
+    --theme-color-bar-border: var(--color-white);
   }
 
   #root{
@@ -140,11 +158,11 @@ export const mixinBubble = () => {
   `;
 };
 
-export const mixinColorBubble = (background: string, borderAndText: string = '--color-white') => {
+export const mixinColorBubble = (background: string, border: string = '--color-white', text: string = '--color-white') => {
   return css`
     ${mixinBubble()}
-    border-color: var(${borderAndText});
-    color: var(${borderAndText});
+    border-color: var(${border});
+    color: var(${text});
     background-color: var(${background});
   `;
 };

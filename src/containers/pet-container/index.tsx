@@ -24,8 +24,8 @@ const ScContainer = styled.div<ScContainerProps>`
   padding-top: 2rem;
   bottom: -2rem;
   padding-bottom: 2rem;
-  background-color: var(--color-blue);
-  border: 0.5rem solid var(--color-white);
+  background-color: var(--theme-color-primary);
+  border: 0.5rem solid var(--theme-color-primary-border);
 
   ${(p) =>
     p.$bgImageUrl &&
@@ -41,13 +41,14 @@ interface ScOverlayProps {
 }
 
 const ScWastedBtn = styled.div`
-  color: var(--color-white);
-  background-color: var(--color-red);
   display: block;
   padding: 6rem;
   border-radius: 5rem;
-  border: 1rem solid var(--color-white);
   text-align: center;
+  
+  background-color: var(--theme-color-secondary);
+  border: 1rem solid var(--theme-color-primary);
+  color: var(--theme-color-secondary-text);
 
   transform: rotate(2deg) translateY(200%);
   opacity: 0;
@@ -63,34 +64,14 @@ const ScWastedBtn = styled.div`
   }
 
   &:hover {
-    background-color: var(--color-green);
+    background-color: var(--theme-color-primary);
+    border: 1rem solid var(--theme-color-secondary);
+    color: var(--theme-color-primary-text);
 
     &:before {
-      content: 'reset all pets?';
+      content: 'reset pet?';
     }
   }
-  /* cursor: pointer; */
-
-  /* 
-      transform: rotate(-7deg) translateY(125%);
-      opacity: 1;
-
-
-      &:hover {
-        background-color: var(--color-green);
-        &:after {
-          content: 'revive?';
-          position: absolute;
-          display: block;
-          margin-top: 4rem;
-          background-color: var(--color-blue);
-          border: 1rem solid var(--color-white);
-          border-radius: 5rem;
-          padding: 2rem;
-          font-size: 4rem;
-        }
-      }
-    } */
 `;
 
 const ScOverlay = styled.div<ScOverlayProps>`
@@ -190,12 +171,12 @@ export const PetContainer = () => {
   const onResetPet = useCallback(() => {
     // @ts-ignore
     const rawPetDef = (window.rawPetsJson as RawPetJSON[]).find((rpj) => rpj.id === activePet.id);
-    console.log('resetting', rawPetDef)
+    console.log('resetting', rawPetDef);
     dispatch(
       createPet({
         isActive: true,
         petDefinition: rawPetDef,
-        initialState: null
+        initialState: null,
       })
     );
   }, [dispatch, activePet?.id]);

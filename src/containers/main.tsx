@@ -22,8 +22,6 @@ const ScContainer = styled.div`
     'header'
     'body'
     'footer';
-    
-  color: var(--color-blue);
 
   > div {
     position: relative;

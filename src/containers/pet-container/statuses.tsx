@@ -44,15 +44,15 @@ const ScStatus = styled.li<ScStatusProps>`
   /* transition: transform .2s ease-in-out, bottom .2s ease-out; */
   -webkit-transition: all 0.2s cubic-bezier(.72,1.79,.4,.8);
   transition: all 0.2s cubic-bezier(.72,1.79,.4,.8);
-  ${props => mixinColorBubble(props.$bubbleColors[0], props.$bubbleColors[1])}
+  ${props => mixinColorBubble(props.$bubbleColors[0], props.$bubbleColors[1], props.$bubbleColors[2])}
 `;
 
 const getBubbleColors = (alertType?: AlertType) => {
   switch(alertType){
-    case 'alert': return [ '--color-red', '--color-yellow' ];
-    case 'warning': return [ '--color-yellow', '--color-red' ];
-    case 'reward': return [ '--color-green', '--color-white' ];
-    default: return [ '--color-white', '--color-grey' ];
+    case 'alert': return [ '--theme-color-special', '--theme-color-special-border', '--theme-color-secondary-text' ];
+    case 'warning': return [ '--theme-color-primary', '--theme-color-primary-border', '--theme-color-secondary-text' ];
+    case 'reward': return [ '--theme-color-secondary', '--theme-color-secondary-border', '--theme-color-secondary-text' ];
+    default: return [ '--theme-color-secondary', '--theme-color-secondary-border', '--theme-color-secondary-text' ];
   }
 }
 
