@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { StatBar } from './stat-bar';
-import { selectCachedDeltaStats } from '../../services/petstore';
+import { selectActiveDeltaStats } from '../../services/petstore';
 import { useSelector } from 'react-redux';
 
 const ScStats = styled.div`
@@ -8,8 +8,7 @@ const ScStats = styled.div`
 `;
 
 export const StatGroup = () => {
-  const activeStats = useSelector(selectCachedDeltaStats) || [];
-  console.log('activeStats', activeStats);
+  const activeStats = useSelector(selectActiveDeltaStats) || [];
 
   return (
     <ScStats>

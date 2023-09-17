@@ -206,7 +206,7 @@ export type PetListItem = {
 }
 
 // slimmer save object for localStorage
-export type CachedPetStat = {
+export type DeltaPetStat = {
   id: string,
   value: number
 }
@@ -217,7 +217,7 @@ export type ActiveToggleState = {
 }
 export type SavedPetState = {
   id: string,
-  stats: CachedPetStat[],
+  stats: DeltaPetStat[],
   lastSaved?: number,
   bornOn?: number,
   diedOn?: number,

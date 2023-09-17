@@ -5,7 +5,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import {
   addNewInteractionEvent,
   removeInteractionEvent,
-  selectActiveCachedToggles,
+  selectActiveToggles,
   selectActiveInteractionDetail,
   selectIsActivePetAlive,
 } from '../../../services/petstore';
@@ -30,7 +30,7 @@ const ScInteractions = styled.ul`
 
 export const Interactions = () => {
   const interactionDetails = useSelector(selectActiveInteractionDetail, shallowEqual);
-  const activeToggles = useSelector(selectActiveCachedToggles, shallowEqual);
+  const activeToggles = useSelector(selectActiveToggles, shallowEqual);
   const isActivePetAlive = useSelector(selectIsActivePetAlive);
 
   // thunk madness, cause I don't know how else to do this.

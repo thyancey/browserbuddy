@@ -15,7 +15,7 @@ import {
   InteractionCooldownStatus,
   DeltaStat,
   PetBehaviorJSON,
-  CachedPetStat,
+  DeltaPetStat,
   PingPayload,
   WhenThenStringBooleanGroup,
   RawWhenThen,
@@ -26,7 +26,7 @@ import {
   ActiveToggleState,
   PetToggleDefinitionJSON,
 } from '../../types';
-import { clamp, getCachedDeltaStats, log } from '../../util/tools';
+import { clamp, getActiveDeltaStats, log } from '../../util/tools';
 import {
   evaluateAvailabilityWhenThenGroup,
   evaluateWhenThenNumberGroup,
@@ -52,7 +52,7 @@ export type PetStoreState = {
   activeIdx: number;
   pets: PetDefinition[];
   interactions: InteractionCooldownStatus[];
-  cachedPets: SavedPetState[];
+  deltaPets: SavedPetState[];
   lastRendered: number;
   lastSaved: number;
 };
@@ -67,7 +67,7 @@ const initialStoreState: PetStoreState = {
   activeIdx: -1,
   pets: [],
   interactions: [],
-  cachedPets: [],
+  deltaPets: [],
   lastRendered: new Date().getTime(),
   lastSaved: new Date().getTime(),
 };
@@ -183,10 +183,10 @@ const getDefaultToggleStatus = (toggleId: string, toggleDef: PetToggleDefinition
 export const getUpdatedToggles = (
   toggleId: string,
   toggleDef: PetToggleDefinition,
-  cachedToggles: ActiveToggleState[]
+  deltaToggles: ActiveToggleState[]
 ) => {
   const updatedToggleStatus =
-    cachedToggles.find((ats) => ats.id === toggleId) || getDefaultToggleStatus(toggleId, toggleDef);
+    deltaToggles.find((ats) => ats.id === toggleId) || getDefaultToggleStatus(toggleId, toggleDef);
 
   // whether it was an existing one or a new one, flip it.
   if (updatedToggleStatus.state === 'on') {
@@ -198,15 +198,15 @@ export const getUpdatedToggles = (
   }
 
   // give back the same junk, with the new toggle value
-  return cachedToggles.filter((ct) => ct.id !== toggleId).concat([updatedToggleStatus]);
+  return deltaToggles.filter((ct) => ct.id !== toggleId).concat([updatedToggleStatus]);
 };
 
 export const getUpdatedStats = (
-  cachedPetStats: CachedPetStat[],
+  deltaPetStats: DeltaPetStat[],
   statDefinitions: DeltaStat[],
   newStats: StatChangeDefinition[]
 ) =>
-  cachedPetStats.map((curStat) => {
+  deltaPetStats.map((curStat) => {
     // skip stats that don't need to change
     const statChange = newStats.find((newStat) => newStat.statId === curStat.id);
     const statDef = statDefinitions.find((sD) => curStat.id === sD.id);
@@ -264,8 +264,8 @@ export const petStoreSlice = createSlice({
     },
     killActivePet: (state: PetStoreState) => {
       console.log('------ PET WAS KILLED ----------');
-      state.cachedPets[state.activeIdx] = {
-        ...state.cachedPets[state.activeIdx],
+      state.deltaPets[state.activeIdx] = {
+        ...state.deltaPets[state.activeIdx],
         diedOn: new Date().getTime(),
         beingTracked: false,
       };
@@ -289,9 +289,9 @@ export const petStoreSlice = createSlice({
       // TODO: this seems sketchy
       hackySave(state);
     },
-    setCachedPayload: (state: PetStoreState, action: PayloadAction<LocalStorageState>) => {
+    setDeltaPayload: (state: PetStoreState, action: PayloadAction<LocalStorageState>) => {
       const lsState = action.payload;
-      state.cachedPets = lsState.pets;
+      state.deltaPets = lsState.pets;
     },
     restoreInteractionFromSave: (state: PetStoreState, action: PayloadAction<InteractionCooldownStatus>) => {
       const interaction = action.payload;
@@ -325,14 +325,14 @@ export const petStoreSlice = createSlice({
       if (interaction.changeStats.length > 0) {
         doSave = true;
         const activePet = state.pets[state.activeIdx];
-        const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
-        if (cachedIdx > -1) {
-          const cachedStats = state.cachedPets[cachedIdx]?.stats || [];
+        const deltaIdx = state.deltaPets.findIndex((cP) => cP.id === activePet.id);
+        if (deltaIdx > -1) {
+          const deltaStats = state.deltaPets[deltaIdx]?.stats || [];
           const statDefs = activePet.logic.stats;
 
-          state.cachedPets[cachedIdx] = {
-            ...state.cachedPets[cachedIdx],
-            stats: getUpdatedStats(cachedStats, statDefs, interaction.changeStats),
+          state.deltaPets[deltaIdx] = {
+            ...state.deltaPets[deltaIdx],
+            stats: getUpdatedStats(deltaStats, statDefs, interaction.changeStats),
           };
         }
       }
@@ -341,15 +341,15 @@ export const petStoreSlice = createSlice({
         console.log('interaction.changeToggle: ', interaction.changeToggle);
         doSave = true;
         const activePet = state.pets[state.activeIdx];
-        const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
-        if (cachedIdx > -1) {
-          const cachedToggles = state.cachedPets[cachedIdx]?.activeToggles || [];
+        const deltaIdx = state.deltaPets.findIndex((cP) => cP.id === activePet.id);
+        if (deltaIdx > -1) {
+          const deltaToggles = state.deltaPets[deltaIdx]?.activeToggles || [];
           // const toggleDefs = activePet.logic.toggles;
 
-          const newToggles = getUpdatedToggles(interaction.id, interaction.changeToggle, cachedToggles);
+          const newToggles = getUpdatedToggles(interaction.id, interaction.changeToggle, deltaToggles);
 
-          state.cachedPets[cachedIdx] = {
-            ...state.cachedPets[cachedIdx],
+          state.deltaPets[deltaIdx] = {
+            ...state.deltaPets[deltaIdx],
             activeToggles: newToggles,
           };
         }
@@ -401,9 +401,9 @@ export const petStoreSlice = createSlice({
 
       // restore it to the cache if it was saved!
       if (initialState) {
-        if (!state.cachedPets.find((cP) => cP.id === initialState?.id)) {
-          state.cachedPets = [
-            ...state.cachedPets,
+        if (!state.deltaPets.find((cP) => cP.id === initialState?.id)) {
+          state.deltaPets = [
+            ...state.deltaPets,
             ...[
               {
                 ...initialState,
@@ -413,9 +413,9 @@ export const petStoreSlice = createSlice({
           ];
         }
       } else {
-        const foundIdx = state.cachedPets.findIndex((cP) => cP.id === petDefinition.id);
+        const foundIdx = state.deltaPets.findIndex((cP) => cP.id === petDefinition.id);
         if (foundIdx > -1) {
-          state.cachedPets = state.cachedPets.filter((_, cpIdx) => cpIdx !== foundIdx);
+          state.deltaPets = state.deltaPets.filter((_, cpIdx) => cpIdx !== foundIdx);
         }
       }
     },
@@ -429,7 +429,7 @@ export const {
   setActiveId,
   clearSave,
   resetActivePet,
-  setCachedPayload,
+  setDeltaPayload,
   addNewInteractionEvent,
   restoreInteractionFromSave,
   removeInteractionEvent,
@@ -439,7 +439,7 @@ export const {
 export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;
 export const selectPets = (state: RootState): PetDefinition[] => state.petStore.pets;
 export const getActiveInteractions = (state: RootState): InteractionCooldownStatus[] => state.petStore.interactions;
-export const getCachedPets = (state: RootState): SavedPetState[] => state.petStore.cachedPets;
+export const getDeltaPets = (state: RootState): SavedPetState[] => state.petStore.deltaPets;
 export const getNewLastSaved = (state: RootState): number => state.petStore.lastSaved;
 
 export const selectLastSaved = createSelector([getNewLastSaved], (lastSaved) => lastSaved);
@@ -472,22 +472,20 @@ export const selectActiveBg = createSelector([selectActivePet], (activePet) => (
   bgColor: activePet?.bgColor,
 }));
 
-export const selectCachedPets = createSelector([getCachedPets], (cachedPets) => cachedPets);
-export const selectActiveCachedPet = createSelector(
-  [getCachedPets, selectActivePet],
-  (cachedPets, activePet): SavedPetState | null => {
+export const selectActiveDeltaPet = createSelector(
+  [getDeltaPets, selectActivePet],
+  (deltaPets, activePet): SavedPetState | null => {
     if (!activePet) return null;
-    return cachedPets.find((cP) => cP.id === activePet.id) || null;
+    return deltaPets.find((cP) => cP.id === activePet.id) || null;
   }
 );
-export const selectCachedPetStats = createSelector([getCachedPets], (cachedPets) => cachedPets.map((cp) => cp.stats));
 
-export const selectActiveCachedPetStats = createSelector([selectActiveCachedPet], (savedPetState): CachedPetStat[] => {
+export const selectActivePetStats = createSelector([selectActiveDeltaPet], (savedPetState): DeltaPetStat[] => {
   if (!savedPetState) return [];
   return savedPetState.stats || [];
 });
-export const selectActiveCachedToggles = createSelector(
-  [selectActiveCachedPet],
+export const selectActiveToggles = createSelector(
+  [selectActiveDeltaPet],
   (savedPetState): ActiveToggleState[] => {
     if (!savedPetState) return [];
     return savedPetState.activeToggles || [];
@@ -509,44 +507,44 @@ export const selectCooldownStatus = createSelector(
   (activeInteractions: InteractionCooldownStatus[]) => activeInteractions
 );
 
-export const selectActiveLastCached = createSelector(
-  [getCachedPets, selectActivePet],
-  (cachedPets, activePet): number => {
+export const selectActivePetLastSaved = createSelector(
+  [getDeltaPets, selectActivePet],
+  (deltaPets, activePet): number => {
     if (!activePet) return 0;
-    return cachedPets.find((cP) => cP.id === activePet.id)?.lastSaved || 0;
+    return deltaPets.find((cP) => cP.id === activePet.id)?.lastSaved || 0;
   }
 );
 
-export const selectCachedDeltaStats = createSelector(
+export const selectActiveDeltaStats = createSelector(
   [
     selectActiveStatDefinitions,
-    selectActiveCachedPetStats,
-    selectActiveCachedToggles,
-    selectActiveLastCached,
+    selectActivePetStats,
+    selectActiveToggles,
+    selectActivePetLastSaved,
     selectLastSaved,
     getDebugMode,
   ],
-  (statDefinitions, cachedPetStats, activeToggles, lastCachedTime, lastSavedTime, debugMode) => {
-    // if (lastCachedTime === lastSavedTime) return null;
-    return getCachedDeltaStats(statDefinitions, cachedPetStats, activeToggles, lastCachedTime, lastSavedTime, debugMode);
+  (statDefinitions, deltaPetStats, activeToggles, lastPetSavedTime, lastSavedTime, debugMode) => {
+    // if (lastPetSavedTime === lastSavedTime) return null;
+    return getActiveDeltaStats(statDefinitions, deltaPetStats, activeToggles, lastPetSavedTime, lastSavedTime, debugMode);
   }
 );
 
 export const selectActiveDeltaStatuses = createSelector(
   [
-    selectActiveCachedPet,
-    selectCachedDeltaStats,
+    selectActiveDeltaPet,
+    selectActiveDeltaStats,
     selectActiveStatDefinitions,
-    selectActiveCachedToggles,
+    selectActiveToggles,
     selectActiveInteractionDefinitions,
   ],
-  (cachedPet, deltaStats, statDefinitions, activeToggles, interactionDefs) => {
+  (deltaPet, deltaStats, statDefinitions, activeToggles, interactionDefs) => {
     // This is a great example of where state, caching vs rendering, and swapping pet states
     // is a huge shitshow, this (!beingTracked) prevents prematurely applying status calculations (death)
     // when swapping to them, and everyhthing is ready.
     // BUT do not skip if they are dead, cause then there is no way to render the death stuff,
     // cause dead pets are also beingTracked = false
-    if (cachedPet && !cachedPet.beingTracked && cachedPet.diedOn === undefined) {
+    if (deltaPet && !deltaPet.beingTracked && deltaPet.diedOn === undefined) {
       return [];
     }
 
@@ -606,13 +604,13 @@ export const selectDetailedActiveDeltaStatuses = createSelector(
 
 export const selectActiveBehavior = createSelector(
   [
-    selectActiveCachedPet,
+    selectActiveDeltaPet,
     selectActiveDeltaStatuses,
     selectActiveBehaviorRuleDefinitions,
     selectActiveBehaviorDefinitions,
   ],
-  (activeCachedPet, deltaStatusIds, behaviorRules, behaviorDefinitions): PetBehaviorDefinition | null => {
-    if (!activeCachedPet) {
+  (activeDeltaPet, deltaStatusIds, behaviorRules, behaviorDefinitions): PetBehaviorDefinition | null => {
+    if (!activeDeltaPet) {
       return null;
     }
     const foundBehaviorId = getFirstOfWhenThenStringGroups(behaviorRules, deltaStatusIds);
@@ -676,10 +674,10 @@ export const selectPetsFromLocalStorage = createSelector([getPetsFromLocalStorag
 
 // TODO, the beingTracked here needs to be investigated more.
 export const selectNewSavePayload = createSelector(
-  [selectLastSaved, selectCachedDeltaStats, selectActivePet, selectCooldownStatus, selectCachedPets],
-  (lastSaved, cachedDeltaStats, activePet, activeInteractions, storedPets): LocalStorageState | null => {
+  [selectLastSaved, selectActiveDeltaStats, selectActivePet, selectCooldownStatus, getDeltaPets],
+  (lastSaved, activeDeltaStats, activePet, activeInteractions, storedPets): LocalStorageState | null => {
     //TODO, this seems fishy
-    if (!cachedDeltaStats) {
+    if (!activeDeltaStats) {
       return null;
     }
 
@@ -694,7 +692,7 @@ export const selectNewSavePayload = createSelector(
       newList = storedPets.map((sP: SavedPetState) => {
         if (sP.id === activePet.id) {
           // console.log('checking beingTracked', sP.beingTracked);
-          const curStats = sP.beingTracked ? cachedDeltaStats : sP.stats;
+          const curStats = sP.beingTracked ? activeDeltaStats : sP.stats;
           // TODO, do i need to do this caching stuff like stats for toggles??
 
           return {
@@ -735,7 +733,7 @@ export const selectNewSavePayload = createSelector(
       newList = storedPets.concat([
         {
           id: activePet.id,
-          stats: cachedDeltaStats,
+          stats: activeDeltaStats,
           bornOn: activePet.bornOn,
           diedOn: undefined,
           lastSaved: lastSaved,

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { selectActiveCachedPet, selectActiveInfo } from '../../services/petstore';
+import { selectActiveDeltaPet, selectActiveInfo } from '../../services/petstore';
 
 const ScContainer = styled.div`
   width:100%;
@@ -68,9 +68,9 @@ const getDateLabel = (epoch?: number) => {
 
 export const HeaderBottom = () => {
   const petInfo = useSelector(selectActiveInfo);
-  const cachedInfo = useSelector(selectActiveCachedPet);
+  const deltaInfo = useSelector(selectActiveDeltaPet);
 
-  const level = cachedInfo?.stats.find(s => s.id === 'level')?.value;
+  const level = deltaInfo?.stats.find(s => s.id === 'level')?.value;
 
   return (
     <ScContainer>
@@ -78,8 +78,8 @@ export const HeaderBottom = () => {
         <>
           <ScLabel>
             <ScPetName>{petInfo.name}</ScPetName>
-            {cachedInfo?.bornOn && <ScBornOn>{`born on: ${getDateLabel(cachedInfo.bornOn)}`}</ScBornOn>}
-            {cachedInfo?.diedOn && <ScBornOn>{`died on: ${getDateLabel(cachedInfo.diedOn)}`}</ScBornOn>}
+            {deltaInfo?.bornOn && <ScBornOn>{`born on: ${getDateLabel(deltaInfo.bornOn)}`}</ScBornOn>}
+            {deltaInfo?.diedOn && <ScBornOn>{`died on: ${getDateLabel(deltaInfo.diedOn)}`}</ScBornOn>}
           </ScLabel>
           <ScPetLevel>
             {level && <h4>{`Level: ${level}`}</h4>}

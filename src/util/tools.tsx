@@ -1,4 +1,4 @@
-import { PetStatDefinition, DeltaStat, CachedPetStat, ActiveToggleState } from '../types';
+import { PetStatDefinition, DeltaStat, DeltaPetStat, ActiveToggleState } from '../types';
 
 // general
 export const round = (number: number, pad?: number) => {
@@ -18,13 +18,13 @@ export const randBetween = (range: number[]) => {
 
 export const getStatValue = (
   s: PetStatDefinition,
-  cachedPetStats: CachedPetStat[],
+  deltaPetStats: DeltaPetStat[],
   timeDiffInSeconds: number,
   perMinuteAdjustment?: number,
   forceCurrent?: boolean,
   debugMode?: boolean
 ) => {
-  let curValue = cachedPetStats.find((cS) => cS.id === s.id)?.value;
+  let curValue = deltaPetStats.find((cS) => cS.id === s.id)?.value;
   if (curValue === undefined) {
     curValue = s.value;
   }
@@ -58,9 +58,9 @@ const getStatOverrides = (activeToggles: ActiveToggleState[]) => {
   return statOverrides;
 }
 
-export const getCachedDeltaStats = (
+export const getActiveDeltaStats = (
   stats: PetStatDefinition[],
-  cachedPetStats: CachedPetStat[],
+  deltaPetStats: DeltaPetStat[],
   activeToggles: ActiveToggleState[],
   oldSaveTime: number,
   newSaveTime: number,
@@ -73,7 +73,7 @@ export const getCachedDeltaStats = (
   return stats.map((s) => {
     return {
       id: s.id,
-      value: getStatValue(s, cachedPetStats, timeDiffInSeconds, statOverrides[s.id], undefined, debugMode),
+      value: getStatValue(s, deltaPetStats, timeDiffInSeconds, statOverrides[s.id], undefined, debugMode),
       label: s.label,
       max: s.max
     } as DeltaStat;

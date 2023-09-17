@@ -1,5 +1,5 @@
 import { RootState } from '../store';
-import reducer, { PetStoreState, selectCachedDeltaStats, selectActiveIdx, setActiveId } from './index';
+import reducer, { PetStoreState, selectActiveDeltaStats, selectActiveIdx, setActiveId } from './index';
 // import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
@@ -50,11 +50,11 @@ describe('#petstore.selectors', () => {
   });
 
   
-  describe('#selectCachedDeltaStats', () => {
+  describe('#selectActiveDeltaStats', () => {
     it('should increase stat over time', () => {
       const lastTime = 1000;
       const time = 121000; // 2 minutes
-      expect(selectCachedDeltaStats.resultFunc(
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
@@ -82,7 +82,7 @@ describe('#petstore.selectors', () => {
     it('should decrease stat over time', () => {
       const lastTime = 1000;
       const time = 61000;
-      expect(selectCachedDeltaStats.resultFunc(
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
@@ -110,7 +110,7 @@ describe('#petstore.selectors', () => {
     it('stat should not go past 0 or max', () => {
       const lastTime = 1000;
       const time = 601000; // 10 minutes later...
-      expect(selectCachedDeltaStats.resultFunc(
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
