@@ -41,8 +41,6 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Cabin', sans-serif;
-    background-color: var(--color-black);
-    color: var(--color-white);
 
     --theme-color-primary: var(--color-blue);
     --theme-color-primary-border: var(--color-white);
@@ -58,9 +56,10 @@ export default createGlobalStyle`
     --theme-color-special-border: var(--color-white);
     --theme-color-special-text: var(--color-black);
 
-    --theme-color-bar-bg: var(--color-white);
-    --theme-color-bar-text: var(--color-black);
-    --theme-color-bar-border: var(--color-white);
+    --theme-color-bg: var(--color-secondary);
+    
+    background-color: var(--theme-color-bg);
+    color: var(--theme-color-either-text);
   }
 
   #root{

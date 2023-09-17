@@ -12,6 +12,7 @@ import {
 
 import { Statuses } from './statuses';
 import { useCallback, useEffect } from 'react';
+import { ThemeStrings } from '../../types';
 
 type ScContainerProps = {
   $bgImageUrl?: string;
@@ -45,7 +46,7 @@ const ScWastedBtn = styled.div`
   padding: 6rem;
   border-radius: 5rem;
   text-align: center;
-  
+
   background-color: var(--theme-color-secondary);
   border: 1rem solid var(--theme-color-primary);
   color: var(--theme-color-secondary-text);
@@ -151,6 +152,33 @@ const ScOverlayImage = styled.div<ScOverlayImageProps>`
     `}
 `;
 
+const setTheme = (theme?: ThemeStrings) => {
+  if (theme) {
+    const root = document.documentElement;
+
+    Object.keys(theme).forEach(themeKey => {
+      root.style.setProperty(`--theme-color-${themeKey}`, theme[themeKey]);
+    });
+
+    /*
+    "primary": "#1fb9f3",
+    "primary-border": "#fef8dd",
+    "primary-text": "#fef8dd",
+    "secondary": "#51f249",
+    "secondary-border": "#fef8dd",
+    "secondary-text": "#0f0e0b",
+    "either-text": "#0f0e0b",
+    "special": "#6b1ff3",
+    "special-border": "#fef8dd",
+    "special-text": "#0f0e0b"
+    */
+   
+    // Modify the value of the --primary-color CSS variable
+    // themeObj.primary && root.style.setProperty('--theme-color-primary', themeObj.primary);
+    // themeObj.primary && root.style.setProperty(`--theme-color-${val}`, val);
+  }
+};
+
 export const PetContainer = () => {
   const dispatch = useDispatch();
   const activePet = useSelector(selectActivePet, shallowEqual);
@@ -167,6 +195,12 @@ export const PetContainer = () => {
       dispatch(killActivePet());
     }
   }, [activeBehavior?.type, dispatch]);
+
+  useEffect(() => {
+    console.log('activePetChanged', activePet);
+
+    activePet && setTheme(activePet.theme);
+  }, [activePet]);
 
   const onResetPet = useCallback(() => {
     // @ts-ignore

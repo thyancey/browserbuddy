@@ -5,10 +5,12 @@ const ScContainer = styled.div`
   display: inline-block;
   width: calc(50% - 1rem);
   margin-right: 1rem;
+  margin-top: 0.5rem;
 `;
 
-const ScLabel = styled.h4`
-  font-size: 1rem;
+const ScLabel = styled.p`
+  font-size: 1.5rem;
+  font-weight: bold;
 `;
 
 const ScBar = styled.div`
@@ -16,14 +18,12 @@ const ScBar = styled.div`
   border-radius: 1rem;
   overflow: hidden;
   padding: 0.25rem 0.5rem;
-  text-align: center;
-  height: 5rem;
+  height: 4rem;
+  margin-top: 0.25rem;
 
   background-color: var(--theme-color-primary);
-  border: 0.5rem solid var(--theme-color-primary-border);
-
   color: var(--theme-color-secondary);
-  box-shadow: 0px -2px 4px var(--color-grey-light);
+  border: 0.5rem solid var(--theme-color-primary-border);
 `;
 
 const ScBarFill = styled.div`
@@ -68,7 +68,7 @@ export const StatBar = ({ label, max, value, hideStats = false }: StatBarProps) 
   if (!label) return null;
   return (
     <ScContainer>
-      <ScLabel>{label.toLocaleUpperCase()}</ScLabel>
+      <ScLabel>{label}</ScLabel>
       <ScBar>
         {!hideStats && (
           <ScBarValueContainer>

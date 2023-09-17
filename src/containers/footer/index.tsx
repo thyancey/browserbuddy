@@ -33,7 +33,8 @@ const ScPetInfo = styled.div`
   line-height: 1.5rem;
   font-weight:500;
   padding: 1rem;
-  padding-top: .5rem ;
+  padding-top: .5rem;
+  padding-bottom: 2rem;
   
   overflow-y:auto;
 

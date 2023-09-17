@@ -3,6 +3,19 @@
   "name": "Hot Doug the hotdog",
   "bio": "hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. ",
   "bgImage": "assets/bg_grill_off.gif",
+  "theme": {
+    "primary": "#e3719d",
+    "primary-border": "#3f2832",
+    "primary-text": "#3f2832",
+    "secondary": "#9e2835",
+    "secondary-border": "#3f2832",
+    "secondary-text": "#e4a672",
+    "either-text": "#3f2832",
+    "special": "#6b1ff3",
+    "special-border": "#fef8dd",
+    "special-text": "#3f2832",
+    "bg": "#9e2835"
+  },
   "logic": {
     "stats": [
       {

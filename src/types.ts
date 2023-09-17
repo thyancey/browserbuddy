@@ -172,11 +172,15 @@ export type PingPayload = {
 export type RawPetStatuses = {
   [key: string]: PetStatusDefinition
 }
+export type ThemeStrings = {
+  [key: string]: string
+}
 export type RawPetJSON = {
   id: string,
   name: string,
   bio: string,
   baseUrl: string,
+  theme: ThemeStrings,
   logic: {
     stats: PetStatDefinitionJSON[],
     statuses: RawPetStatuses,
@@ -196,7 +200,8 @@ export type PetDefinition = {
   diedOn?: number,
   logic: PetLogicGroup,
   bgImage?:string,
-  bgColor?:string
+  bgColor?:string,
+  theme?: ThemeStrings
 }
 
 export type PetListItem = {

@@ -25,6 +25,7 @@ import {
   PetToggleDefinition,
   ActiveToggleState,
   PetToggleDefinitionJSON,
+  ThemeStrings,
 } from '../../types';
 import { clamp, getActiveDeltaStats, log } from '../../util/tools';
 import {
@@ -71,6 +72,28 @@ const initialStoreState: PetStoreState = {
   lastRendered: new Date().getTime(),
   lastSaved: new Date().getTime(),
 };
+
+const parseTheme = (theme: ThemeStrings) => {
+  const theseThemes: ThemeStrings = {
+    'primary': 'var(--color-blue)',
+    'primary-border': 'var(--color-white)',
+    'primary-text': 'var(--color-white)',
+    'secondary': 'var(--color-green)',
+    'secondary-border': 'var(--color-white)',
+    'secondary-text': 'var(--color-black)',
+    'either-text': 'var(--color-black)',
+    'special': 'var(--color-purple)',
+    'special-border': 'var(--color-white)',
+    'special-text': 'var(--color-black)',
+    'bg': 'var(--color-black)'
+  }
+
+  theme && Object.keys(theme).forEach(themeKey => {
+    theseThemes[themeKey] = theme[themeKey];
+  });
+
+  return theseThemes;
+}
 
 // might want to do some validation and pre-processing here
 export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetState) => {
@@ -384,6 +407,7 @@ export const petStoreSlice = createSlice({
         diedOn: initialState?.diedOn || undefined, // should this always be undefined?
         bgImage: petDefinition.bgImage ? `${petDefinition.baseUrl}/${petDefinition.bgImage}` : null,
         bgColor: petDefinition.bgColor || null,
+        theme: parseTheme(petDefinition.theme)
       } as PetDefinition;
 
       if (foundPet) {
