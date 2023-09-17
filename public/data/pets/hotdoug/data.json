@@ -1,7 +1,7 @@
 {
   "id": "hotdoug",
   "name": "Hot Doug the hotdog",
-  "bio": "hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. hot doug. ",
+  "bio": "Hot Doug is a tasty little morsel. To turn him into a fully dressed dog, you must grill him to an internal temperature between 325 - 400 degrees, be careful not to burn him! When he's warm and happy, he can evolve to the next phase.",
   "bgImage": "assets/bg_grill_off.gif",
   "theme": {
     "primary": "#e3719d",
@@ -50,7 +50,7 @@
       {
         "id": "sleepy",
         "label": "Sleepyness",
-        "value": 50.0,
+        "value": 0.0,
         "perMinute": 10,
         "max": 100.0,
         "fullIsGood": false,
@@ -375,7 +375,7 @@
             "then": true
           }
         ],
-        "hideWhenUnavailable": true,
+        "hideWhenUnavailable": false,
         "changeStats": [
           {
             "statId": "level",

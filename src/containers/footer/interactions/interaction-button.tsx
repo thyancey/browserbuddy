@@ -72,7 +72,7 @@ export const InteractionButton = ({cooldownStatus, isEnabled, interaction, toggl
   let label = interaction.label;
   const toggleStyle = toggleState ? toggleState.state : undefined;
   if(toggleState){
-    label = `${label}: ${toggleState.state}`;
+    label = `${label} (status: ${toggleState.state})`;
   }
   if(cooldownStatus){
     const total = cooldownStatus.endAt - cooldownStatus.startAt; 

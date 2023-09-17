@@ -66,11 +66,11 @@ const ScWastedBtn = styled.div`
 
   &:hover {
     background-color: var(--theme-color-primary);
-    border: 1rem solid var(--theme-color-secondary);
-    color: var(--theme-color-primary-text);
+    /* border: 1rem solid var(--theme-color-secondary); */
+    color: var(--theme-color-either-text);
 
     &:before {
-      content: 'reset pet?';
+      content: 'REVIVE?';
     }
   }
 `;
@@ -172,7 +172,7 @@ const setTheme = (theme?: ThemeStrings) => {
     "special-border": "#fef8dd",
     "special-text": "#0f0e0b"
     */
-   
+
     // Modify the value of the --primary-color CSS variable
     // themeObj.primary && root.style.setProperty('--theme-color-primary', themeObj.primary);
     // themeObj.primary && root.style.setProperty(`--theme-color-${val}`, val);
@@ -197,8 +197,6 @@ export const PetContainer = () => {
   }, [activeBehavior?.type, dispatch]);
 
   useEffect(() => {
-    console.log('activePetChanged', activePet);
-
     activePet && setTheme(activePet.theme);
   }, [activePet]);
 

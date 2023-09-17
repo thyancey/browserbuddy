@@ -6,8 +6,8 @@ import { clearSave } from '../../services/petstore';
 
 const ScContainer = styled.div`
   padding: 1rem;
-  color: var(--color-blue);
   min-width: 30rem;
+  background-color: var(--theme-color-bg);
 `;
 
 const ScLogo = styled.h1`
@@ -20,8 +20,8 @@ const ScButton = styled.button`
   margin: 1rem;
   font-size: 2rem;
   padding: 0.5rem 1rem;
-  background-color: var(--color-black);
-  border: 0.5rem solid var(--color-white);
+  background-color: var(--theme-color-primary);
+  border: 0.5rem solid var(--theme-color-primary-text);
   border-radius: 1rem;
 
   margin-top: 2rem;
