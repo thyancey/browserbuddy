@@ -96,6 +96,8 @@ const finishUp = (rawPetsJson: RawPetJSON[], dispatch: AppDispatch, savedData: L
   if (savedData.config.activePet) {
     activeId = savedData.config.activePet;
   }
+  // @ts-ignore
+  globalThis.rawPetsJson = rawPetsJson;
 
   rawPetsJson.forEach((petDef: RawPetJSON) => {
     const savedStatus = savedData?.pets.find((p) => p.id === petDef.id) || null;
@@ -127,8 +129,6 @@ const finishUp = (rawPetsJson: RawPetJSON[], dispatch: AppDispatch, savedData: L
         }, interaction.endAt - now);
       });
     });
-
-  // dispatch(pingStore({ time: now, doSave: true }));
 };
 
 export const Loader = () => {

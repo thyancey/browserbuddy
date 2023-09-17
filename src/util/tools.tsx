@@ -58,46 +58,6 @@ const getStatOverrides = (activeToggles: ActiveToggleState[]) => {
   return statOverrides;
 }
 
-export const getRenderedDeltaStats = (
-  stats: PetStatDefinition[],
-  cachedPetStats: CachedPetStat[],
-  activeToggles: ActiveToggleState[],
-  oldSaveTime: number,
-  newSaveTime: number,
-  debugMode?: boolean
-) => {
-  const timeDiffInSeconds = (newSaveTime - oldSaveTime) / 1000;
-
-  const statOverrides = getStatOverrides(activeToggles);
-
-
-  /*
-    TODO, this could get removed simplified after resolving:
-    - redundant call on save
-    - negative time on change pet between saves
-  */
-
-  if (timeDiffInSeconds <= 0) {
-    return stats.map((s) => {
-      return {
-        id: s.id,
-        value: getStatValue(s, cachedPetStats, timeDiffInSeconds, statOverrides[s.id] || 0, true, debugMode),
-        max: s.max,
-        label: s.label,
-      };
-    });
-  }
-
-  return stats.map((s) => {
-    return {
-      id: s.id,
-      value: getStatValue(s, cachedPetStats, timeDiffInSeconds, statOverrides[s.id] || 0, undefined, debugMode),
-      max: s.max,
-      label: s.label,
-    };
-  });
-};
-
 export const getCachedDeltaStats = (
   stats: PetStatDefinition[],
   cachedPetStats: CachedPetStat[],
@@ -114,6 +74,8 @@ export const getCachedDeltaStats = (
     return {
       id: s.id,
       value: getStatValue(s, cachedPetStats, timeDiffInSeconds, statOverrides[s.id], undefined, debugMode),
+      label: s.label,
+      max: s.max
     } as DeltaStat;
   });
 };

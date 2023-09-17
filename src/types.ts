@@ -166,8 +166,7 @@ export type PetLogicGroup = {
 }
 
 export type PingPayload = {
-  time: number,
-  doSave?: boolean
+  time: number
 }
 
 export type RawPetStatuses = {

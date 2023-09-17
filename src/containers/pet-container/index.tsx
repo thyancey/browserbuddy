@@ -5,12 +5,13 @@ import {
   selectActiveBehavior,
   selectActiveBg,
   killActivePet,
+  selectActivePet,
   selectDetailedActiveDeltaStatuses,
-  clearSave,
+  createPet,
 } from '../../services/petstore';
 
 import { Statuses } from './statuses';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 type ScContainerProps = {
   $bgImageUrl?: string;
@@ -143,12 +144,14 @@ interface ScFgImageProps {
 
 const ScStatusImages = styled.div<ScFgImageProps>`
   opacity: 0;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 
-  ${p => p.$isActive && css`
-    opacity: 1;
-  `}
-`
+  ${(p) =>
+    p.$isActive &&
+    css`
+      opacity: 1;
+    `}
+`;
 
 interface ScOverlayImageProps {
   $bgImageUrl?: string;
@@ -169,6 +172,7 @@ const ScOverlayImage = styled.div<ScOverlayImageProps>`
 
 export const PetContainer = () => {
   const dispatch = useDispatch();
+  const activePet = useSelector(selectActivePet, shallowEqual);
   const activeBehavior = useSelector(selectActiveBehavior, shallowEqual);
   const statuses = useSelector(selectDetailedActiveDeltaStatuses, shallowEqual);
   const { imageUrl, bgColor } = useSelector(selectActiveBg, shallowEqual);
@@ -182,6 +186,19 @@ export const PetContainer = () => {
       dispatch(killActivePet());
     }
   }, [activeBehavior?.type, dispatch]);
+
+  const onResetPet = useCallback(() => {
+    // @ts-ignore
+    const rawPetDef = (window.rawPetsJson as RawPetJSON[]).find((rpj) => rpj.id === activePet.id);
+    console.log('resetting', rawPetDef)
+    dispatch(
+      createPet({
+        isActive: true,
+        petDefinition: rawPetDef,
+        initialState: null
+      })
+    );
+  }, [dispatch, activePet?.id]);
 
   if (!activeBehavior) {
     return <ScContainer $bgImageUrl={imageUrl} />;
@@ -208,7 +225,7 @@ export const PetContainer = () => {
         <Statuses />
         <ScPetImage style={backgroundStyles} />
         <ScOverlay $isActive={activeBehavior.type === 'dead'}>
-          <ScWastedBtn onClick={() => dispatch(clearSave())}></ScWastedBtn>
+          <ScWastedBtn onClick={() => onResetPet()}></ScWastedBtn>
         </ScOverlay>
         <ScStatusImages $isActive={fgImages.length > 0}>
           {fgImages.map((imageUrl, idx) => (

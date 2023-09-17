@@ -59,7 +59,7 @@ type StatBarProps = {
 
 export const StatBar = ({label, max, value, hideStats = false}: StatBarProps) => {
   const percent = Math.round((value / max) * 1000) / 10;
-
+  if(!label) return null;
   return (
     <ScContainer>
       <ScLabel>{label.toLocaleUpperCase()}</ScLabel>
