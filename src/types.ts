@@ -54,6 +54,8 @@ export type PetStatusDefinition = {
   id: string,
   label: string,
   message: string,
+  fgImage: string,
+  bgImage: string,
   alertType?: AlertType
 }
 

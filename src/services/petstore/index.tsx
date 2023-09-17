@@ -76,7 +76,7 @@ const initialStoreState: PetStoreState = {
 export const parseLogicGroup = (petDefJSON: RawPetJSON, initialState?: SavedPetState) => {
   return {
     stats: parseStatsGroup(petDefJSON.logic.stats, initialState),
-    statuses: parseStatusesGroup(petDefJSON.logic.statuses),
+    statuses: parseStatusesGroup(petDefJSON.logic.statuses, petDefJSON.baseUrl),
     behaviorRules: parseBehaviorRulesWhenThenGroup(petDefJSON.logic.behaviorRules),
     behaviors: parsePetBehaviors(petDefJSON.logic.behaviors || [], petDefJSON.baseUrl),
     interactions: parseInteractionsGroup(petDefJSON.logic.interactions),
@@ -152,11 +152,13 @@ export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState?
   });
 };
 
-export const parseStatusesGroup = (statuses: RawPetStatuses): PetStatusDefinition[] => {
+export const parseStatusesGroup = (statuses: RawPetStatuses, baseUrl: string): PetStatusDefinition[] => {
   return Object.keys(statuses).map((key: string) => ({
     id: key,
     label: statuses[key].label || '',
     message: statuses[key].message || '',
+    fgImage: statuses[key].fgImage ? `${baseUrl}/${statuses[key].fgImage}` : '',
+    bgImage: statuses[key].bgImage ? `${baseUrl}/${statuses[key].bgImage}` : '',
     alertType: statuses[key].alertType,
   }));
 };
@@ -261,15 +263,6 @@ export const petStoreSlice = createSlice({
       // TODO, this should be handled differently, or taken out of redux otherwise
       window.localStorage.clear();
       window.location.reload();
-    },
-    resetActivePet: (state: PetStoreState) => {
-      // like other of these cleanup operations, this one is sketchy and could produce weird bugs.
-      const activePet = state.pets[state.activeIdx];
-      const cachedIdx = state.cachedPets.findIndex((cP) => cP.id === activePet.id);
-      if(cachedIdx > -1) {
-        state.cachedPets.splice(cachedIdx, 1);
-        // hackySave(state);
-      }
     },
     killActivePet: (state: PetStoreState) => {
       console.log('------ PET WAS KILLED ----------');
@@ -437,7 +430,6 @@ export const {
   restoreInteractionFromSave,
   removeInteractionEvent,
   killActivePet,
-  resetActivePet,
 } = petStoreSlice.actions;
 
 export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;

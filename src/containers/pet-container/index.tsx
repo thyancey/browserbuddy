@@ -1,7 +1,13 @@
 import styled, { css } from 'styled-components';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
-import { selectActiveBehavior, selectActiveBg, killActivePet, resetActivePet } from '../../services/petstore';
+import {
+  selectActiveBehavior,
+  selectActiveBg,
+  killActivePet,
+  selectDetailedActiveDeltaStatuses,
+  clearSave,
+} from '../../services/petstore';
 
 import { Statuses } from './statuses';
 import { useEffect } from 'react';
@@ -50,16 +56,16 @@ const ScWastedBtn = styled.div`
     font-size: 8rem;
   }
 
-  &:before{
+  &:before {
     content: 'WASTED';
     font-size: 8rem;
   }
 
-  &:hover{
+  &:hover {
     background-color: var(--color-green);
 
-    &:before{
-      content: 'revive?';
+    &:before {
+      content: 'reset all pets?';
     }
   }
   /* cursor: pointer; */
@@ -131,10 +137,44 @@ const ScBehavior = styled.p`
   right: 1rem;
 `;
 
+interface ScFgImageProps {
+  $isActive: boolean;
+}
+
+const ScStatusImages = styled.div<ScFgImageProps>`
+  opacity: 0;
+  transition: opacity .5s;
+
+  ${p => p.$isActive && css`
+    opacity: 1;
+  `}
+`
+
+interface ScOverlayImageProps {
+  $bgImageUrl?: string;
+}
+const ScOverlayImage = styled.div<ScOverlayImageProps>`
+  position: absolute;
+  inset: 0;
+  /* z-index: 9; */
+
+  ${(p) =>
+    p.$bgImageUrl &&
+    css`
+      background-size: cover;
+      background-position: center;
+      background-image: url(${p.$bgImageUrl});
+    `}
+`;
+
 export const PetContainer = () => {
   const dispatch = useDispatch();
   const activeBehavior = useSelector(selectActiveBehavior, shallowEqual);
+  const statuses = useSelector(selectDetailedActiveDeltaStatuses, shallowEqual);
   const { imageUrl, bgColor } = useSelector(selectActiveBg, shallowEqual);
+
+  const bgImages = statuses.filter((status) => status.bgImage).map((status) => status.bgImage);
+  const fgImages = statuses.filter((status) => status.fgImage).map((status) => status.fgImage);
 
   // STOP EVERYTHING AND DIE
   useEffect(() => {
@@ -159,13 +199,22 @@ export const PetContainer = () => {
   return (
     <ScContainer $bgImageUrl={bgImageUrl}>
       <>
+        <ScStatusImages $isActive={bgImages.length > 0}>
+          {bgImages.map((imageUrl, idx) => (
+            <ScOverlayImage key={idx} $bgImageUrl={imageUrl} />
+          ))}
+        </ScStatusImages>
         <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
         <Statuses />
         <ScPetImage style={backgroundStyles} />
         <ScOverlay $isActive={activeBehavior.type === 'dead'}>
-          <ScWastedBtn onClick={() => dispatch(resetActivePet())}>
-          </ScWastedBtn>
+          <ScWastedBtn onClick={() => dispatch(clearSave())}></ScWastedBtn>
         </ScOverlay>
+        <ScStatusImages $isActive={fgImages.length > 0}>
+          {fgImages.map((imageUrl, idx) => (
+            <ScOverlayImage key={idx} $bgImageUrl={imageUrl} />
+          ))}
+        </ScStatusImages>
       </>
     </ScContainer>
   );

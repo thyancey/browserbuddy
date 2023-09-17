@@ -16,12 +16,12 @@ export const Saver = () => {
     // this check avoids trying to save the initialState on first load, maybe there's a better way around this.
     // it used to check activePet, but resetting a specific pet created some issues there
     if(savePayload && savePayload.config.lastSaved > -1){
-      // the line below used to be here (and not within the next if block) to accomodate the split rendering vs saving intervals
+      // the line below (and not within the next if block) tries to accomodate the split rendering vs saving intervals
       // however, it was causing a stack overflow when resetting a pet (clearing it's definition from storage)
-      // the whole caching/rendering system needs to be reworked.
-      // setLocalStorage(() => savePayload);
+      // the whole caching/rendering system needs to be reworked. For now, individual pets cant be reset
+      setLocalStorage(() => savePayload);
       if(lastSaved !== savePayload.config.lastSaved){
-        setLocalStorage(() => savePayload);
+        // setLocalStorage(() => savePayload);
         lastSaved = savePayload.config.lastSaved;
         dispatch(setCachedPayload(savePayload));
       }

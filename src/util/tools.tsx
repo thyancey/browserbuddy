@@ -33,7 +33,7 @@ export const getStatValue = (
   // overrides may come from an activeToggle thats changing the behavior of a stat
   const perMinute = s.perMinute + (perMinuteAdjustment || 0);
   // calculations are done at "second" granularity. Debug mode lets you see pets change faster.
-  const perSecond = debugMode ? perMinute : perMinute / 60;
+  const perSecond = debugMode ? perMinute : perMinute / 30;
   return Math.round(clamp(curValue + perSecond * timeDiffInSeconds, 0, s.max) * 100) / 100;
 };
 
