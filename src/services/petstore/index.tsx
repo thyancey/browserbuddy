@@ -338,7 +338,6 @@ export const petStoreSlice = createSlice({
       }
 
       if (interaction.changeToggle) {
-        console.log('interaction.changeToggle: ', interaction.changeToggle);
         doSave = true;
         const activePet = state.pets[state.activeIdx];
         const deltaIdx = state.deltaPets.findIndex((cP) => cP.id === activePet.id);
