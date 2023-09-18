@@ -13,16 +13,11 @@ import { PetInteractionDefinition } from '../../../types';
 import { InteractionButton } from './interaction-button';
 
 const ScInteractions = styled.ul`
-  border-bottom: 0.25rem dashed black;
   display: flex;
   flex-wrap: wrap;
+  gap: 1rem;
 
   > li {
-    margin: 0.5rem;
-    margin-left: 0.25rem;
-    &:first-child {
-      margin-left: 0.5rem;
-    }
     flex: 1 auto;
     list-style: none;
   }

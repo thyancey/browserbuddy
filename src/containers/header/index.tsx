@@ -1,35 +1,54 @@
 import styled from 'styled-components';
-import { HeaderBottom } from './header-bottom';
-
-import { HeaderTop }  from './header-top';
+import { HeaderLabel } from './header-label';
+import { HeaderTabs } from './header-tabs';
 const ScHeader = styled.header`
   position: relative;
-  height:8rem;
-  z-index:1;
 
-  display:flex;
-  flex-direction:column;
+  display: grid;
+  grid-template-columns: 5rem auto;
+  grid-template-rows: 2.5rem auto;
+  gap: 1rem;
 `;
 
-const ScTop = styled.div`
-  flex: 0 0 3rem;
+const ScActivePetMarker = styled.div`
+  grid-column: 1;
+  grid-row: 1 / span 2;
+
+  > div {
+    height: 100%;
+    width: 100%;
+
+    border: var(--border-width) solid var(--theme-color-color2);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+  }
 `;
 
-const ScBottom = styled.div`
-  position:relative;
-  z-index:1;
-  flex: 1;
+const ScPetMarkers = styled.div`
+  grid-column: 2;
+  grid-row: 1;
+`;
+
+const ScActivePet = styled.div`
+  grid-column: 2;
+  grid-row: 2;
 `;
 
 export const Header = () => {
   return (
     <ScHeader>
-      <ScTop>
-        <HeaderTop />
-      </ScTop>
-      <ScBottom>
-        <HeaderBottom />
-      </ScBottom>
+      <ScActivePetMarker>
+        <div>{'1'}</div>
+      </ScActivePetMarker>
+      <ScPetMarkers>
+        <HeaderTabs />
+      </ScPetMarkers>
+      <ScActivePet>
+        <HeaderLabel />
+      </ScActivePet>
     </ScHeader>
-  )
-}
+  );
+};

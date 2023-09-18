@@ -19,14 +19,11 @@ type ScContainerProps = {
 };
 const ScContainer = styled.div<ScContainerProps>`
   position: absolute;
-  left: 0;
-  right: 0;
-  top: -2rem;
-  padding-top: 2rem;
-  bottom: -2rem;
-  padding-bottom: 2rem;
-  background-color: var(--theme-color-primary);
-  border: 0.5rem solid var(--theme-color-primary-border);
+  inset: 0;
+  background-color: var(--theme-color-color1);
+  border: var(--border-width) solid var(--theme-color-color2);
+  border-radius: var(--border-radius);
+  overflow: hidden;
 
   ${(p) =>
     p.$bgImageUrl &&

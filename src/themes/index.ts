@@ -37,10 +37,13 @@ export default createGlobalStyle`
     --color-red-light: #f18283;
     --color-purple: #6b1ff3;
 
-    font-size: 62.5%;
+    font-size: 70%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Cabin', sans-serif;
+
+    --theme-color-color1: #0077B6;
+    --theme-color-color2: #90E0EF;
 
     --theme-color-primary: var(--color-blue);
     --theme-color-primary-border: var(--color-white);
@@ -57,9 +60,16 @@ export default createGlobalStyle`
     --theme-color-special-text: var(--color-black);
 
     --theme-color-bg: var(--color-secondary);
+
+
+    --border-radius: 1rem;
+    --border-width: .3rem;
+
+    --font-display: 'Paytone One', 'sans-serif';
+    --font-copy: 'Cabin', sans-serif;
     
-    background-color: var(--theme-color-bg);
-    color: var(--theme-color-either-text);
+    background-color: var(--theme-color-color1);
+    color: var(--theme-color-color2);
   }
 
   #root{
@@ -69,22 +79,22 @@ export default createGlobalStyle`
     min-height:var(--val-min-height);
   }
   h1, h2, h3, h4, h5, h6{
-    font-family: 'Bevan', cursive;
+    font-family: var(--font-display);
   }
   a, p, span {
-    font-family: 'Cabin', sans-serif;
+    font-family: var(--font-copy);
   }
   h1{
-    font-size: 5rem;
-  }
-  h2{
     font-size: 4rem;
   }
+  h2{
+    font-size: 3rem;
+  }
   h3{
-    font-size: 3.5rem;
+    font-size: 2.5rem;
   }
   h4{
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   h5{
     font-size: 1.5rem;
@@ -133,19 +143,24 @@ export const store: ThemeStore = {
   breakpoints: breakpoints,
 };
 
+export const mixinBorders = () => css`
+  border: var(--border-width) solid var(--theme-color-color2);
+  border-radius: var(--border-radius);
+`;
+
 export const mixinFontFamily = (style: 'details' | 'display') => {
   switch (style) {
     case 'details':
       return css`
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Cabin', sans-serif;
       `;
     case 'display':
       return css`
-        font-family: 'Bevan', cursive;
+        font-family: 'Paytone One', sans-serif;
       `;
     default:
       return css`
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Cabin', sans-serif;
       `;
   }
 };

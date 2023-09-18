@@ -4,6 +4,8 @@
   "bio": "Hot Doug is a tasty little morsel. To turn him into a fully dressed dog, you must grill him to an internal temperature between 325 - 400 degrees, be careful not to burn him! When he's warm and happy, he can evolve to the next phase.",
   "bgImage": "assets/bg_grill_off.gif",
   "theme": {
+    "color1": "#0077B6",
+    "color2": "#90E0EF",
     "primary": "#e3719d",
     "primary-border": "#3f2832",
     "primary-text": "#3f2832",
