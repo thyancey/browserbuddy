@@ -57,12 +57,12 @@ const ScBarBg = styled.div`
   right: -4rem;
 `;
 
-const getRando = () => {
-  const val = Math.random();
-  if (val > 0.66) return 100;
-  if (val > 0.33) return 50;
-  return 0;
-};
+// const getRando = () => {
+//   const val = Math.random();
+//   if (val > 0.66) return 100;
+//   if (val > 0.33) return 50;
+//   return 0;
+// };
 
 type StatBarProps = {
   label: string;
@@ -72,6 +72,7 @@ type StatBarProps = {
 };
 export const StatBar = ({ label, displayType = 'value', max, value }: StatBarProps) => {
   const percent = Math.round((value / max) * 1000) / 10;
+  // for testing styles
   // const percent = getRando();
 
   const ValueMarkup = useMemo(() => {

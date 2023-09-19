@@ -62,6 +62,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: 1,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }
@@ -90,6 +91,7 @@ describe('#petstore.selectors', () => {
             value: 500,
             perMinute: -50,
             max: 1000,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }
@@ -118,6 +120,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: 3,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           },{
@@ -126,6 +129,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: -3,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }

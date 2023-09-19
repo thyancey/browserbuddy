@@ -71,7 +71,8 @@ export const Statuses = () => {
           <ScStatus
             key={dS.id}
             id={dS.id}
-            $bubbleColors={getBubbleColors(dS.alertType)}
+            // $bubbleColors={getBubbleColors(dS.alertType)}
+            $bubbleColors={getBubbleColors()}
             style={{ bottom: getBottom(i), transform: `rotate(${getRotation()}deg)` }}
           >
             {dS.label}
