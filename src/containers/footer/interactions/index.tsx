@@ -5,7 +5,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import {
   addNewInteractionEvent,
   removeInteractionEvent,
-  selectActiveCachedToggles,
+  selectActiveToggles,
   selectActiveInteractionDetail,
   selectIsActivePetAlive,
 } from '../../../services/petstore';
@@ -13,16 +13,11 @@ import { PetInteractionDefinition } from '../../../types';
 import { InteractionButton } from './interaction-button';
 
 const ScInteractions = styled.ul`
-  border-bottom: 0.25rem dashed black;
   display: flex;
   flex-wrap: wrap;
+  gap: 1rem;
 
   > li {
-    margin: 0.5rem;
-    margin-left: 0.25rem;
-    &:first-child {
-      margin-left: 0.5rem;
-    }
     flex: 1 auto;
     list-style: none;
   }
@@ -30,7 +25,7 @@ const ScInteractions = styled.ul`
 
 export const Interactions = () => {
   const interactionDetails = useSelector(selectActiveInteractionDetail, shallowEqual);
-  const activeToggles = useSelector(selectActiveCachedToggles, shallowEqual);
+  const activeToggles = useSelector(selectActiveToggles, shallowEqual);
   const isActivePetAlive = useSelector(selectIsActivePetAlive);
 
   // thunk madness, cause I don't know how else to do this.
@@ -55,7 +50,7 @@ export const Interactions = () => {
 
   return (
     <ScInteractions>
-      {interactionDetails.map((iDetail) => (
+      {interactionDetails.filter(iDetail => iDetail.visible).map((iDetail) => (
         <InteractionButton
           key={iDetail.id}
           cooldownStatus={iDetail.cooldownStatus}

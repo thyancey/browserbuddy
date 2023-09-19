@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
   *{
@@ -26,23 +26,27 @@ export default createGlobalStyle`
     --val-min-height: 60rem;
 
     --color-black: #0f0e0b;
-    --color-grey: #373737;
-    --color-grey-light: #A39F8E;
     --color-white: #fef8dd;
     --color-blue: #1fb9f3;
-    --color-blue-light: #80cbe7;
-    --color-green: #51f249;
-    --color-yellow: #fff249;
-    --color-red: #F55658;
-    --color-red-light: #f18283;
-    --color-purple: #6b1ff3;
 
-    font-size: 62.5%;
+    font-size: 70%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Cabin', sans-serif;
-    background-color: var(--color-black);
-    color: var(--color-white);
+
+    --theme-color-primary: #0f0e0b;
+    --theme-color-secondary: #fef8dd;
+    --theme-color-highlight: #FFFFFF;
+  
+    --border-radius: 1rem;
+    --border-radius-outer: 1.5rem;
+    --border-width: .3rem;
+
+    --font-display: 'Paytone One', 'sans-serif';
+    --font-copy: 'Cabin', sans-serif;
+    
+    background-color: var(--theme-color-primary);
+    color: var(--theme-color-secondary);
   }
 
   #root{
@@ -52,22 +56,22 @@ export default createGlobalStyle`
     min-height:var(--val-min-height);
   }
   h1, h2, h3, h4, h5, h6{
-    font-family: 'Bevan', cursive;
+    font-family: var(--font-display);
   }
   a, p, span {
-    font-family: 'Cabin', sans-serif;
+    font-family: var(--font-copy);
   }
   h1{
-    font-size: 5rem;
-  }
-  h2{
     font-size: 4rem;
   }
+  h2{
+    font-size: 3rem;
+  }
   h3{
-    font-size: 3.5rem;
+    font-size: 2.5rem;
   }
   h4{
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   h5{
     font-size: 1.5rem;
@@ -90,61 +94,19 @@ export default createGlobalStyle`
       text-decoration: none;
     }
   }
-`;
 
-const shadows = {
-  z1: '-0.1rem 0.1rem .25rem .1rem rgba(0,0,0,0.16)',
-  z2: '-0.1rem 0.1rem .25rem .1rem rgba(0,0,0,0.36)',
-  z3: '-.2rem .5rem 1rem .2rem rgba(0,0,0,.36)',
-};
+  button {
+    background-color: var(--theme-color-primary);
+    color: var(--theme-color-secondary);
 
-const breakpoints = {
-  mobile_tiny: '300px',
-  mobile_medium: '400px',
-  mobile_large: '500px',
-  tablet: '768px',
-  desktop: '1024px',
-};
+    border: var(--border-width) solid var(--theme-color-secondary);
+    border-radius: var(--border-radius);
 
-type ThemeStore = {
-  shadows: typeof shadows;
-  breakpoints: typeof breakpoints;
-};
+    cursor: pointer;
 
-export const store: ThemeStore = {
-  shadows: shadows,
-  breakpoints: breakpoints,
-};
-
-export const mixinFontFamily = (style: 'details' | 'display') => {
-  switch (style) {
-    case 'details':
-      return css`
-        font-family: 'Roboto', sans-serif;
-      `;
-    case 'display':
-      return css`
-        font-family: 'Bevan', cursive;
-      `;
-    default:
-      return css`
-        font-family: 'Roboto', sans-serif;
-      `;
+    &:hover{
+      background-color: var(--theme-color-secondary);
+      color: var(--theme-color-primary);
+    }
   }
-};
-
-export const mixinBubble = () => {
-  return css`
-    border-radius: 2rem;
-    border: 0.5rem solid;
-  `;
-};
-
-export const mixinColorBubble = (background: string, borderAndText: string = '--color-white') => {
-  return css`
-    ${mixinBubble()}
-    border-color: var(${borderAndText});
-    color: var(${borderAndText});
-    background-color: var(${background});
-  `;
-};
+`;

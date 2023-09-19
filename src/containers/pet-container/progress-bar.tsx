@@ -14,7 +14,6 @@ const ScWrapper = styled.div`
 `;
 
 const ScProgressBg = styled.div`
-  background-color:var(--color-white);
   position:absolute;
   left:0;
   top:0;
@@ -23,7 +22,6 @@ const ScProgressBg = styled.div`
 `;
 
 const ScProgressBar = styled.div<ScProgressBarProps>`
-  background-color:var(--color-red);
   position:absolute;
   height:100%;
   left:0;
@@ -31,7 +29,6 @@ const ScProgressBar = styled.div<ScProgressBarProps>`
 
   &.full{
     width:100% !important;
-    background-color: var(--color-purple);;
   }
   z-index:1;
 `

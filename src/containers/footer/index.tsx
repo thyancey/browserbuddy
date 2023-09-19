@@ -1,73 +1,68 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-import { StatGroup } from './stat-group';
-import { selectActiveInfo } from '../../services/petstore';
+import { selectActiveDeltaStats, selectActiveInfo } from '../../services/petstore';
 import { Interactions } from './interactions';
+import { StatBar } from './stat-bar';
 
 const ScContainer = styled.div`
-  position:absolute;
-  left:0;
-  right:0;
-  top:-.5rem;
-  bottom:0;
-
-  background-color:var(--color-green);
-  border:.5rem solid var(--color-white);
-  border-radius:2rem;
-  overflow:hidden;
-
-  box-shadow: .25rem .25rem .55rem .45rem var(--color-grey);
-`
-
-const ScPetInfo = styled.div`
-  width:100%;
-  height:16rem;
-
-  font-size: 1.5rem;
-  line-height: 1.5rem;
-  font-weight:500;
+  position: absolute;
+  inset: 0;
   padding: 1rem;
-  padding-top: .5rem ;
-  
-  color: var(--color-black);
-  
 
-  overflow-y:auto;
+  border: var(--border-width) solid var(--theme-color-secondary);
+  border-radius: var(--border-radius-outer);
 
-  hr{
-    border-color:var(--color-blue);
-    border-style:dashed;
-    margin-top:.5rem;
-    margin-bottom:.5rem;
+  overflow: hidden;
 
-    margin-left:10%;
-    width:80%;
+  h3 {
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
   }
-`
 
-const ScBio = styled.div`
-  width:100%;
-`;
+  hr {
+    /* margin: 1rem 0; */
+  }
 
-const ScBioName = styled.h4`
-  margin-top:1rem;
-  margin-bottom:.5rem;
-`;
-
-const ScBioInfo = styled.p`
-  margin-top:1rem;
-  padding-left:1rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScInteractions = styled.div`
-  min-height:5rem;
-  width:100%;
+  &:after {
+    content: '';
+    display: block;
+    border-top: var(--border-width) dashed var(--theme-color-secondary);
+    width: 100%;
+    margin-top: 1rem;
+  }
+`;
+
+const ScPetInfo = styled.div`
+  margin-top: 1rem;
+  overflow-y: auto;
+  h3 {
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+  }
+`;
+
+const ScStats = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-right: 1rem;
+  > div {
+    /* flex: 1; */
+    width: calc(50% - 0.5rem);
+  }
 `;
 
 export const Footer = () => {
   const petInfo = useSelector(selectActiveInfo);
-  if(!petInfo) return null;
+  const activeStats = useSelector(selectActiveDeltaStats) || [];
+  if (!petInfo) return null;
 
   return (
     <ScContainer>
@@ -75,13 +70,13 @@ export const Footer = () => {
         <Interactions />
       </ScInteractions>
       <ScPetInfo>
-        <StatGroup />
-        <hr/>
-        <ScBio>
-          <ScBioName>{'Description'}</ScBioName>
-          <ScBioInfo>{petInfo.bio}</ScBioInfo>
-        </ScBio>
+        <h3>{'stats'}</h3>
+        <ScStats>
+          {activeStats.map((s, idx) => (
+            <StatBar key={idx} label={s.label} max={s.max} value={s.value} displayType={s.displayType} />
+          ))}
+        </ScStats>
       </ScPetInfo>
     </ScContainer>
-  )
-}
+  );
+};

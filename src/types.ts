@@ -19,16 +19,19 @@ export type RawManifestItem = {
 }
 
 export type PetInfo = {
+  idx: number,
   id: string,
   name: string,
-  bio: string,
-  level: number
+  bio: string
 }
+
+export type StatDisplayType = 'value' | 'roundedValue' | 'percent';
 
 export type PetStatDefinitionJSON = {
   id: string,
   label: string,
   value: number,
+  displayType?: StatDisplayType,
   perMinute: number,
   max: number,
   fullIsGood: boolean,
@@ -39,6 +42,7 @@ export type PetStatDefinition = {
   id: string,
   label: string,
   value: number,
+  displayType: StatDisplayType,
   perMinute: number,
   max: number,
   fullIsGood: boolean,
@@ -55,6 +59,8 @@ export type PetStatusDefinition = {
   id: string,
   label: string,
   message: string,
+  fgImage: string,
+  bgImage: string,
   alertType?: AlertType
 }
 
@@ -70,20 +76,23 @@ export type PetInteractionDefinition = {
   cooldown: number,
   changeStats: StatChangeDefinition[],
   changeToggle: PetToggleDefinition | null,
-  availability: WhenThenStringBooleanGroup[]
+  availability: WhenThenStringBooleanGroup[],
+  hideWhenUnavailable: boolean
 }
 
 export type PetInteractionDefinitionJSON = {
   id: string,
   label: string,
   cooldown: number,
-  changeToggle?: PetToggleDefinition,
-  changeStats: StatChangeDefinition[],
-  availability: RawWhenThen[]
+  changeToggle?: PetToggleDefinitionJSON,
+  changeStats?: StatChangeDefinition[],
+  availability: RawWhenThen[],
+  hideWhenUnavailable?: boolean
 }
 
 export type StatChangeDefinition = {
   statId: string,
+  type: 'incremental' | 'absolute',
   value: number
 }
 
@@ -103,7 +112,7 @@ export type PetBehaviorJSON = {
   image?: string,
   imageUrl?: string,
   
-  backgroundImage?: string,
+  bgImage?: string,
   position: string,
   offsetX?: number,
   offsetY?: number
@@ -143,9 +152,14 @@ export type ToggleStateDefinition = {
   perMinute?: number
 }
 export type PetToggleDefinition = {
+  defaultState: 'on' | 'off',
+  onState: ToggleStateDefinition[],
+  offState: ToggleStateDefinition[]
+}
+export type PetToggleDefinitionJSON = {
   defaultState?: 'on' | 'off',
-  onState?: ToggleStateDefinition,
-  offState?: ToggleStateDefinition
+  onState?: ToggleStateDefinition[],
+  offState?: ToggleStateDefinition[]
 }
 
 export type PetLogicGroup = {
@@ -157,19 +171,21 @@ export type PetLogicGroup = {
 }
 
 export type PingPayload = {
-  time: number,
-  doSave?: boolean
+  time: number
 }
 
 export type RawPetStatuses = {
   [key: string]: PetStatusDefinition
 }
+export type ThemeStrings = {
+  [key: string]: string
+}
 export type RawPetJSON = {
   id: string,
   name: string,
   bio: string,
-  level: number,
   baseUrl: string,
+  theme: ThemeStrings,
   logic: {
     stats: PetStatDefinitionJSON[],
     statuses: RawPetStatuses,
@@ -177,8 +193,8 @@ export type RawPetJSON = {
     behaviorRules: WhenThenStringGroup[],
     interactions: PetInteractionDefinitionJSON[]
   },
-  backgroundImage?:string,
-  backgroundColor?:string
+  bgImage?:string,
+  bgColor?:string
 }
 
 export type PetDefinition = {
@@ -187,10 +203,10 @@ export type PetDefinition = {
   bio: string,
   bornOn?: number,
   diedOn?: number,
-  level: number,
   logic: PetLogicGroup,
   bgImage?:string,
-  bgColor?:string
+  bgColor?:string,
+  theme?: ThemeStrings
 }
 
 export type PetListItem = {
@@ -200,18 +216,18 @@ export type PetListItem = {
 }
 
 // slimmer save object for localStorage
-export type CachedPetStat = {
+export type DeltaPetStat = {
   id: string,
   value: number
 }
 export type ActiveToggleState = {
   id: string,
   state: 'on' | 'off',
-  effect?: ToggleStateDefinition
+  effect: ToggleStateDefinition[]
 }
 export type SavedPetState = {
   id: string,
-  stats: CachedPetStat[],
+  stats: DeltaPetStat[],
   lastSaved?: number,
   bornOn?: number,
   diedOn?: number,
@@ -231,6 +247,7 @@ export type PetInteractionDetail = {
   startAt: number,
   endAt: number,
   enabled: boolean,
+  visible: boolean,
   definition: PetInteractionDefinition,
   cooldownStatus: InteractionCooldownStatus,
 }
@@ -249,6 +266,7 @@ export type ConditionOperator = '='|'<'|'<='|'>'|'>=';
 export type DeltaStat = {
   id: string,
   value: number,
+  displayType: StatDisplayType,
   max: number,
   label: string
 }

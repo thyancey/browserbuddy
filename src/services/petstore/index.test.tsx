@@ -1,5 +1,5 @@
 import { RootState } from '../store';
-import reducer, { PetStoreState, selectRenderedDeltaStats, selectActiveIdx, setActiveId } from './index';
+import reducer, { PetStoreState, selectActiveDeltaStats, getActiveIdx, setActiveId } from './index';
 // import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
@@ -37,7 +37,7 @@ describe('#petstore.reducers', () => {
 });
 
 describe('#petstore.selectors', () => {
-  describe('#selectActiveIdx', () => {
+  describe('#getActiveIdx', () => {
     it('should select activeIdx', () => {
       const mockState = {
         petStore:{
@@ -45,16 +45,16 @@ describe('#petstore.selectors', () => {
         }
       } as RootState;
   
-      expect(selectActiveIdx(mockState)).toEqual(3);
+      expect(getActiveIdx(mockState)).toEqual(3);
     });
   });
 
   
-  describe('#selectRenderedDeltaStats', () => {
+  describe('#selectActiveDeltaStats', () => {
     it('should increase stat over time', () => {
       const lastTime = 1000;
-      const time = 121000;
-      expect(selectRenderedDeltaStats.resultFunc(
+      const time = 121000; // 2 minutes
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
@@ -62,6 +62,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: 1,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }
@@ -82,7 +83,7 @@ describe('#petstore.selectors', () => {
     it('should decrease stat over time', () => {
       const lastTime = 1000;
       const time = 61000;
-      expect(selectRenderedDeltaStats.resultFunc(
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
@@ -90,6 +91,7 @@ describe('#petstore.selectors', () => {
             value: 500,
             perMinute: -50,
             max: 1000,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }
@@ -110,7 +112,7 @@ describe('#petstore.selectors', () => {
     it('stat should not go past 0 or max', () => {
       const lastTime = 1000;
       const time = 601000; // 10 minutes later...
-      expect(selectRenderedDeltaStats.resultFunc(
+      expect(selectActiveDeltaStats.resultFunc(
         [
           {
             id: 'food',
@@ -118,6 +120,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: 3,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           },{
@@ -126,6 +129,7 @@ describe('#petstore.selectors', () => {
             value: 5,
             perMinute: -3,
             max: 10,
+            displayType: 'percent',
             fullIsGood: true,
             statEffects: []
           }

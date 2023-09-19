@@ -9,46 +9,32 @@ const ScContainer = styled.div`
   position: absolute;
   inset: 0;
   margin: auto auto;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   padding: 1rem;
-  min-width:var(--val-min-width);
-  min-height:var(--val-min-height);
-  max-width: 90rem;
-  max-height: 100rem;
 
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: 10rem auto 20rem;
-  grid-template-areas:
-    'header'
-    'body'
-    'footer';
-    
-  color: var(--color-blue);
-
-  > div {
-    position: relative;
-  }
-`;
-
-const ScHeader = styled.div`
-  grid-area: header;
+  background-color: var(--theme-color-primary);
+  transition: background-color .5s ease, color .5s ease;
 `;
 
 const ScBody = styled.div`
-  grid-area: body;
+  flex: 1;
+  position: relative;
 `;
 
 const ScFooter = styled.div`
-  grid-area: footer;
+  flex: 0 0 33%;
+  position: relative;
 `;
 
 export const Main = () => {
   return (
     <ScContainer>
       <Helpers />
-      <ScHeader>
-        <Header />
-      </ScHeader>
+      <Header />
       <ScBody>
         <PetContainer />
       </ScBody>
