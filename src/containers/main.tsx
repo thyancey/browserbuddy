@@ -16,7 +16,7 @@ const ScContainer = styled.div`
   gap: 1rem;
   padding: 1rem;
 
-  background-color: var(--theme-color-color1);
+  background-color: var(--theme-color-primary);
   transition: background-color .5s ease, color .5s ease;
 `;
 

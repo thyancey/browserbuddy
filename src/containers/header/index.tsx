@@ -20,7 +20,7 @@ const ScActivePetMarker = styled.div`
     height: 100%;
     width: 100%;
 
-    border: var(--border-width) solid var(--theme-color-color2);
+    border: var(--border-width) solid var(--theme-color-secondary);
     border-radius: var(--border-radius);
     display: flex;
     align-items: center;
@@ -45,14 +45,14 @@ const ScPetMarkers = styled.div`
     font-size: 2rem;
     text-align: right;
     margin-right: 1rem;
-    color: var(--theme-color-color2);
+    color: var(--theme-color-secondary);
     display: inline-block;
   }
 
   a {
     &:hover {
       h1 {
-        color: var(--theme-color-color-white);
+        color: var(--theme-color-highlight);
       }
     }
   }
@@ -69,7 +69,7 @@ interface ScTabProps {
 const ScTab = styled.li<ScTabProps>`
   display: inline-block;
   margin-right: 1rem;
-  border: var(--border-width) solid var(--theme-color-color2);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius);
   padding: 0.25rem 0.75rem;
   min-width: 3rem;
@@ -83,13 +83,13 @@ const ScTab = styled.li<ScTabProps>`
   ${(p) =>
     p.$isActive &&
     css`
-      background-color: var(--theme-color-color2);
-      color: var(--theme-color-color1);
+      background-color: var(--theme-color-secondary);
+      color: var(--theme-color-primary);
     `}
 
   &:hover {
-    background-color: var(--theme-color-color2);
-    color: var(--theme-color-color1);
+    background-color: var(--theme-color-secondary);
+    color: var(--theme-color-primary);
   }
 `;
 

@@ -20,29 +20,29 @@ const ScButton = styled.div<ScToggleProps>`
   overflow: hidden;
   cursor: pointer;
 
-  border: var(--border-width) solid var(--theme-color-color2);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius);
 
-  background-color: var(--theme-color-color2);
-  color: var(--theme-color-color1);
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-color-primary);
 
   ${(p) =>
     p.$toggleStyle === 'on' &&
     css`
-      background-color: var(--theme-color-color2);
-      color: var(--theme-color-color1);
+      background-color: var(--theme-color-secondary);
+      color: var(--theme-color-primary);
     `}
   ${(p) =>
     p.$toggleStyle === 'off' &&
     css`
-      background-color: var(--theme-color-color1);
-      color: var(--theme-color-color2);
+      background-color: var(--theme-color-primary);
+      color: var(--theme-color-secondary);
     `}
 `;
 
 const ScCooldownButton = styled(ScButton)`
-  background-color: var(--theme-color-color2);
-  color: var(--theme-color-color1);
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-color-primary);
 
   cursor: not-allowed;
 `;

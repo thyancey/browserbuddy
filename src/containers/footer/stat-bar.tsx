@@ -11,7 +11,7 @@ const ScLabel = styled.p`
 
 const ScBarContainer = styled.div`
   margin-top: 0.25rem;
-  border: var(--border-width) solid var(--theme-color-color2);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius);
   overflow: hidden;
 `;
@@ -29,7 +29,7 @@ const ScBarFill = styled.div`
   bottom: 0.3rem;
   z-index: 1;
   transition: width 0.3s ease-in-out, background-color 0.5s ease-in-out;
-  background-color: var(--theme-color-color2);
+  background-color: var(--theme-color-secondary);
   display: flex;
   align-items: center;
   justify-content: end;
@@ -37,7 +37,7 @@ const ScBarFill = styled.div`
   border-radius: 0.5rem;
 
   span {
-    color: var(--theme-color-color1);
+    color: var(--theme-color-primary);
     font-size: 2rem;
     font-family: var(--font-display);
 
@@ -53,7 +53,7 @@ const ScBarFill = styled.div`
 const ScBarBg = styled.div`
   position: absolute;
   inset: 0;
-  background-color: var(--theme-color-color1);
+  background-color: var(--theme-color-primary);
   right: -4rem;
 `;
 

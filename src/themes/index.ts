@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
   *{
@@ -26,43 +26,18 @@ export default createGlobalStyle`
     --val-min-height: 60rem;
 
     --color-black: #0f0e0b;
-    --color-grey: #373737;
-    --color-grey-light: #A39F8E;
     --color-white: #fef8dd;
     --color-blue: #1fb9f3;
-    --color-blue-light: #80cbe7;
-    --color-green: #51f249;
-    --color-yellow: #fff249;
-    --color-red: #F55658;
-    --color-red-light: #f18283;
-    --color-purple: #6b1ff3;
 
     font-size: 70%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Cabin', sans-serif;
 
-    --theme-color-color1: #0077B6;
-    --theme-color-color2: #90E0EF;
-    --theme-color-color-white: #FFFFFF;
-
-    --theme-color-primary: var(--color-blue);
-    --theme-color-primary-border: var(--color-white);
-    --theme-color-primary-text: var(--color-white);
-
-    --theme-color-secondary: var(--color-green);
-    --theme-color-secondary-border: var(--color-white);
-    --theme-color-secondary-text: var(--color-black);
-    
-    --theme-color-either-text: var(--color-black);
-    
-    --theme-color-special: var(--color-purple);
-    --theme-color-special-border: var(--color-white);
-    --theme-color-special-text: var(--color-black);
-
-    --theme-color-bg: var(--color-secondary);
-
-
+    --theme-color-primary: #0f0e0b;
+    --theme-color-secondary: #fef8dd;
+    --theme-color-highlight: #FFFFFF;
+  
     --border-radius: 1rem;
     --border-radius-outer: 1.5rem;
     --border-width: .3rem;
@@ -70,8 +45,8 @@ export default createGlobalStyle`
     --font-display: 'Paytone One', 'sans-serif';
     --font-copy: 'Cabin', sans-serif;
     
-    background-color: var(--theme-color-color1);
-    color: var(--theme-color-color2);
+    background-color: var(--theme-color-primary);
+    color: var(--theme-color-secondary);
   }
 
   #root{
@@ -121,77 +96,17 @@ export default createGlobalStyle`
   }
 
   button {
-    background-color: var(--theme-color-color1);
-    color: var(--theme-color-color2);
+    background-color: var(--theme-color-primary);
+    color: var(--theme-color-secondary);
 
-    border: var(--border-width) solid var(--theme-color-color2);
+    border: var(--border-width) solid var(--theme-color-secondary);
     border-radius: var(--border-radius);
 
     cursor: pointer;
 
     &:hover{
-      background-color: var(--theme-color-color2);
-      color: var(--theme-color-color1);
+      background-color: var(--theme-color-secondary);
+      color: var(--theme-color-primary);
     }
   }
 `;
-
-const shadows = {
-  z1: '-0.1rem 0.1rem .25rem .1rem rgba(0,0,0,0.16)',
-  z2: '-0.1rem 0.1rem .25rem .1rem rgba(0,0,0,0.36)',
-  z3: '-.2rem .5rem 1rem .2rem rgba(0,0,0,.36)',
-};
-
-const breakpoints = {
-  mobile_tiny: '300px',
-  mobile_medium: '400px',
-  mobile_large: '500px',
-  tablet: '768px',
-  desktop: '1024px',
-};
-
-type ThemeStore = {
-  shadows: typeof shadows;
-  breakpoints: typeof breakpoints;
-};
-
-export const store: ThemeStore = {
-  shadows: shadows,
-  breakpoints: breakpoints,
-};
-
-export const mixinBorders = () => css`
-  border: var(--border-width) solid var(--theme-color-color2);
-  border-radius: var(--border-radius);
-`;
-
-export const mixinFontFamily = (style: 'details' | 'display') => {
-  switch (style) {
-    case 'details':
-      return css`
-        font-family: 'Cabin', sans-serif;
-      `;
-    case 'display':
-      return css`
-        font-family: 'Paytone One', sans-serif;
-      `;
-    default:
-      return css`
-        font-family: 'Cabin', sans-serif;
-      `;
-  }
-};
-
-export const mixinColorBubble = (
-  background: string,
-  border: string = '--color-white',
-  text: string = '--color-white'
-) => {
-  return css`
-    border-radius: var(--border-radius);
-    border: var(--border-width) solid;
-    border-color: var(${border});
-    color: var(${text});
-    background-color: var(${background});
-  `;
-};

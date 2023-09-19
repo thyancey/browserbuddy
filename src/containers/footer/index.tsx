@@ -10,7 +10,7 @@ const ScContainer = styled.div`
   inset: 0;
   padding: 1rem;
 
-  border: var(--border-width) solid var(--theme-color-color2);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius-outer);
 
   overflow: hidden;
@@ -33,7 +33,7 @@ const ScInteractions = styled.div`
   &:after {
     content: '';
     display: block;
-    border-top: var(--border-width) dashed var(--theme-color-color2);
+    border-top: var(--border-width) dashed var(--theme-color-secondary);
     width: 100%;
     margin-top: 1rem;
   }

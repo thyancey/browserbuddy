@@ -9,7 +9,7 @@ const ScContainer = styled.div`
   /* for animation, should accomodate both born on and died on dates */
   max-height: 8rem;
 
-  border: var(--border-width) solid var(--theme-color-color2);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius);
 
   transition: max-height 0.3s ease-out;
@@ -34,13 +34,13 @@ const ScBioButton = styled.button`
   font-size: 2rem;
 
   .bio-visible & {
-    background-color: var(--theme-color-color2);
-    color: var(--theme-color-color1);
-    border-color: var(--theme-color-color1);
+    background-color: var(--theme-color-secondary);
+    color: var(--theme-color-primary);
+    border-color: var(--theme-color-primary);
 
     &:hover {
-      background-color: var(--theme-color-color1);
-      color: var(--theme-color-color2);
+      background-color: var(--theme-color-primary);
+      color: var(--theme-color-secondary);
     }
   }
 `;
@@ -50,8 +50,8 @@ const ScDescription = styled.div`
 `;
 
 const ScBio = styled.div`
-  background-color: var(--theme-color-color2);
-  color: var(--theme-color-color1);
+  background-color: var(--theme-color-secondary);
+  color: var(--theme-color-primary);
   opacity: 0;
 
   padding: 1.25rem 7rem 1.25rem 1.5rem;

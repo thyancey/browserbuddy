@@ -19,25 +19,24 @@ const ScClipper = styled.div`
   inset: 0;
   color: green;
   overflow: hidden;
-  background-color: var(--theme-color-color1);
-  border: var(--border-width) solid var(--theme-color-color2);
+  background-color: var(--theme-color-primary);
+  border: var(--border-width) solid var(--theme-color-secondary);
   border-radius: var(--border-radius-outer);
 `;
-
 
 const ScWastedBtn = styled.div`
   display: block;
   padding: 3rem;
   text-align: center;
 
-  background-color: var(--theme-color-color1);
-  border: var(--border-width) dashed var(--theme-color-color2);
-  color: var(--theme-color-color2);
-  border-radius: var(--border-radius);
+  background-color: var(--theme-color-primary);
+  border: 1rem dashed var(--theme-color-secondary);
+  border-radius: 3rem;
+  color: var(--theme-color-secondary);
 
   transform: rotate(2deg) translateY(200%);
   opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.2s, background-color .3s;
+  transition: transform 0.3s ease-out, opacity 0.2s, background-color 0.3s;
 
   font-family: var(--font-display);
 
@@ -51,11 +50,11 @@ const ScWastedBtn = styled.div`
   }
 
   &:hover {
-    background-color: var(--theme-color-color2);
-    color: var(--theme-color-color1);
+    background-color: var(--theme-color-secondary);
+    color: var(--theme-color-primary);
 
     &:before {
-      content: 'REVIVE?';
+      content: 'RESET?';
     }
   }
 `;
@@ -104,7 +103,6 @@ const ScPetImage = styled.div`
 
 const ScBehavior = styled.p`
   font-size: 2rem;
-  color: var(--color-white);
   opacity: 0.5;
 
   position: absolute;
@@ -149,25 +147,8 @@ const setTheme = (theme?: ThemeStrings) => {
     const root = document.documentElement;
 
     Object.keys(theme).forEach((themeKey) => {
-      root.style.setProperty(`--theme-color-${themeKey}`, theme[themeKey]);
+      root.style.setProperty(`--theme-${themeKey}`, theme[themeKey]);
     });
-
-    /*
-    "primary": "#1fb9f3",
-    "primary-border": "#fef8dd",
-    "primary-text": "#fef8dd",
-    "secondary": "#51f249",
-    "secondary-border": "#fef8dd",
-    "secondary-text": "#0f0e0b",
-    "either-text": "#0f0e0b",
-    "special": "#6b1ff3",
-    "special-border": "#fef8dd",
-    "special-text": "#0f0e0b"
-    */
-
-    // Modify the value of the --primary-color CSS variable
-    // themeObj.primary && root.style.setProperty('--theme-color-primary', themeObj.primary);
-    // themeObj.primary && root.style.setProperty(`--theme-color-${val}`, val);
   }
 };
 

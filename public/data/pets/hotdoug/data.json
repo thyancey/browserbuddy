@@ -4,8 +4,9 @@
   "bio": "A tasty little morsel. To turn Hotholemew into a fully dressed dog, you must grill him to an internal temperature between 325 - 400 degrees, be careful not to burn his flesh! When Doug is warm and happy, he can evolve to his next phase.",
   "bgImage": "assets/bg_grill_off.gif",
   "theme": {
-    "color1": "#9E2835",
-    "color2": "#E4A672"
+    "color-primary": "#9E2835",
+    "color-secondary": "#E4A672",
+    "color-highlight": "#E2E472"
   },
   "logic": {
     "stats": [

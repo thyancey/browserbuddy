@@ -3,8 +3,9 @@
   "name": "Bunchie",
   "bio": "A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama. A big dumb hopping green llama.",
   "theme": {
-    "color1": "#0077B6",
-    "color2": "#90E0EF"
+    "color-primary": "#0077B6",
+    "color-secondary": "#90E0EF",
+    "color-highlight": "#FF0000"
   },
   "logic":{
     "stats":[

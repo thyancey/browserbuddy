@@ -75,17 +75,9 @@ const initialStoreState: PetStoreState = {
 
 const parseTheme = (theme: ThemeStrings) => {
   const theseThemes: ThemeStrings = {
-    'primary': 'var(--color-blue)',
-    'primary-border': 'var(--color-white)',
-    'primary-text': 'var(--color-white)',
-    'secondary': 'var(--color-green)',
-    'secondary-border': 'var(--color-white)',
-    'secondary-text': 'var(--color-black)',
-    'either-text': 'var(--color-black)',
-    'special': 'var(--color-purple)',
-    'special-border': 'var(--color-white)',
-    'special-text': 'var(--color-black)',
-    'bg': 'var(--color-black)'
+    'color-primary': 'var(--color-black)',
+    'color-secondary': 'var(--color-blue)',
+    'color-highlight': 'var(--color-white)'
   }
 
   theme && Object.keys(theme).forEach(themeKey => {
