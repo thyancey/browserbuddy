@@ -100,6 +100,7 @@ const ScPetImage = styled.div`
   left: 0;
 `;
 
+/*
 const ScBehaviorDebug = styled.p`
   font-size: 2rem;
   opacity: 1;
@@ -109,6 +110,7 @@ const ScBehaviorDebug = styled.p`
   top: 1rem;
   right: 1rem;
 `;
+*/
 
 interface ScFgImageProps {
   $isActive: boolean;
