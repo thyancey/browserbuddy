@@ -11,7 +11,7 @@ const ScContainer = styled.div`
   padding: 1rem;
 
   border: var(--border-width) solid var(--theme-color-color2);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-outer);
 
   overflow: hidden;
 
@@ -71,14 +71,11 @@ export const Footer = () => {
       </ScInteractions>
       <ScPetInfo>
         <h3>{'stats'}</h3>
-
         <ScStats>
           {activeStats.map((s, idx) => (
-            <StatBar key={idx} label={s.label} max={s.max} value={s.value} />
+            <StatBar key={idx} label={s.label} max={s.max} value={s.value} displayType={s.displayType} />
           ))}
         </ScStats>
-        <h3>{'bio'}</h3>
-        <p>{petInfo.bio}</p>
       </ScPetInfo>
     </ScContainer>
   );

@@ -6,7 +6,6 @@ import { mixinColorBubble } from '../../themes';
 import { AlertType } from '../../types';
 
 const ScContainer = styled.div`
-  color:var(--color-black);
   position:absolute;
   right:0;
   bottom:1rem;
@@ -27,14 +26,10 @@ const ScStatus = styled.li<ScStatusProps>`
   z-index:1;
   
   list-style:none;
-  color:var(--color-black);
   margin-top: -.5rem;
   margin-right: -1rem;
   font-weight:bold;
   font-size: 2rem;
-
-  /* border-top-left-radius: 0; */
-  border-bottom-right-radius: 0;
   padding:.5rem 1rem;
 
   position:absolute;
@@ -48,6 +43,7 @@ const ScStatus = styled.li<ScStatusProps>`
 `;
 
 const getBubbleColors = (alertType?: AlertType) => {
+  return [ '--theme-color-color1', '--theme-color-color2', '--theme-color-color2' ];
   switch(alertType){
     case 'alert': return [ '--theme-color-special', '--theme-color-special-border', '--theme-color-secondary-text' ];
     case 'warning': return [ '--theme-color-primary', '--theme-color-primary-border', '--theme-color-secondary-text' ];

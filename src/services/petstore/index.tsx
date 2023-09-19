@@ -164,11 +164,13 @@ export const parseStatsGroup = (statsDef: PetStatDefinitionJSON[], initialState?
       return {
         ...pS,
         value: foundStat.value,
+        displayType: pS.displayType || 'percent',
         statEffects: statEffects,
       };
     } else {
       return {
         ...pS,
+        displayType: pS.displayType || 'percent',
         statEffects: statEffects,
       };
     }
@@ -459,7 +461,7 @@ export const {
   killActivePet,
 } = petStoreSlice.actions;
 
-export const selectActiveIdx = (state: RootState): number => state.petStore.activeIdx;
+export const getActiveIdx = (state: RootState): number => state.petStore.activeIdx;
 export const selectPets = (state: RootState): PetDefinition[] => state.petStore.pets;
 export const getActiveInteractions = (state: RootState): InteractionCooldownStatus[] => state.petStore.interactions;
 export const getDeltaPets = (state: RootState): SavedPetState[] => state.petStore.deltaPets;
@@ -467,7 +469,7 @@ export const getNewLastSaved = (state: RootState): number => state.petStore.last
 
 export const selectLastSaved = createSelector([getNewLastSaved], (lastSaved) => lastSaved);
 
-export const selectActivePet = createSelector([selectPets, selectActiveIdx], (pets, activeIdx) => {
+export const selectActivePet = createSelector([selectPets, getActiveIdx], (pets, activeIdx) => {
   return pets[activeIdx] || null;
 });
 export const selectActiveStatDefinitions = createSelector(
@@ -515,10 +517,11 @@ export const selectActiveToggles = createSelector(
   }
 );
 
-export const selectActiveInfo = createSelector([selectActivePet], (activePet): PetInfo | null => {
+export const selectActiveInfo = createSelector([selectActivePet, getActiveIdx], (activePet, activeIdx): PetInfo | null => {
   if (!activePet) return null;
 
   return {
+    idx: activeIdx, 
     id: activePet.id,
     name: activePet.name,
     bio: activePet.bio,
@@ -669,7 +672,7 @@ export const selectActiveInteractionDetail = createSelector(
   }
 );
 
-export const selectPetList = createSelector([selectPets, selectActiveIdx], (pets, activeIdx) =>
+export const selectPetList = createSelector([selectPets, getActiveIdx], (pets, activeIdx) =>
   pets.map((p, idx) => ({
     name: p.name,
     id: p.id,

@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import { round } from '../../util/tools';
+import { StatDisplayType } from '../../types';
 
 const ScContainer = styled.div``;
 
@@ -8,69 +9,104 @@ const ScLabel = styled.p`
   font-weight: bold;
 `;
 
+const ScBarContainer = styled.div`
+  margin-top: 0.25rem;
+  border: var(--border-width) solid var(--theme-color-color2);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+`;
 const ScBar = styled.div`
   position: relative;
-  border-radius: 1rem;
-  overflow: hidden;
-  padding: 0.25rem 0.5rem;
   height: 4rem;
-  margin-top: 0.25rem;
-
-  background-color: var(--theme-color-color2);
-  border: var(--border-width) solid var(--theme-color-color2);
+  width: calc(100% - 5.7rem);
 `;
 
 const ScBarFill = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  transition: width 0.3s ease-in-out, background-color 0.5s ease-in-out;
-  background-color: var(--theme-color-color1);
-`;
-
-const ScBarValueContainer = styled.div`
-  position: absolute;
-  inset: 0.25rem;
-  font-size: 1rem;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* top: 0; */
+  top: 0.3rem;
+  left: 0.3rem;
+  bottom: 0.3rem;
   z-index: 1;
+  transition: width 0.3s ease-in-out, background-color 0.5s ease-in-out;
+  background-color: var(--theme-color-color2);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 0.5rem;
+  border-radius: 0.5rem;
+
+  span {
+    color: var(--theme-color-color1);
+    font-size: 2rem;
+    font-family: var(--font-display);
+
+    /* tiny % symbol */
+    &:nth-child(2) {
+      font-size: 1rem;
+      margin-left: 0.25rem;
+      margin-top: 0.75rem;
+    }
+  }
 `;
 
-const ScBarValue = styled.div`
-  padding: 0.5rem 2rem;
-
-  font-weight: bold;
+const ScBarBg = styled.div`
+  position: absolute;
+  inset: 0;
+  background-color: var(--theme-color-color1);
+  right: -4rem;
 `;
+
+const getRando = () => {
+  const val = Math.random();
+  if (val > 0.66) return 100;
+  if (val > 0.33) return 50;
+  return 0;
+};
 
 type StatBarProps = {
   label: string;
   max: number;
   value: number;
-  hideStats?: boolean;
+  displayType?: StatDisplayType;
 };
-
-export const StatBar = ({ label, max, value, hideStats = false }: StatBarProps) => {
+export const StatBar = ({ label, displayType = 'value', max, value }: StatBarProps) => {
   const percent = Math.round((value / max) * 1000) / 10;
+  // const percent = getRando();
+
+  const ValueMarkup = useMemo(() => {
+    if (displayType === 'percent') {
+      return (
+        <>
+          <span>{percent}</span>
+          <span>{'%'}</span>
+        </>
+      );
+    } else if (displayType === 'roundedValue') {
+      return (
+        <>
+          <span>{Math.round(value)}</span>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <span>{value}</span>
+        </>
+      );
+    }
+  }, [displayType, percent, value]);
+
   if (!label) return null;
   return (
     <ScContainer>
       <ScLabel>{label}</ScLabel>
-      <ScBar>
-        {!hideStats && (
-          <ScBarValueContainer>
-            <ScBarValue>
-              <p>{`${round(value)} / ${max}`}</p>
-              {/* <ScValuePercentage>{`${percent}%`}</ScValuePercentage> */}
-            </ScBarValue>
-          </ScBarValueContainer>
-        )}
-        <ScBarFill style={{ width: `${percent}%` }} />
-      </ScBar>
+      <ScBarContainer>
+        <ScBar>
+          <ScBarFill style={{ width: `calc(${percent}% + 5rem)` }}>{ValueMarkup}</ScBarFill>
+          <ScBarBg />
+        </ScBar>
+      </ScBarContainer>
     </ScContainer>
   );
 };

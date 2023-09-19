@@ -15,10 +15,9 @@ const ScContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-`;
 
-const ScHeader = styled.div`
-  /* height: 10%; */
+  background-color: var(--theme-color-color1);
+  transition: background-color .5s ease, color .5s ease;
 `;
 
 const ScBody = styled.div`

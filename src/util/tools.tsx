@@ -74,7 +74,8 @@ export const getActiveDeltaStats = (
       id: s.id,
       value: getStatValue(s, deltaPetStats, timeDiffInSeconds, statOverrides[s.id], undefined, debugMode),
       label: s.label,
-      max: s.max
+      max: s.max,
+      displayType: s.displayType
     } as DeltaStat;
   });
 };

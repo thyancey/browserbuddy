@@ -1,5 +1,5 @@
 import { RootState } from '../store';
-import reducer, { PetStoreState, selectActiveDeltaStats, selectActiveIdx, setActiveId } from './index';
+import reducer, { PetStoreState, selectActiveDeltaStats, getActiveIdx, setActiveId } from './index';
 // import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
@@ -37,7 +37,7 @@ describe('#petstore.reducers', () => {
 });
 
 describe('#petstore.selectors', () => {
-  describe('#selectActiveIdx', () => {
+  describe('#getActiveIdx', () => {
     it('should select activeIdx', () => {
       const mockState = {
         petStore:{
@@ -45,7 +45,7 @@ describe('#petstore.selectors', () => {
         }
       } as RootState;
   
-      expect(selectActiveIdx(mockState)).toEqual(3);
+      expect(getActiveIdx(mockState)).toEqual(3);
     });
   });
 

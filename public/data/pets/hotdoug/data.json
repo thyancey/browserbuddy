@@ -1,22 +1,11 @@
 {
   "id": "hotdoug",
   "name": "Hot Doug the hotdog",
-  "bio": "Hot Doug is a tasty little morsel. To turn him into a fully dressed dog, you must grill him to an internal temperature between 325 - 400 degrees, be careful not to burn him! When he's warm and happy, he can evolve to the next phase.",
+  "bio": "A tasty little morsel. To turn Hotholemew into a fully dressed dog, you must grill him to an internal temperature between 325 - 400 degrees, be careful not to burn his flesh! When Doug is warm and happy, he can evolve to his next phase.",
   "bgImage": "assets/bg_grill_off.gif",
   "theme": {
-    "color1": "#0077B6",
-    "color2": "#90E0EF",
-    "primary": "#e3719d",
-    "primary-border": "#3f2832",
-    "primary-text": "#3f2832",
-    "secondary": "#9e2835",
-    "secondary-border": "#3f2832",
-    "secondary-text": "#e4a672",
-    "either-text": "#3f2832",
-    "special": "#6b1ff3",
-    "special-border": "#fef8dd",
-    "special-text": "#3f2832",
-    "bg": "#9e2835"
+    "color1": "#9E2835",
+    "color2": "#E4A672"
   },
   "logic": {
     "stats": [
@@ -24,6 +13,7 @@
         "id": "level",
         "label": "Level",
         "value": 1,
+        "displayType": "value",
         "perMinute": 0,
         "max": 3,
         "fullIsGood": true,
@@ -37,6 +27,7 @@
         "id": "temperature",
         "label": "Internal Temp. (ideal: 325 - 450)",
         "value": 0.0,
+        "displayType": "roundedValue",
         "perMinute": -10.0,
         "max": 600.0,
         "fullIsGood": false,

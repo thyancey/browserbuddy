@@ -19,15 +19,19 @@ export type RawManifestItem = {
 }
 
 export type PetInfo = {
+  idx: number,
   id: string,
   name: string,
   bio: string
 }
 
+export type StatDisplayType = 'value' | 'roundedValue' | 'percent';
+
 export type PetStatDefinitionJSON = {
   id: string,
   label: string,
   value: number,
+  displayType?: StatDisplayType,
   perMinute: number,
   max: number,
   fullIsGood: boolean,
@@ -38,6 +42,7 @@ export type PetStatDefinition = {
   id: string,
   label: string,
   value: number,
+  displayType: StatDisplayType,
   perMinute: number,
   max: number,
   fullIsGood: boolean,
@@ -261,6 +266,7 @@ export type ConditionOperator = '='|'<'|'<='|'>'|'>=';
 export type DeltaStat = {
   id: string,
   value: number,
+  displayType: StatDisplayType,
   max: number,
   label: string
 }

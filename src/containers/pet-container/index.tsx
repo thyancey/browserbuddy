@@ -14,57 +14,45 @@ import { Statuses } from './statuses';
 import { useCallback, useEffect } from 'react';
 import { ThemeStrings } from '../../types';
 
-type ScContainerProps = {
-  $bgImageUrl?: string;
-};
-const ScContainer = styled.div<ScContainerProps>`
+const ScClipper = styled.div`
   position: absolute;
   inset: 0;
+  color: green;
+  overflow: hidden;
   background-color: var(--theme-color-color1);
   border: var(--border-width) solid var(--theme-color-color2);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-
-  ${(p) =>
-    p.$bgImageUrl &&
-    css`
-      background-size: cover;
-      background-position: center;
-      background-image: url(${p.$bgImageUrl});
-    `}
+  border-radius: var(--border-radius-outer);
 `;
 
-interface ScOverlayProps {
-  $isActive?: boolean;
-}
 
 const ScWastedBtn = styled.div`
   display: block;
-  padding: 6rem;
-  border-radius: 5rem;
+  padding: 3rem;
   text-align: center;
 
-  background-color: var(--theme-color-secondary);
-  border: 1rem solid var(--theme-color-primary);
-  color: var(--theme-color-secondary-text);
+  background-color: var(--theme-color-color1);
+  border: var(--border-width) dashed var(--theme-color-color2);
+  color: var(--theme-color-color2);
+  border-radius: var(--border-radius);
 
   transform: rotate(2deg) translateY(200%);
   opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.2s;
+  transition: transform 0.3s ease-out, opacity 0.2s, background-color .3s;
+
+  font-family: var(--font-display);
 
   span {
-    font-size: 8rem;
+    font-size: 6rem;
   }
 
   &:before {
     content: 'WASTED';
-    font-size: 8rem;
+    font-size: 6rem;
   }
 
   &:hover {
-    background-color: var(--theme-color-primary);
-    /* border: 1rem solid var(--theme-color-secondary); */
-    color: var(--theme-color-either-text);
+    background-color: var(--theme-color-color2);
+    color: var(--theme-color-color1);
 
     &:before {
       content: 'REVIVE?';
@@ -72,22 +60,29 @@ const ScWastedBtn = styled.div`
   }
 `;
 
+interface ScOverlayProps {
+  $isActive?: boolean;
+}
 const ScOverlay = styled.div<ScOverlayProps>`
   position: absolute;
   inset: 0;
-  color: red;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
   pointer-events: none;
+
+  ${ScWastedBtn} {
+    transform: rotate(7deg) translateY(100%);
+  }
+
   ${(p) =>
     p.$isActive &&
     css`
       pointer-events: all;
 
       ${ScWastedBtn} {
-        transform: rotate(-7deg) translateY(125%);
+        transform: rotate(-7deg) translateY(0%);
         opacity: 1;
         cursor: pointer;
       }
@@ -153,7 +148,7 @@ const setTheme = (theme?: ThemeStrings) => {
   if (theme) {
     const root = document.documentElement;
 
-    Object.keys(theme).forEach(themeKey => {
+    Object.keys(theme).forEach((themeKey) => {
       root.style.setProperty(`--theme-color-${themeKey}`, theme[themeKey]);
     });
 
@@ -211,10 +206,9 @@ export const PetContainer = () => {
   }, [dispatch, activePet?.id]);
 
   if (!activeBehavior) {
-    return <ScContainer $bgImageUrl={imageUrl} />;
+    return null;
   }
 
-  const bgImageUrl = activeBehavior.bgImageUrl || imageUrl;
   const backgroundStyles = {
     backgroundImage: `url(${activeBehavior.imageUrl})`,
     backgroundColor: bgColor || 'initial',
@@ -224,25 +218,27 @@ export const PetContainer = () => {
   };
 
   return (
-    <ScContainer $bgImageUrl={bgImageUrl}>
-      <>
+    <>
+      <ScClipper>
+        <ScOverlayImage $bgImageUrl={imageUrl} />
         <ScStatusImages $isActive={bgImages.length > 0}>
           {bgImages.map((imageUrl, idx) => (
             <ScOverlayImage key={idx} $bgImageUrl={imageUrl} />
           ))}
         </ScStatusImages>
+        {/* just some debug text */}
         <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
-        <Statuses />
         <ScPetImage style={backgroundStyles} />
-        <ScOverlay $isActive={activeBehavior.type === 'dead'}>
-          <ScWastedBtn onClick={() => onResetPet()}></ScWastedBtn>
-        </ScOverlay>
         <ScStatusImages $isActive={fgImages.length > 0}>
           {fgImages.map((imageUrl, idx) => (
             <ScOverlayImage key={idx} $bgImageUrl={imageUrl} />
           ))}
         </ScStatusImages>
-      </>
-    </ScContainer>
+      </ScClipper>
+      <ScOverlay $isActive={activeBehavior.type === 'dead'}>
+        <ScWastedBtn onClick={() => onResetPet()}></ScWastedBtn>
+      </ScOverlay>
+      <Statuses />
+    </>
   );
 };

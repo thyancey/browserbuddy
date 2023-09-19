@@ -44,6 +44,7 @@ export default createGlobalStyle`
 
     --theme-color-color1: #0077B6;
     --theme-color-color2: #90E0EF;
+    --theme-color-color-white: #FFFFFF;
 
     --theme-color-primary: var(--color-blue);
     --theme-color-primary-border: var(--color-white);
@@ -63,6 +64,7 @@ export default createGlobalStyle`
 
 
     --border-radius: 1rem;
+    --border-radius-outer: 1.5rem;
     --border-width: .3rem;
 
     --font-display: 'Paytone One', 'sans-serif';
@@ -117,6 +119,21 @@ export default createGlobalStyle`
       text-decoration: none;
     }
   }
+
+  button {
+    background-color: var(--theme-color-color1);
+    color: var(--theme-color-color2);
+
+    border: var(--border-width) solid var(--theme-color-color2);
+    border-radius: var(--border-radius);
+
+    cursor: pointer;
+
+    &:hover{
+      background-color: var(--theme-color-color2);
+      color: var(--theme-color-color1);
+    }
+  }
 `;
 
 const shadows = {
@@ -165,16 +182,14 @@ export const mixinFontFamily = (style: 'details' | 'display') => {
   }
 };
 
-export const mixinBubble = () => {
+export const mixinColorBubble = (
+  background: string,
+  border: string = '--color-white',
+  text: string = '--color-white'
+) => {
   return css`
-    border-radius: 2rem;
-    border: 0.5rem solid;
-  `;
-};
-
-export const mixinColorBubble = (background: string, border: string = '--color-white', text: string = '--color-white') => {
-  return css`
-    ${mixinBubble()}
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid;
     border-color: var(${border});
     color: var(${text});
     background-color: var(${background});
