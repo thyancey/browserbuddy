@@ -17,7 +17,6 @@ import { ThemeStrings } from '../../types';
 const ScClipper = styled.div`
   position: absolute;
   inset: 0;
-  color: green;
   overflow: hidden;
   background-color: var(--theme-color-primary);
   border: var(--border-width) solid var(--theme-color-secondary);
@@ -101,9 +100,10 @@ const ScPetImage = styled.div`
   left: 0;
 `;
 
-const ScBehavior = styled.p`
+const ScBehaviorDebug = styled.p`
   font-size: 2rem;
-  opacity: 0.5;
+  opacity: 1;
+  color: var(--theme-color-secondary);
 
   position: absolute;
   top: 1rem;
@@ -208,7 +208,7 @@ export const PetContainer = () => {
           ))}
         </ScStatusImages>
         {/* just some debug text */}
-        <ScBehavior>{`behavior: ${activeBehavior.id}`}</ScBehavior>
+        {/* <ScBehaviorDebug>{`behavior: ${activeBehavior.id}`}</ScBehaviorDebug> */}
         <ScPetImage style={backgroundStyles} />
         <ScStatusImages $isActive={fgImages.length > 0}>
           {fgImages.map((imageUrl, idx) => (

@@ -4,6 +4,7 @@ import useLocalStorage from '../../util/hooks/useLocalStorage';
 import { selectNewSavePayload, setDeltaPayload } from '../../services/petstore';
 import { DEFAULT_LOCALSTORAGE_STATE } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { SAVE_SCHEMA_VERSION } from '../../util/tools';
 
 let lastSaved = 0;
 
@@ -19,6 +20,7 @@ export const Saver = () => {
     if(savePayload && savePayload.config.lastSaved > -1){
       
       if(lastSaved !== savePayload.config.lastSaved){
+        savePayload.config.schemaVersion = SAVE_SCHEMA_VERSION;
         lastSaved = savePayload.config.lastSaved;
         setLocalStorage(() => savePayload);
         dispatch(setDeltaPayload(savePayload));
