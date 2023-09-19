@@ -2,6 +2,8 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { LocalStorageState } from '../types';
 import petStoreReducer from './petstore';
 import uiReducer from './ui';
+import { SAVE_SCHEMA_VERSION } from '../util/tools';
+
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +23,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 export const DEFAULT_LOCALSTORAGE_STATE: LocalStorageState = {
   config:{
+    schemaVersion: SAVE_SCHEMA_VERSION,
     activePet: '',
     lastSaved: -1
   },

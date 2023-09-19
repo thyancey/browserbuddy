@@ -27,7 +27,7 @@ import {
   PetToggleDefinitionJSON,
   ThemeStrings,
 } from '../../types';
-import { clamp, getActiveDeltaStats, log } from '../../util/tools';
+import { clamp, getActiveDeltaStats, log, SAVE_SCHEMA_VERSION } from '../../util/tools';
 import {
   evaluateAvailabilityWhenThenGroup,
   evaluateWhenThenNumberGroup,
@@ -42,6 +42,7 @@ import { getDebugMode } from '../ui';
 
 const DEFAULT_LOCALSTORAGE_STATE: LocalStorageState = {
   config: {
+    schemaVersion: SAVE_SCHEMA_VERSION,
     activePet: '',
     lastSaved: -1,
   },
@@ -764,6 +765,7 @@ export const selectNewSavePayload = createSelector(
     // console.log('>> returning savedPayload', newList);
     return {
       config: {
+        schemaVersion: SAVE_SCHEMA_VERSION,
         activePet: activePet?.id || '',
         lastSaved: lastSaved,
       },

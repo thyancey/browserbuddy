@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 // See: https://usehooks-ts.com/react-hook/use-event-listener
 import useEventListener from './useEventListener'
+import { SAVE_SCHEMA_VERSION } from '../tools'
 
 declare global {
   interface WindowEventMap {
@@ -22,8 +23,19 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     }
 
     try {
-      const item = window.localStorage.getItem(key)
-      return item ? (parseJSON(item) as T) : initialValue
+      const jsonString = window.localStorage.getItem(key);
+      if (jsonString) {
+        const parsed = (parseJSON(jsonString) as T);
+        // schemaVersion prevents errors with the save data
+        // @ts-ignore
+        if (parsed.config.schemaVersion === SAVE_SCHEMA_VERSION){
+          return parsed;
+        } else {
+          console.error('invalid save schemaVersion found, resetting save');
+          return initialValue;
+        }
+      }
+      return initialValue;
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error)
       return initialValue

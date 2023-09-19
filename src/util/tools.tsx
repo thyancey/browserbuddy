@@ -1,5 +1,8 @@
 import { PetStatDefinition, DeltaStat, DeltaPetStat, ActiveToggleState } from '../types';
 
+// used to prevent errors when save data changes. only update when the save payload shape changes, or saves need to be force cleared due to other updates
+export const SAVE_SCHEMA_VERSION = 1;
+
 // general
 export const round = (number: number, pad?: number) => {
   if (!pad) return Math.round(number);

@@ -254,6 +254,7 @@ export type PetInteractionDetail = {
 
 export type LocalStorageState = {
   config: {
+    schemaVersion: number,
     activePet?: string,
     lastSaved: number,
   },
