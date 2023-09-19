@@ -8,13 +8,10 @@
   "content_scripts": [
     {
       "js": [
-        "assets/content.tsx-loader-8ae029f8.js"
+        "assets/content.tsx-loader-781e2332.js"
       ],
       "matches": [
         "https://www.google.com/*"
-      ],
-      "css": [
-        "assets/content-d526a0c5.css"
       ]
     }
   ],
@@ -26,7 +23,7 @@
       "resources": [
         "assets/react-35ef61ed.svg",
         "assets/client-8837fce7.js",
-        "assets/content.tsx-a0c39f9f.js"
+        "assets/content.tsx-d1ad3ff0.js"
       ],
       "use_dynamic_url": true
     }
